@@ -1,11 +1,11 @@
 import serviceImg from "../assets/images/main-img.jpg";
 
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "./ui/button";
 
 const ServiceCard = () => {
   return (
-    <Card className="montserrat-regular bg-gray-200">
+    <Card className="montserrat-regular bg-gray-200 md:w-60 lg:w-72">
       <div>
         <img
           src={serviceImg}
