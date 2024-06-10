@@ -1,3 +1,4 @@
+
 function HomePage() {
   return (
     <>
@@ -9,6 +10,7 @@ function HomePage() {
       />
       <meta httpEquiv="x-ua-compatible" content="ie=edge" />
       <title>Home V1 - Petpia – Pet Care Service Template</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></link>
       <link
         rel="shortcut icon"
         href="src/assets/images/logo/favourite_icon.png"
@@ -33,9 +35,7 @@ function HomePage() {
                 </a>
               </div>
               <nav className="main_menu navbar navbar-expand-lg">
-                <div
-                  id="main_menu_dropdown"
-                >
+                <div id="main_menu_dropdown">
                   <ul className="main_menu_list unorder_list_center">
                     <li>
                       <a href="HomePage">Home</a>

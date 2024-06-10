@@ -24,7 +24,7 @@ function Service() {
         <title>Services - Petpia – Pet Care Service Template</title>
         <link
           rel="shortcut icon"
-          href="assets/images/logo/favourite_icon.png"
+          href="src/assets/images/logo/favourite_icon.png"
         />
         <link rel="stylesheet" href="src/assets/css/all.css" />
 
@@ -61,7 +61,7 @@ function Service() {
                 <a href="Homepage">
                   <img
                     className="logo_before"
-                    src="assets/images/logo/logo.png"
+                    src="src/assets/images/logo/logo.png"
                     alt="Petpia Logo"
                   />
                 </a>
@@ -226,7 +226,7 @@ function Service() {
                       <li>
                         <a className="item_image" href="shop_details">
                           <img
-                            src="assets/images/cart/cart_img_1.jpg"
+                            src="src/assets/images/cart/cart_img_1.jpg"
                             alt="Pet Care Service"
                           />
                         </a>
@@ -245,7 +245,7 @@ function Service() {
                       <li>
                         <a className="item_image" href="shop_details">
                           <img
-                            src="assets/images/cart/cart_img_2.jpg"
+                            src="src/assets/images/cart/cart_img_2.jpg"
                             alt="Pet Care Service"
                           />
                         </a>
@@ -297,7 +297,7 @@ function Service() {
             </div>
             <div className="breadcrumb_img dog_image">
               <img
-                src="assets/images/breadcrumb/breadcrumb_img_2.png"
+                src="src/assets/images/breadcrumb/breadcrumb_img_2.png"
                 alt="Pet Care Service"
               />
             </div>
@@ -306,7 +306,7 @@ function Service() {
             className="service_section section_space_lg"
             style={{
               backgroundImage:
-                'url("assets/images/overlay/shapes_overlay_6.svg")',
+                'url("src/assets/images/overlay/shapes_overlay_6.svg")',
             }}
           >
             <div className="container">
@@ -322,13 +322,13 @@ function Service() {
                     className="service_item"
                     style={{
                       backgroundImage:
-                        'url("assets/images/shape/shape_path_1.svg")',
+                        'url("src/assets/images/shape/shape_path_1.svg")',
                     }}
                   >
                     <div className="title_wrap">
                       <div className="item_icon">
                         <img
-                          src="assets/images/icon/icon_pet_walking.svg"
+                          src="src/assets/images/icon/icon_pet_walking.svg"
                           alt="Pet Walking"
                         />
                       </div>
@@ -347,7 +347,7 @@ function Service() {
                     </a>
                     <div className="decoration_image">
                       <img
-                        src="assets/images/shape/shape_paws.svg"
+                        src="src/assets/images/shape/shape_paws.svg"
                         alt="Pet Paws"
                       />
                     </div>
@@ -358,13 +358,13 @@ function Service() {
                     className="service_item"
                     style={{
                       backgroundImage:
-                        'url("assets/images/shape/shape_path_1.svg")',
+                        'url("src/assets/images/shape/shape_path_1.svg")',
                     }}
                   >
                     <div className="title_wrap">
                       <div className="item_icon">
                         <img
-                          src="assets/images/icon/icon_pet_grooming.svg"
+                          src="src/assets/images/icon/icon_pet_grooming.svg"
                           alt="Pet Grooming"
                         />
                       </div>
@@ -383,7 +383,7 @@ function Service() {
                     </a>
                     <div className="decoration_image">
                       <img
-                        src="assets/images/shape/shape_paws.svg"
+                        src="src/assets/images/shape/shape_paws.svg"
                         alt="Pet Paws"
                       />
                     </div>
@@ -394,13 +394,13 @@ function Service() {
                     className="service_item"
                     style={{
                       backgroundImage:
-                        'url("assets/images/shape/shape_path_1.svg")',
+                        'url("src/assets/images/shape/shape_path_1.svg")',
                     }}
                   >
                     <div className="title_wrap">
                       <div className="item_icon">
                         <img
-                          src="assets/images/icon/icon_pet_training.svg"
+                          src="src/assets/images/icon/icon_pet_training.svg"
                           alt="Pet Training"
                         />
                       </div>
@@ -419,7 +419,7 @@ function Service() {
                     </a>
                     <div className="decoration_image">
                       <img
-                        src="assets/images/shape/shape_paws.svg"
+                        src="src/assets/images/shape/shape_paws.svg"
                         alt="Pet Paws"
                       />
                     </div>
@@ -430,13 +430,13 @@ function Service() {
                     className="service_item"
                     style={{
                       backgroundImage:
-                        'url("assets/images/shape/shape_path_1.svg")',
+                        'url("src/assets/images/shape/shape_path_1.svg")',
                     }}
                   >
                     <div className="title_wrap">
                       <div className="item_icon">
                         <img
-                          src="assets/images/icon/icon_pet_taxi.svg"
+                          src="src/assets/images/icon/icon_pet_taxi.svg"
                           alt="Pet Taxi"
                         />
                       </div>
@@ -455,7 +455,7 @@ function Service() {
                     </a>
                     <div className="decoration_image">
                       <img
-                        src="assets/images/shape/shape_paws.svg"
+                        src="src/assets/images/shape/shape_paws.svg"
                         alt="Pet Paws"
                       />
                     </div>
@@ -466,13 +466,13 @@ function Service() {
                     className="service_item"
                     style={{
                       backgroundImage:
-                        'url("assets/images/shape/shape_path_1.svg")',
+                        'url("src/assets/images/shape/shape_path_1.svg")',
                     }}
                   >
                     <div className="title_wrap">
                       <div className="item_icon">
                         <img
-                          src="assets/images/icon/icon_pet_health.svg"
+                          src="src/assets/images/icon/icon_pet_health.svg"
                           alt="Pet Health & Wellness"
                         />
                       </div>
@@ -491,7 +491,7 @@ function Service() {
                     </a>
                     <div className="decoration_image">
                       <img
-                        src="assets/images/shape/shape_paws.svg"
+                        src="src/assets/images/shape/shape_paws.svg"
                         alt="Pet Paws"
                       />
                     </div>
@@ -502,13 +502,13 @@ function Service() {
                     className="service_item"
                     style={{
                       backgroundImage:
-                        'url("assets/images/shape/shape_path_1.svg")',
+                        'url("src/assets/images/shape/shape_path_1.svg")',
                     }}
                   >
                     <div className="title_wrap">
                       <div className="item_icon">
                         <img
-                          src="assets/images/icon/icon_pet_hotel.svg"
+                          src="src/assets/images/icon/icon_pet_hotel.svg"
                           alt="Pet Hotel"
                         />
                       </div>
@@ -527,7 +527,7 @@ function Service() {
                     </a>
                     <div className="decoration_image">
                       <img
-                        src="assets/images/shape/shape_paws.svg"
+                        src="src/assets/images/shape/shape_paws.svg"
                         alt="Pet Paws"
                       />
                     </div>
@@ -539,7 +539,7 @@ function Service() {
           <section
             className="feature_service decoration_wrap"
             style={{
-              backgroundImage: 'url("assets/images/background/shape_bg_2.png")',
+              backgroundImage: 'url("src/assets/images/background/shape_bg_2.png")',
             }}
           >
             <div className="container">
@@ -548,13 +548,13 @@ function Service() {
                   <div className="feature_image">
                     <div className="image_wrap">
                       <img
-                        src="assets/images/feature/feature_img_1.jpg"
+                        src="src/assets/images/feature/feature_img_1.jpg"
                         alt="Pet Grooming Service Image"
                       />
                     </div>
                     <div className="shape_image_1">
                       <img
-                        src="assets/images/shape/shape_butterfly.svg"
+                        src="src/assets/images/shape/shape_butterfly.svg"
                         alt="Butterfly Shape"
                       />
                     </div>
@@ -592,19 +592,19 @@ function Service() {
             </div>
             <div className="decoration_item shape_image_2">
               <img
-                src="assets/images/shape/shape_group_1.svg"
+                src="src/assets/images/shape/shape_group_1.svg"
                 alt="Pet Tools Box"
               />
             </div>
             <div className="decoration_item decoration_image_1">
               <img
-                src="assets/images/feature/feature_img_2.jpg"
+                src="src/assets/images/feature/feature_img_2.jpg"
                 alt="Pet Grooming Service Image"
               />
             </div>
             <div className="decoration_item decoration_image_2">
               <img
-                src="assets/images/feature/feature_img_3.jpg"
+                src="src/assets/images/feature/feature_img_3.jpg"
                 alt="Pet Grooming Service Image"
               />
             </div>
@@ -613,7 +613,7 @@ function Service() {
             className="service_section section_space_lg"
             style={{
               backgroundImage:
-                'url("assets/images/overlay/shapes_overlay_6.svg")',
+                'url("src/assets/images/overlay/shapes_overlay_6.svg")',
             }}
           >
             <div className="container">
@@ -692,7 +692,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_1.jpg"
+                                src="src/assets/images/service/service_img_1.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -718,7 +718,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_2.jpg"
+                                src="src/assets/images/service/service_img_2.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -744,7 +744,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_3.jpg"
+                                src="src/assets/images/service/service_img_3.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -774,7 +774,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_4.jpg"
+                                src="src/assets/images/service/service_img_4.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -800,7 +800,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_5.jpg"
+                                src="src/assets/images/service/service_img_5.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -827,7 +827,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_6.jpg"
+                                src="src/assets/images/service/service_img_6.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -866,7 +866,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_1.jpg"
+                                src="src/assets/images/service/service_img_1.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -892,7 +892,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_2.jpg"
+                                src="src/assets/images/service/service_img_2.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -918,7 +918,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_3.jpg"
+                                src="src/assets/images/service/service_img_3.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -948,7 +948,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_4.jpg"
+                                src="src/assets/images/service/service_img_4.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -974,7 +974,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_5.jpg"
+                                src="src/assets/images/service/service_img_5.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1001,7 +1001,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_6.jpg"
+                                src="src/assets/images/service/service_img_6.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1040,7 +1040,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_1.jpg"
+                                src="src/assets/images/service/service_img_1.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1066,7 +1066,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_2.jpg"
+                                src="src/assets/images/service/service_img_2.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1092,7 +1092,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_3.jpg"
+                                src="src/assets/images/service/service_img_3.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1122,7 +1122,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_4.jpg"
+                                src="src/assets/images/service/service_img_4.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1148,7 +1148,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_5.jpg"
+                                src="src/assets/images/service/service_img_5.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1175,7 +1175,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_6.jpg"
+                                src="src/assets/images/service/service_img_6.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1214,7 +1214,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_1.jpg"
+                                src="src/assets/images/service/service_img_1.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1240,7 +1240,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_2.jpg"
+                                src="src/assets/images/service/service_img_2.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1266,7 +1266,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_3.jpg"
+                                src="src/assets/images/service/service_img_3.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1296,7 +1296,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_4.jpg"
+                                src="src/assets/images/service/service_img_4.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1322,7 +1322,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_5.jpg"
+                                src="src/assets/images/service/service_img_5.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1349,7 +1349,7 @@ function Service() {
                           <div className="service_price_item">
                             <div className="item_image">
                               <img
-                                src="assets/images/service/service_img_6.jpg"
+                                src="src/assets/images/service/service_img_6.jpg"
                                 alt="Pet Care Service"
                               />
                             </div>
@@ -1384,7 +1384,7 @@ function Service() {
           <section
             className="team_section bg_gray section_space_lg"
             style={{
-              backgroundImage: 'url("assets/images/shape/shape_paws_bg_2.svg")',
+              backgroundImage: 'url("src/assets/images/shape/shape_paws_bg_2.svg")',
             }}
           >
             <div className="container">
@@ -1399,7 +1399,7 @@ function Service() {
                   <div className="team_item text-center">
                     <div className="item_image">
                       <img
-                        src="assets/images/team/team_img_1.png"
+                        src="src/assets/images/team/team_img_1.png"
                         alt="Team Image"
                       />
                     </div>
@@ -1432,7 +1432,7 @@ function Service() {
                   <div className="team_item text-center">
                     <div className="item_image">
                       <img
-                        src="assets/images/team/team_img_2.png"
+                        src="src/assets/images/team/team_img_2.png"
                         alt="Team Image"
                       />
                     </div>
@@ -1465,7 +1465,7 @@ function Service() {
                   <div className="team_item text-center">
                     <div className="item_image">
                       <img
-                        src="assets/images/team/team_img_3.png"
+                        src="src/assets/images/team/team_img_3.png"
                         alt="Team Image"
                       />
                     </div>
@@ -1498,7 +1498,7 @@ function Service() {
                   <div className="team_item text-center">
                     <div className="item_image">
                       <img
-                        src="assets/images/team/team_img_4.png"
+                        src="src/assets/images/team/team_img_4.png"
                         alt="Team Image"
                       />
                     </div>
@@ -1544,7 +1544,7 @@ function Service() {
                     <div className="gallery_item">
                       <div className="item_image">
                         <img
-                          src="assets/images/gallery/gallery_img_7.jpg"
+                          src="src/assets/images/gallery/gallery_img_7.jpg"
                           alt="Pet Image"
                         />
                       </div>
@@ -1562,7 +1562,7 @@ function Service() {
                         <div className="gallery_item">
                           <div className="item_image">
                             <img
-                              src="assets/images/gallery/gallery_img_8.jpg"
+                              src="src/assets/images/gallery/gallery_img_8.jpg"
                               alt="Pet Image"
                             />
                           </div>
@@ -1578,7 +1578,7 @@ function Service() {
                         <div className="gallery_item">
                           <div className="item_image">
                             <img
-                              src="assets/images/gallery/gallery_img_9.jpg"
+                              src="src/assets/images/gallery/gallery_img_9.jpg"
                               alt="Pet Image"
                             />
                           </div>
@@ -1594,7 +1594,7 @@ function Service() {
                         <div className="gallery_item">
                           <div className="item_image">
                             <img
-                              src="assets/images/gallery/gallery_img_10.jpg"
+                              src="src/assets/images/gallery/gallery_img_10.jpg"
                               alt="Pet Image"
                             />
                           </div>
@@ -1612,7 +1612,7 @@ function Service() {
                     <div className="gallery_item">
                       <div className="item_image">
                         <img
-                          src="assets/images/gallery/gallery_img_11.jpg"
+                          src="src/assets/images/gallery/gallery_img_11.jpg"
                           alt="Pet Image"
                         />
                       </div>
@@ -1628,7 +1628,7 @@ function Service() {
                     <div className="gallery_item">
                       <div className="item_image">
                         <img
-                          src="assets/images/gallery/gallery_img_7.jpg"
+                          src="src/assets/images/gallery/gallery_img_7.jpg"
                           alt="Pet Image"
                         />
                       </div>
@@ -1646,7 +1646,7 @@ function Service() {
                         <div className="gallery_item">
                           <div className="item_image">
                             <img
-                              src="assets/images/gallery/gallery_img_8.jpg"
+                              src="src/assets/images/gallery/gallery_img_8.jpg"
                               alt="Pet Image"
                             />
                           </div>
@@ -1662,7 +1662,7 @@ function Service() {
                         <div className="gallery_item">
                           <div className="item_image">
                             <img
-                              src="assets/images/gallery/gallery_img_9.jpg"
+                              src="src/assets/images/gallery/gallery_img_9.jpg"
                               alt="Pet Image"
                             />
                           </div>
@@ -1678,7 +1678,7 @@ function Service() {
                         <div className="gallery_item">
                           <div className="item_image">
                             <img
-                              src="assets/images/gallery/gallery_img_10.jpg"
+                              src="src/assets/images/gallery/gallery_img_10.jpg"
                               alt="Pet Image"
                             />
                           </div>
@@ -1696,7 +1696,7 @@ function Service() {
                     <div className="gallery_item">
                       <div className="item_image">
                         <img
-                          src="assets/images/gallery/gallery_img_11.jpg"
+                          src="src/assets/images/gallery/gallery_img_11.jpg"
                           alt="Pet Image"
                         />
                       </div>
@@ -1731,7 +1731,7 @@ function Service() {
             </div>
             <div className="decoration_item shape_dot_2">
               <img
-                src="assets/images/shape/shape_dot_group_4.svg"
+                src="src/assets/images/shape/shape_dot_group_4.svg"
                 alt="Colorful Dots"
               />
             </div>
@@ -1747,7 +1747,7 @@ function Service() {
                       <a href="Homepage">
                         <img
                           className="logo_before"
-                          src="assets/images/logo/logo.png"
+                          src="src/assets/images/logo/logo.png"
                           alt="Petpia Logo"
                         />
                       </a>
