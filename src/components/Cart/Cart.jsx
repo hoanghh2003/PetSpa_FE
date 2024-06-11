@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import "../../assets/js/email-decode.min.js";
 import "../../assets/js/jquery.min.js";
 import "../../assets/js/popper.min.js";
@@ -22,8 +24,8 @@ function Cart() {
         />
         <meta httpEquiv="x-ua-compatible" content="ie=edge" />
         <title>Shopping Cart - Petpia – Pet Care Service Template</title>
-        <link rel="shortcut icon" href="as/images/logo/favourite_icon.png" />
-        <link rel="stylesheet" type="text/css" href="as/css/all.css" />
+        <link rel="shortcut icon" href="src/assets/images/logo/favourite_icon.png" />
+        <link rel="stylesheet" type="text/css" href="src/assets/css/all.css" />
         <div className="body_wrap">
           <div className="backtotop">
             <a href="#" className="scroll">
@@ -51,7 +53,7 @@ function Cart() {
                   <a href="Homepage">
                     <img
                       className="logo_before"
-                      src="as/images/logo/logo.png"
+                      src="src/assets/images/logo/logo.png"
                       alt="Petpia Logo"
                     />
                   </a>
@@ -213,7 +215,7 @@ function Cart() {
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      <i className="fas fa-shopping-cart" />{" "}
+                       <FontAwesomeIcon icon={faCartShopping} />{" "}
                       <small className="cart_counter">2</small>{" "}
                       <span>item</span>
                     </button>
@@ -225,7 +227,7 @@ function Cart() {
                         <li>
                           <a className="item_image" href="shop_details">
                             <img
-                              src="as/images/cart/cart_img_1.jpg"
+                              src="src/assets/images/cart/cart_img_1.jpg"
                               alt="Pet Care Service"
                             />
                           </a>
@@ -244,7 +246,7 @@ function Cart() {
                         <li>
                           <a className="item_image" href="shop_details">
                             <img
-                              src="as/images/cart/cart_img_2.jpg"
+                              src="src/assets/images/cart/cart_img_2.jpg"
                               alt="Pet Care Service"
                             />
                           </a>
@@ -314,7 +316,7 @@ function Cart() {
                         <div className="small_product_item">
                           <div className="item_image">
                             <img
-                              src="as/images/shop/product_img_5.jpg"
+                              src="src/assets/images/shop/product_img_5.jpg"
                               alt="Pet Accessories"
                             />
                           </div>
@@ -372,7 +374,7 @@ function Cart() {
                         <div className="small_product_item">
                           <div className="item_image">
                             <img
-                              src="as/images/shop/product_img_28.jpg"
+                              src="src/assets/images/shop/product_img_28.jpg"
                               alt="Pet Accessories"
                             />
                           </div>
@@ -503,7 +505,7 @@ function Cart() {
                       className="iconbox_item iconbox_default"
                       style={{
                         backgroundImage:
-                          'url("as/images/shape/shape_path_1.svg")',
+                          'url("src/assets/images/shape/shape_path_1.svg")',
                       }}
                     >
                       <div className="item_icon">
@@ -521,7 +523,7 @@ function Cart() {
                       className="iconbox_item iconbox_default"
                       style={{
                         backgroundImage:
-                          'url("as/images/shape/shape_path_1.svg")',
+                          'url("src/assets/images/shape/shape_path_1.svg")',
                       }}
                     >
                       <div className="item_icon">
@@ -539,7 +541,7 @@ function Cart() {
                       className="iconbox_item iconbox_default"
                       style={{
                         backgroundImage:
-                          'url("as/images/shape/shape_path_1.svg")',
+                          'url("src/assets/images/shape/shape_path_1.svg")',
                       }}
                     >
                       <div className="item_icon">
@@ -557,7 +559,7 @@ function Cart() {
                       className="iconbox_item iconbox_default"
                       style={{
                         backgroundImage:
-                          'url("as/images/shape/shape_path_1.svg")',
+                          'url("src/assets/images/shape/shape_path_1.svg")',
                       }}
                     >
                       <div className="item_icon">
@@ -584,7 +586,7 @@ function Cart() {
                         <a href="Homepage">
                           <img
                             className="logo_before"
-                            src="as/images/logo/logo.png"
+                            src="src/assets/images/logo/logo.png"
                             alt="Petpia Logo"
                           />
                         </a>

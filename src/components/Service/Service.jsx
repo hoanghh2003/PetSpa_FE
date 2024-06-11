@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import { faPaw } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import "../../assets/js/email-decode.min.js";
 import "../../assets/js/jquery.min.js";
 import "../../assets/js/popper.min.js";
@@ -215,7 +219,7 @@ function Service() {
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    <i className="fas fa-shopping-cart" />{" "}
+                     <FontAwesomeIcon icon={faCartShopping} />{" "}
                     <small className="cart_counter">2</small> <span>item</span>
                   </button>
                   <div
@@ -343,7 +347,7 @@ function Service() {
                     </div>
                     <a className="btn_unfill" href="service_details">
                       <span>Get Service</span>{" "}
-                      <i className="far fa-long-arrow-right" />
+                      <FontAwesomeIcon icon={faArrowRight} />
                     </a>
                     <div className="decoration_image">
                       <img
@@ -379,7 +383,7 @@ function Service() {
                     </div>
                     <a className="btn_unfill" href="service_details">
                       <span>Get Service</span>{" "}
-                      <i className="far fa-long-arrow-right" />
+                      <FontAwesomeIcon icon={faArrowRight} />
                     </a>
                     <div className="decoration_image">
                       <img
@@ -415,7 +419,7 @@ function Service() {
                     </div>
                     <a className="btn_unfill" href="service_details">
                       <span>Get Service</span>{" "}
-                      <i className="far fa-long-arrow-right" />
+                      <FontAwesomeIcon icon={faArrowRight} />
                     </a>
                     <div className="decoration_image">
                       <img
@@ -451,7 +455,7 @@ function Service() {
                     </div>
                     <a className="btn_unfill" href="service_details">
                       <span>Get Service</span>{" "}
-                      <i className="far fa-long-arrow-right" />
+                      <FontAwesomeIcon icon={faArrowRight} />
                     </a>
                     <div className="decoration_image">
                       <img
@@ -487,7 +491,7 @@ function Service() {
                     </div>
                     <a className="btn_unfill" href="service_details">
                       <span>Get Service</span>{" "}
-                      <i className="far fa-long-arrow-right" />
+                      <FontAwesomeIcon icon={faArrowRight} />
                     </a>
                     <div className="decoration_image">
                       <img
@@ -523,7 +527,7 @@ function Service() {
                     </div>
                     <a className="btn_unfill" href="service_details">
                       <span>Get Service</span>{" "}
-                      <i className="far fa-long-arrow-right" />
+                      <FontAwesomeIcon icon={faArrowRight} />
                     </a>
                     <div className="decoration_image">
                       <img
@@ -584,7 +588,7 @@ function Service() {
                       </li>
                     </ul>
                     <a className="btn btn_primary" href="service_details">
-                      <i className="fas fa-paw" /> Get Service
+                    <FontAwesomeIcon icon={faPaw} />{" "} Get Service
                     </a>
                   </div>
                 </div>

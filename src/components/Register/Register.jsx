@@ -95,7 +95,7 @@ const Register = () => {
       <div className="relative w-1/2 h-full flex flex-col">
         <div className="absolute top-[20%] left-[10%] flex flex-col">
           <h1 className="text-4x1 text-[#1e1a1a] font-extrabold m--5">
-            Welcome to Pet Spa!!!
+          Pet Spa helps you care for and relax your pets, creating the best conditions for them to showcase optimal beauty and health.
           </h1>
         </div>
 

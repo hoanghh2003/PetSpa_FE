@@ -78,10 +78,15 @@ const LoginPage = () => {
   return (
     <div className="w-700 h-screen flex items-start my-1 ">
       <div className="relative w-1/2 h-full flex flex-col">
-        <div className="absolute top-[20%] left-[10%] flex flex-col">
+        <div className="absolute top-[10%] left-[10%] flex flex-col">
           <h1 className="text-4x1 text-[#1e1a1a] font-extrabold m--5">
-            Welcome to Pet Spa!!!
-          </h1>
+          <img
+                    className="logo_before"
+                    src="src/assets/images/logo/logo.png"
+                    alt="Petpia Logo"
+          />
+            Pet Spa helps you care for and relax your pets, creating the best conditions for them to showcase optimal beauty and health.
+        </h1>
         </div>
 
         <img

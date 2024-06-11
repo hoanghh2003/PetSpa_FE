@@ -1,3 +1,19 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import { faPaw } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import "../../assets/js/email-decode.min.js";
+import "../../assets/js/jquery.min.js";
+import "../../assets/js/popper.min.js";
+import "../../assets/js/bootstrap.min.js";
+import "../../assets/js/bootstrap-dropdown-ml-hack.js";
+import "../../assets/js/slick.min.js";
+import "../../assets/js/magnific-popup.min.js";
+import "../../assets/js/nice-select.min.js";
+import "../../assets/js/jquery-ui.js";
+import "../../assets/js/vanilla-calendar.min.js";
+import "../../assets/js/countdown.js";
+import "../../assets/js/main.js";
 
 function HomePage() {
   return (
@@ -10,7 +26,10 @@ function HomePage() {
       />
       <meta httpEquiv="x-ua-compatible" content="ie=edge" />
       <title>Home V1 - Petpia – Pet Care Service Template</title>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></link>
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      ></link>
       <link
         rel="shortcut icon"
         href="src/assets/images/logo/favourite_icon.png"
@@ -29,7 +48,7 @@ function HomePage() {
                 <a href="HomePage">
                   <img
                     className="logo_before"
-                    src="images/logo/logo.png"
+                    src="src/assets/images/logo/logo.png"
                     alt="Petpia Logo"
                   />
                 </a>
@@ -189,8 +208,8 @@ function HomePage() {
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    <i className="fas fa-shopping-cart" />
-                    <small className="cart_counter">2</small>
+                    <FontAwesomeIcon icon={faCartShopping} />{" "}
+                    <small className="cart_counter">2</small>{" "}
                     <span>item</span>
                   </button>
                   <div
@@ -278,7 +297,7 @@ function HomePage() {
                   lorem ipsum dolor
                 </p>
                 <a className="btn btn_primary" href="service">
-                  <i className="fas fa-paw" />
+                <FontAwesomeIcon icon={faPaw} />{" "}
                   Our Service
                 </a>
                 <div className="banner_services_wrap row">
@@ -464,8 +483,8 @@ function HomePage() {
                       <span>From $15 / hour</span>
                     </div>
                     <a className="btn_unfill" href="service_details">
-                      <span>Get Service</span>
-                      <i className="far fa-long-arrow-right" />
+                      <span>Get Service</span>{" "}
+                      <FontAwesomeIcon icon={faArrowRight} />{" "}
                     </a>
                     <div className="decoration_image">
                       <img
@@ -500,8 +519,8 @@ function HomePage() {
                       <span>From $39 / complex</span>
                     </div>
                     <a className="btn_unfill" href="service_details">
-                      <span>Get Service</span>
-                      <i className="far fa-long-arrow-right" />
+                      <span>Get Service</span>{" "}
+                      <FontAwesomeIcon icon={faArrowRight} />{" "}
                     </a>
                     <div className="decoration_image">
                       <img
@@ -536,8 +555,8 @@ function HomePage() {
                       <span>From $27 / hour</span>
                     </div>
                     <a className="btn_unfill" href="service_details">
-                      <span>Get Service</span>
-                      <i className="far fa-long-arrow-right" />
+                      <span>Get Service</span>{" "}
+                      <FontAwesomeIcon icon={faArrowRight} />{" "}
                     </a>
                     <div className="decoration_image">
                       <img
@@ -572,8 +591,8 @@ function HomePage() {
                       <span>From $22 / trip</span>
                     </div>
                     <a className="btn_unfill" href="service_details">
-                      <span>Get Service</span>
-                      <i className="far fa-long-arrow-right" />
+                      <span>Get Service</span>{" "}
+                      <FontAwesomeIcon icon={faArrowRight} />
                     </a>
                     <div className="decoration_image">
                       <img
@@ -608,8 +627,8 @@ function HomePage() {
                       <span>From $39/ visit</span>
                     </div>
                     <a className="btn_unfill" href="service_details">
-                      <span>Get Service</span>
-                      <i className="far fa-long-arrow-right" />
+                      <span>Get Service</span>{" "}
+                      <FontAwesomeIcon icon={faArrowRight} />{" "}
                     </a>
                     <div className="decoration_image">
                       <img
@@ -644,8 +663,8 @@ function HomePage() {
                       <span>From $15 / night</span>
                     </div>
                     <a className="btn_unfill" href="service_details">
-                      <span>Get Service</span>
-                      <i className="far fa-long-arrow-right" />
+                      <span>Get Service</span>{" "}
+                      <FontAwesomeIcon icon={faArrowRight} />{" "}
                     </a>
                     <div className="decoration_image">
                       <img

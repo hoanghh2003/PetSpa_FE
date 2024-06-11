@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import { faPaw } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import "../../assets/js/email-decode.min.js";
 import "../../assets/js/jquery.min.js";
 import "../../assets/js/popper.min.js";
@@ -22,7 +26,7 @@ function Service_Details() {
         />
         <meta httpEquiv="x-ua-compatible" content="ie=edge" />
         <title>Service Details - Petpia – Pet Care Service Template</title>
-        <link rel="shortcut icon" href="as/images/logo/favourite_icon.png" />
+        <link rel="shortcut icon" href="src/assets/images/logo/favourite_icon.png" />
         <link rel="stylesheet" href="src/assets/css/all.css" />
         <div className="body_wrap">
           <div className="backtotop">
@@ -50,7 +54,7 @@ function Service_Details() {
                   <a href="Homepage">
                     <img
                       className="logo_before"
-                      src="as/images/logo/logo.png"
+                      src="src/assets/images/logo/logo.png"
                       alt="Petpia Logo"
                     />
                   </a>
@@ -212,7 +216,7 @@ function Service_Details() {
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      <i className="fas fa-shopping-cart" />{" "}
+                      <FontAwesomeIcon icon={faCartShopping} />{" "}
                       <small className="cart_counter">2</small>{" "}
                       <span>item</span>
                     </button>
@@ -224,7 +228,7 @@ function Service_Details() {
                         <li>
                           <a className="item_image" href="shop_details">
                             <img
-                              src="as/images/cart/cart_img_1.jpg"
+                              src="src/assets/images/cart/cart_img_1.jpg"
                               alt="Pet Care Service"
                             />
                           </a>
@@ -243,7 +247,7 @@ function Service_Details() {
                         <li>
                           <a className="item_image" href="shop_details">
                             <img
-                              src="as/images/cart/cart_img_2.jpg"
+                              src="src/assets/images/cart/cart_img_2.jpg"
                               alt="Pet Care Service"
                             />
                           </a>
@@ -295,7 +299,7 @@ function Service_Details() {
               </div>
               <div className="breadcrumb_img">
                 <img
-                  src="as/images/breadcrumb/breadcrumb_img_3.png"
+                  src="src/assets/images/breadcrumb/breadcrumb_img_3.png"
                   alt="Pet Care Service"
                 />
               </div>
@@ -373,10 +377,10 @@ function Service_Details() {
                         <div className="col carousel_item">
                           <a
                             className="popup_image"
-                            href="as/images/service/service_img_7.jpg"
+                            href="src/assets/images/service/service_img_7.jpg"
                           >
                             <img
-                              src="as/images/service/service_img_7.jpg"
+                              src="src/assets/images/service/service_img_7.jpg"
                               alt="Pet Service"
                             />
                           </a>
@@ -384,10 +388,10 @@ function Service_Details() {
                         <div className="col carousel_item">
                           <a
                             className="popup_image"
-                            href="as/images/service/service_img_8.jpg"
+                            href="src/assets/images/service/service_img_8.jpg"
                           >
                             <img
-                              src="as/images/service/service_img_8.jpg"
+                              src="src/assets/images/service/service_img_8.jpg"
                               alt="Pet Service"
                             />
                           </a>
@@ -395,10 +399,10 @@ function Service_Details() {
                         <div className="col carousel_item">
                           <a
                             className="popup_image"
-                            href="as/images/service/service_img_9.jpg"
+                            href="src/assets/images/service/service_img_9.jpg"
                           >
                             <img
-                              src="as/images/service/service_img_9.jpg"
+                              src="src/assets/images/service/service_img_9.jpg"
                               alt="Pet Service"
                             />
                           </a>
@@ -406,10 +410,10 @@ function Service_Details() {
                         <div className="col carousel_item">
                           <a
                             className="popup_image"
-                            href="as/images/service/service_img_7.jpg"
+                            href="src/assets/images/service/service_img_7.jpg"
                           >
                             <img
-                              src="as/images/service/service_img_7.jpg"
+                              src="src/assets/images/service/service_img_7.jpg"
                               alt="Pet Service"
                             />
                           </a>
@@ -417,10 +421,10 @@ function Service_Details() {
                         <div className="col carousel_item">
                           <a
                             className="popup_image"
-                            href="as/images/service/service_img_8.jpg"
+                            href="src/assets/images/service/service_img_8.jpg"
                           >
                             <img
-                              src="as/images/service/service_img_8.jpg"
+                              src="src/assets/images/service/service_img_8.jpg"
                               alt="Pet Service"
                             />
                           </a>
@@ -428,10 +432,10 @@ function Service_Details() {
                         <div className="col carousel_item">
                           <a
                             className="popup_image"
-                            href="as/images/service/service_img_9.jpg"
+                            href="src/assets/images/service/service_img_9.jpg"
                           >
                             <img
-                              src="as/images/service/service_img_9.jpg"
+                              src="src/assets/images/service/service_img_9.jpg"
                               alt="Pet Service"
                             />
                           </a>
@@ -445,7 +449,7 @@ function Service_Details() {
             <section
               className="service_section bg_gray section_space_lg"
               style={{
-                backgroundImage: 'url("as/images/shape/shape_paws_bg_2.svg")',
+                backgroundImage: 'url("src/assets/images/shape/shape_paws_bg_2.svg")',
               }}
             >
               <div className="container">
@@ -470,7 +474,7 @@ function Service_Details() {
                       <div className="service_price_item">
                         <div className="item_image">
                           <img
-                            src="as/images/service/service_img_1.jpg"
+                            src="src/assets/images/service/service_img_1.jpg"
                             alt="Pet Care Service"
                           />
                         </div>
@@ -496,7 +500,7 @@ function Service_Details() {
                       <div className="service_price_item">
                         <div className="item_image">
                           <img
-                            src="as/images/service/service_img_2.jpg"
+                            src="src/assets/images/service/service_img_2.jpg"
                             alt="Pet Care Service"
                           />
                         </div>
@@ -522,7 +526,7 @@ function Service_Details() {
                       <div className="service_price_item">
                         <div className="item_image">
                           <img
-                            src="as/images/service/service_img_3.jpg"
+                            src="src/assets/images/service/service_img_3.jpg"
                             alt="Pet Care Service"
                           />
                         </div>
@@ -552,7 +556,7 @@ function Service_Details() {
                       <div className="service_price_item">
                         <div className="item_image">
                           <img
-                            src="as/images/service/service_img_4.jpg"
+                            src="src/assets/images/service/service_img_4.jpg"
                             alt="Pet Care Service"
                           />
                         </div>
@@ -578,7 +582,7 @@ function Service_Details() {
                       <div className="service_price_item">
                         <div className="item_image">
                           <img
-                            src="as/images/service/service_img_5.jpg"
+                            src="src/assets/images/service/service_img_5.jpg"
                             alt="Pet Care Service"
                           />
                         </div>
@@ -605,7 +609,7 @@ function Service_Details() {
                       <div className="service_price_item">
                         <div className="item_image">
                           <img
-                            src="as/images/service/service_img_6.jpg"
+                            src="src/assets/images/service/service_img_6.jpg"
                             alt="Pet Care Service"
                           />
                         </div>
@@ -670,31 +674,31 @@ function Service_Details() {
                     <div className="about_image_1">
                       <div className="image_1 p-0">
                         <img
-                          src="as/images/about/about_img_7.jpg"
+                          src="src/assets/images/about/about_img_7.jpg"
                           alt="Pet Doctor"
                         />
                       </div>
                       <div className="image_2">
                         <img
-                          src="as/images/about/about_img_8.jpg"
+                          src="src/assets/images/about/about_img_8.jpg"
                           alt="Cat Image"
                         />
                       </div>
                       <div className="image_3">
                         <img
-                          src="as/images/about/about_img_9.jpg"
+                          src="src/assets/images/about/about_img_9.jpg"
                           alt="Dog Image"
                         />
                       </div>
                       <div className="shape_img_1">
                         <img
-                          src="as/images/shape/shape_circle_1.svg"
+                          src="src/assets/images/shape/shape_circle_1.svg"
                           alt="Yellow Circle"
                         />
                       </div>
                       <div className="shape_img_2">
                         <img
-                          src="as/images/shape/shape_circle_3.svg"
+                          src="src/assets/images/shape/shape_circle_3.svg"
                           alt="Yellow Circle"
                         />
                       </div>
@@ -704,7 +708,7 @@ function Service_Details() {
               </div>
               <div className="decoration_item shape_dot_1">
                 <img
-                  src="as/images/shape/shape_dot_group_1.svg"
+                  src="src/assets/images/shape/shape_dot_group_1.svg"
                   alt="Colorful Dots"
                 />
               </div>
@@ -728,7 +732,7 @@ function Service_Details() {
                       <div className="testimonial_admin">
                         <div className="admin_thumbnail">
                           <img
-                            src="as/images/meta/thumbnail_img_1.png"
+                            src="src/assets/images/meta/thumbnail_img_1.png"
                             alt="Pet Thumbnail Image"
                           />
                         </div>
@@ -770,7 +774,7 @@ function Service_Details() {
                       <div className="testimonial_admin">
                         <div className="admin_thumbnail">
                           <img
-                            src="as/images/meta/thumbnail_img_2.png"
+                            src="src/assets/images/meta/thumbnail_img_2.png"
                             alt="Pet Thumbnail Image"
                           />
                         </div>
@@ -812,7 +816,7 @@ function Service_Details() {
                       <div className="testimonial_admin">
                         <div className="admin_thumbnail">
                           <img
-                            src="as/images/meta/thumbnail_img_3.png"
+                            src="src/assets/images/meta/thumbnail_img_3.png"
                             alt="Pet Thumbnail Image"
                           />
                         </div>
@@ -855,7 +859,7 @@ function Service_Details() {
                       <div className="testimonial_admin">
                         <div className="admin_thumbnail">
                           <img
-                            src="as/images/meta/thumbnail_img_4.png"
+                            src="src/assets/images/meta/thumbnail_img_4.png"
                             alt="Pet Thumbnail Image"
                           />
                         </div>
@@ -898,7 +902,7 @@ function Service_Details() {
                       <div className="testimonial_admin">
                         <div className="admin_thumbnail">
                           <img
-                            src="as/images/meta/thumbnail_img_1.png"
+                            src="src/assets/images/meta/thumbnail_img_1.png"
                             alt="Pet Thumbnail Image"
                           />
                         </div>
@@ -940,7 +944,7 @@ function Service_Details() {
                       <div className="testimonial_admin">
                         <div className="admin_thumbnail">
                           <img
-                            src="as/images/meta/thumbnail_img_2.png"
+                            src="src/assets/images/meta/thumbnail_img_2.png"
                             alt="Pet Thumbnail Image"
                           />
                         </div>
@@ -982,7 +986,7 @@ function Service_Details() {
                       <div className="testimonial_admin">
                         <div className="admin_thumbnail">
                           <img
-                            src="as/images/meta/thumbnail_img_3.png"
+                            src="src/assets/images/meta/thumbnail_img_3.png"
                             alt="Pet Thumbnail Image"
                           />
                         </div>
@@ -1025,7 +1029,7 @@ function Service_Details() {
                       <div className="testimonial_admin">
                         <div className="admin_thumbnail">
                           <img
-                            src="as/images/meta/thumbnail_img_4.png"
+                            src="src/assets/images/meta/thumbnail_img_4.png"
                             alt="Pet Thumbnail Image"
                           />
                         </div>
@@ -1070,7 +1074,7 @@ function Service_Details() {
                       <i className="far fa-arrow-left" />
                     </button>{" "}
                     <button type="button" className="cc3c_right_arrow">
-                      <i className="far fa-arrow-right" />
+                    <FontAwesomeIcon icon={faArrowRight} />
                     </button>
                   </div>
                 </div>
@@ -1082,7 +1086,7 @@ function Service_Details() {
                   <div className="col col-lg-5 d-none d-lg-block">
                     <div className="getservice_image">
                       <img
-                        src="as/images/about/about_img_10.png"
+                        src="src/assets/images/about/about_img_10.png"
                         alt="Pet Care Service"
                       />
                     </div>
@@ -1178,7 +1182,7 @@ function Service_Details() {
                               />
                             </div>
                             <button type="submit" className="btn btn_primary">
-                              <i className="fas fa-paw" /> Get Services
+                            <FontAwesomeIcon icon={faPaw} />{" "} Get Services
                             </button>
                           </div>
                         </div>
@@ -1199,13 +1203,13 @@ function Service_Details() {
                       className="service_item"
                       style={{
                         backgroundImage:
-                          'url("as/images/shape/shape_path_1.svg")',
+                          'url("src/assets/images/shape/shape_path_1.svg")',
                       }}
                     >
                       <div className="title_wrap">
                         <div className="item_icon">
                           <img
-                            src="as/images/icon/icon_pet_training.svg"
+                            src="src/assets/images/icon/icon_pet_training.svg"
                             alt="Pet Training"
                           />
                         </div>
@@ -1220,11 +1224,11 @@ function Service_Details() {
                       </div>
                       <a className="btn_unfill" href="service_details">
                         <span>Get Service</span>{" "}
-                        <i className="far fa-long-arrow-right" />
+                        <FontAwesomeIcon icon={faArrowRight} />
                       </a>
                       <div className="decoration_image">
                         <img
-                          src="as/images/shape/shape_paws.svg"
+                          src="src/assets/images/shape/shape_paws.svg"
                           alt="Pet Paws"
                         />
                       </div>
@@ -1235,13 +1239,13 @@ function Service_Details() {
                       className="service_item"
                       style={{
                         backgroundImage:
-                          'url("as/images/shape/shape_path_1.svg")',
+                          'url("src/assets/images/shape/shape_path_1.svg")',
                       }}
                     >
                       <div className="title_wrap">
                         <div className="item_icon">
                           <img
-                            src="as/images/icon/icon_pet_grooming.svg"
+                            src="src/assets/images/icon/icon_pet_grooming.svg"
                             alt="Pet Grooming"
                           />
                         </div>
@@ -1256,11 +1260,11 @@ function Service_Details() {
                       </div>
                       <a className="btn_unfill" href="service_details">
                         <span>Get Service</span>{" "}
-                        <i className="far fa-long-arrow-right" />
+                        <FontAwesomeIcon icon={faArrowRight} />
                       </a>
                       <div className="decoration_image">
                         <img
-                          src="as/images/shape/shape_paws.svg"
+                          src="src/assets/images/shape/shape_paws.svg"
                           alt="Pet Paws"
                         />
                       </div>
@@ -1271,13 +1275,13 @@ function Service_Details() {
                       className="service_item"
                       style={{
                         backgroundImage:
-                          'url("as/images/shape/shape_path_1.svg")',
+                          'url("src/assets/images/shape/shape_path_1.svg")',
                       }}
                     >
                       <div className="title_wrap">
                         <div className="item_icon">
                           <img
-                            src="as/images/icon/icon_pet_walking.svg"
+                            src="src/assets/images/icon/icon_pet_walking.svg"
                             alt="Pet Walking"
                           />
                         </div>
@@ -1294,11 +1298,11 @@ function Service_Details() {
                       </div>
                       <a className="btn_unfill" href="service_details">
                         <span>Get Service</span>{" "}
-                        <i className="far fa-long-arrow-right" />
+                        <FontAwesomeIcon icon={faArrowRight} />
                       </a>
                       <div className="decoration_image">
                         <img
-                          src="as/images/shape/shape_paws.svg"
+                          src="src/assets/images/shape/shape_paws.svg"
                           alt="Pet Paws"
                         />
                       </div>
@@ -1318,7 +1322,7 @@ function Service_Details() {
                         <a href="Homepage">
                           <img
                             className="logo_before"
-                            src="as/images/logo/logo.png"
+                            src="src/assets/images/logo/logo.png"
                             alt="Petpia Logo"
                           />
                         </a>
