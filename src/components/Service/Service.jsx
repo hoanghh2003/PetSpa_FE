@@ -1,6 +1,11 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUp, faCheckCircle, faClock, faPaw } from '@fortawesome/free-solid-svg-icons';
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowUp,
+  faCheckCircle,
+  faClock,
+  faPaw,
+} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import "../../assets/js/email-decode.min.js";
 import "../../assets/js/jquery.min.js";
 import "../../assets/js/popper.min.js";
@@ -13,6 +18,7 @@ import "../../assets/js/jquery-ui.js";
 import "../../assets/js/vanilla-calendar.min.js";
 import "../../assets/js/countdown.js";
 import "../../assets/js/main.js";
+import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
 
 function Service() {
   return (
@@ -40,7 +46,7 @@ function Service() {
       <div className="body_wrap">
         <div className="backtotop">
           <a href="#" className="scroll">
-          <FontAwesomeIcon icon={faArrowUp} />{" "}
+            <FontAwesomeIcon icon={faArrowUp} />{" "}
           </a>
         </div>
         <main>
@@ -306,7 +312,8 @@ function Service() {
           <section
             className="feature_service decoration_wrap"
             style={{
-              backgroundImage: 'url("src/assets/images/background/shape_bg_2.png")',
+              backgroundImage:
+                'url("src/assets/images/background/shape_bg_2.png")',
             }}
           >
             <div className="container">
@@ -351,7 +358,7 @@ function Service() {
                       </li>
                     </ul>
                     <a className="btn btn_primary" href="service_details">
-                    <FontAwesomeIcon icon={faPaw} />{" "} Get Service
+                      <FontAwesomeIcon icon={faPaw} /> Get Service
                     </a>
                   </div>
                 </div>
@@ -466,7 +473,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 15 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  15 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$22.00</span>
@@ -492,7 +503,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 30 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  30 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$29.00</span>
@@ -518,7 +533,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 45 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  45 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$36.00</span>
@@ -548,7 +567,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 29 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  29 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$22.00</span>
@@ -574,8 +597,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 65 Overnight
-                                  Pet Sitting
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  65 Overnight Pet Sitting
                                 </div>
                                 <div className="item_price">
                                   <span>$29.00</span>
@@ -601,8 +627,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 40 Private
-                                  Boarding
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  40 Private Boarding
                                 </div>
                                 <div className="item_price">
                                   <span>$36.00</span>
@@ -640,7 +669,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 15 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  15 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$22.00</span>
@@ -666,7 +699,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 30 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  30 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$29.00</span>
@@ -692,7 +729,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 45 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  45 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$36.00</span>
@@ -722,7 +763,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 29 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  29 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$22.00</span>
@@ -748,8 +793,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 65 Overnight
-                                  Pet Sitting
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  65 Overnight Pet Sitting
                                 </div>
                                 <div className="item_price">
                                   <span>$29.00</span>
@@ -775,8 +823,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 40 Private
-                                  Boarding
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  40 Private Boarding
                                 </div>
                                 <div className="item_price">
                                   <span>$36.00</span>
@@ -814,7 +865,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 15 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  15 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$22.00</span>
@@ -840,7 +895,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 30 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  30 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$29.00</span>
@@ -866,7 +925,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 45 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  45 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$36.00</span>
@@ -896,7 +959,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 29 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  29 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$22.00</span>
@@ -922,8 +989,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 65 Overnight
-                                  Pet Sitting
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  65 Overnight Pet Sitting
                                 </div>
                                 <div className="item_price">
                                   <span>$29.00</span>
@@ -949,8 +1019,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 40 Private
-                                  Boarding
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  40 Private Boarding
                                 </div>
                                 <div className="item_price">
                                   <span>$36.00</span>
@@ -988,7 +1061,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 15 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  15 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$22.00</span>
@@ -1014,7 +1091,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 30 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  30 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$29.00</span>
@@ -1040,7 +1121,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 45 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  45 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$36.00</span>
@@ -1070,7 +1155,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 29 minute visit
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  29 minute visit
                                 </div>
                                 <div className="item_price">
                                   <span>$22.00</span>
@@ -1096,8 +1185,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 65 Overnight
-                                  Pet Sitting
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  65 Overnight Pet Sitting
                                 </div>
                                 <div className="item_price">
                                   <span>$29.00</span>
@@ -1123,8 +1215,11 @@ function Service() {
                             <div className="item_content">
                               <div className="d-flex justify-content-between align-items-center">
                                 <div className="service_time">
-                                   <FontAwesomeIcon icon={faClock} style={{color: "#8161f5",}} />{" "} 40 Private
-                                  Boarding
+                                  <FontAwesomeIcon
+                                    icon={faClock}
+                                    style={{ color: "#8161f5" }}
+                                  />{" "}
+                                  40 Private Boarding
                                 </div>
                                 <div className="item_price">
                                   <span>$36.00</span>
@@ -1148,17 +1243,12 @@ function Service() {
               </div>
             </div>
           </section>
-          <section
-            className="team_section bg_gray section_space_lg"
-            style={{
-              backgroundImage: 'url("src/assets/images/shape/shape_paws_bg_2.svg")',
-            }}
-          >
+          <section className="team_section bg_gray section_space_lg">
             <div className="container">
               <div className="section_title text-center">
                 <h2 className="title_text mb-0">
-                  <span className="sub_title">Pet Care Team</span> Welcome To
-                  Our Family
+                  <span className="sub_title">Pet Care Team</span>
+                  Welcome To Our Family
                 </h2>
               </div>
               <div className="row justify-content-center">
@@ -1171,24 +1261,19 @@ function Service() {
                       />
                     </div>
                     <div className="item_content">
-                      <h3 className="item_title">Cameron Rogers</h3>
+                      <h3 className="item_title">Ha Huy Hoang</h3>
                       <span className="item_designation">
                         President &amp; CEO
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="#!">
-                            <i className="fab fa-facebook-f" />
+                          <a href="https://www.facebook.com/2010.HaHuyHoanglacuaai.2003">
+                          <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
-                          <a href="#!">
-                            <i className="fab fa-instagram" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#!">
-                            <i className="fab fa-twitter" />
+                          <a href="https://www.instagram.com/hardy._.03">
+                          <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
                       </ul>
@@ -1204,24 +1289,19 @@ function Service() {
                       />
                     </div>
                     <div className="item_content">
-                      <h3 className="item_title">Irene Sotelo</h3>
+                      <h3 className="item_title">Le Xuan Phuong Nam</h3>
                       <span className="item_designation">
                         President &amp; CEO
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="#!">
-                            <i className="fab fa-facebook-f" />
+                          <a href="https://www.facebook.com/namtheshy2mai">
+                          <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
-                          <a href="#!">
-                            <i className="fab fa-instagram" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#!">
-                            <i className="fab fa-twitter" />
+                          <a href="https://www.instagram.com/namle2330">
+                          <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
                       </ul>
@@ -1237,63 +1317,30 @@ function Service() {
                       />
                     </div>
                     <div className="item_content">
-                      <h3 className="item_title">Cameron Rogers</h3>
+                      <h3 className="item_title">Nguyen Ba Minh Duc</h3>
                       <span className="item_designation">
                         President &amp; CEO
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="#!">
-                            <i className="fab fa-facebook-f" />
+                          <a href="https://www.facebook.com/profile.php?id=100024098480982">
+                          <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
                           <a href="#!">
-                            <i className="fab fa-instagram" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#!">
-                            <i className="fab fa-twitter" />
+                          <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
                       </ul>
                     </div>
                   </div>
                 </div>
-                <div className="col col-lg-3 col-md-6 col-sm-6">
-                  <div className="team_item text-center">
-                    <div className="item_image">
-                      <img
-                        src="src/assets/images/team/team_img_4.png"
-                        alt="Team Image"
-                      />
-                    </div>
-                    <div className="item_content">
-                      <h3 className="item_title">Tiontay Carroll</h3>
-                      <span className="item_designation">
-                        President &amp; CEO
-                      </span>
-                      <ul className="social_links unorder_list">
-                        <li>
-                          <a href="#!">
-                            <i className="fab fa-facebook-f" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#!">
-                            <i className="fab fa-instagram" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#!">
-                            <i className="fab fa-twitter" />
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
+              </div>
+              <div className="text-center">
+                <a className="btn btn_primary" href="team">
+                  <FontAwesomeIcon icon={faPaw} /> Our Team
+                </a>
               </div>
             </div>
           </section>
