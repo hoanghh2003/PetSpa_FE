@@ -24388,7 +24388,6 @@ embed,
 img:not([draggable]),
 object,
 video {
-    height: auto;
     max-width: 100%
 }
 
@@ -28189,7 +28188,7 @@ hr {
 }
 
 .cart_items_list>li .item_image {
-    flex: 0 0 80px;
+    flex: 0px;
     display: block;
     overflow: hidden;
     margin-right: 15px;

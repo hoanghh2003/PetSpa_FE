@@ -80,25 +80,19 @@ const LoginPage = () => {
       <div className="relative w-1/2 h-full flex flex-col">
         <div className="absolute top-[10%] left-[10%] flex flex-col">
           <h1 className="text-4x1 text-[#1e1a1a] font-extrabold m--5">
-          <img
-                    className="logo_before"
-                    src="src/assets/images/logo/logo.png"
-                    alt="Petpia Logo"
-          />
-            Pet Spa helps you care for and relax your pets, creating the best conditions for them to showcase optimal beauty and health.
-        </h1>
+                              Pet Spa
+          </h1>
         </div>
 
         <img
           src={COVER_IMAGE}
-          className="h-full w-full object-cover bg-center"
-        />
+          className="h-full w-full object-cover bg-center" />
       </div>
 
       <div className="w-1/2 mr-auto h-full bg-[#f5f5f5] flex flex-col px-20 py-10 justify-between items-center">
         {/* <h1 className="text-xl text-[#060606] font-semibold">
-          Interative Brand
-        </h1> */}
+      Interative Brand
+    </h1> */}
         <div className="text-xl text-[#060606] font-semibold mr-auto max-w-[500px]"></div>
         <div className="w-full flex flex-col  max-w-[500px]">
           <div className="w-full flex flex-col mb-2">
@@ -111,15 +105,13 @@ const LoginPage = () => {
                 type="email"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+                onChange={(e) => setEmail(e.target.value)} />
               <input
                 className="w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none focus:outline-none"
                 type="password"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+                onChange={(e) => setPassword(e.target.value)} />
               <p style={{ color: "black" }}>{error}</p>
             </div>
             <div className="w-full flex items-center justify-between">
@@ -156,7 +148,7 @@ const LoginPage = () => {
             <p className=" text-lg  absolute text-black/80 bg-[#f5f5f5]">or</p>
           </div>
           <div className="w-full text-[#060606] my-2 font-semibold bg-white border border-black/40 rounded-md p-4 text-center flex items-center justify-center cursor-pointer">
-            <img src={LOGIN_GG} className="h-6 mr-2" />
+            <img src={LOGIN_GG} className="h-6   mr-2" />
             Sign In With Google
           </div>
         </div>

@@ -12,10 +12,11 @@ import HomePage from "./components/HomePage/HomePage";
 import Service from "./components/Service/Service";
 import Service_Details from "./components/Service_Details/Service_Details";
 import Cart from "./components/Cart/Cart";
+import MainLayout from "./layout/MainLayout";
 //route
 const router = createBrowserRouter([
   {
-    // element: <MainLayout />,
+    element: <MainLayout/>,
     children: [
       {
         path: "/",
