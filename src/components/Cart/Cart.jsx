@@ -1,5 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
+
 import "../../assets/js/email-decode.min.js";
 import "../../assets/js/jquery.min.js";
 import "../../assets/js/popper.min.js";

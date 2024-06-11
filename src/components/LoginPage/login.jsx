@@ -80,7 +80,7 @@ const LoginPage = () => {
       <div className="relative w-1/2 h-full flex flex-col">
         <div className="absolute top-[10%] left-[10%] flex flex-col">
           <h1 className="text-4x1 text-[#1e1a1a] font-extrabold m--5">
-                              Pet Spa
+            Pet Spa
           </h1>
         </div>
 
