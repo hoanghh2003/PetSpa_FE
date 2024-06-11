@@ -27,7 +27,7 @@ const Footer = () => {
                 <p>Pampering Paws, One Spa Day at a Time</p>
                 <div className="footer_hotline iconbox_item iconbox_lefticon">
                   <div className="item_icon">
-                    <FontAwesomeIcon icon={faPhoneFlip} />{" "}
+                    <FontAwesomeIcon icon={faPhoneFlip} shake />{" "}
                   </div>
                   <div className="item_content">
                     <h3 className="item_title">

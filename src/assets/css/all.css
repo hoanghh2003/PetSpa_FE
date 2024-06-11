@@ -30506,12 +30506,12 @@ blockquote cite {
 .arrow-button {
     position: absolute;
     bottom: -30px;    
-  }
+}
   
-  .arrow-button:first-child {
+.arrow-button:first-child {
     left: 720px;
-  }
+}
   
-  .arrow-button:last-child {
+.arrow-button:last-child {
     right: 720px;
-  }
+}
