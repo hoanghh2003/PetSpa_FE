@@ -448,162 +448,7 @@ function HomePage() {
               </div>
             </div>
           </section>
-          <section className="about_section section_space_lg pb-0 decoration_wrap">
-            <div className="container">
-              <div className="row align-items-center justify-content-lg-between">
-                <div className="col col-lg-5">
-                  <div className="section_title">
-                    <h2 className="title_text">Welcome To Our Family</h2>
-                    <p>
-                      Tristique nulla aliquet enim tortor at auctor urna nunc.
-                      Massa enim nec dui nunc mattis enim ut tellus. Auctor
-                      augue mauris augue neque gravida in fermentum
-                    </p>
-                  </div>
-                  <div className="accordion" id="faq_accordion">
-                    <div className="accordion-item">
-                      <button
-                        className="accordion-button"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#faq_collapse_1"
-                        aria-expanded="true"
-                        aria-controls="faq_collapse_1"
-                      >
-                        How Petpia Pet Care Started
-                      </button>
-                      <div
-                        id="faq_collapse_1"
-                        className="accordion-collapse collapse show"
-                        data-bs-parent="#faq_accordion"
-                      >
-                        <div className="accordion-body">
-                          <p className="m-0">
-                            Vitae et leo duis ut diam. Amet venenatis urna
-                            cursus eget nunc scelerisque. Nec ultrices dui
-                            sapien eget. Lectus magna fringilla urna porttitor
-                            rhoncus dolor purus
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="accordion-item">
-                      <button
-                        className="accordion-button collapsed"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#faq_collapse_2"
-                        aria-expanded="false"
-                        aria-controls="faq_collapse_2"
-                      >
-                        Mission Statement
-                      </button>
-                      <div
-                        id="faq_collapse_2"
-                        className="accordion-collapse collapse"
-                        data-bs-parent="#faq_accordion"
-                      >
-                        <div className="accordion-body">
-                          <p className="m-0">
-                            Vitae et leo duis ut diam. Amet venenatis urna
-                            cursus eget nunc scelerisque. Nec ultrices dui
-                            sapien eget. Lectus magna fringilla urna porttitor
-                            rhoncus dolor purus
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="accordion-item">
-                      <button
-                        className="accordion-button collapsed"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#faq_collapse_3"
-                        aria-expanded="false"
-                        aria-controls="faq_collapse_3"
-                      >
-                        Value Added Services
-                      </button>
-                      <div
-                        id="faq_collapse_3"
-                        className="accordion-collapse collapse"
-                        data-bs-parent="#faq_accordion"
-                      >
-                        <div className="accordion-body">
-                          <p className="m-0">
-                            Vitae et leo duis ut diam. Amet venenatis urna
-                            cursus eget nunc scelerisque. Nec ultrices dui
-                            sapien eget. Lectus magna fringilla urna porttitor
-                            rhoncus dolor purus
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="accordion-item">
-                      <button
-                        className="accordion-button collapsed"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#faq_collapse_4"
-                        aria-expanded="false"
-                        aria-controls="faq_collapse_4"
-                      >
-                        Social Responsability
-                      </button>
-                      <div
-                        id="faq_collapse_4"
-                        className="accordion-collapse collapse"
-                        data-bs-parent="#faq_accordion"
-                      >
-                        <div className="accordion-body">
-                          <p className="m-0">
-                            Vitae et leo duis ut diam. Amet venenatis urna
-                            cursus eget nunc scelerisque. Nec ultrices dui
-                            sapien eget. Lectus magna fringilla urna porttitor
-                            rhoncus dolor purus
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col col-lg-6">
-                  <div className="about_image_1">
-                    <div className="image_1 p-0">
-                      <img
-                        src="src/assets/images/about/about_img_1.jpg"
-                        alt="Pet Doctor"
-                      />
-                    </div>
-                    <div className="image_2">
-                      <img
-                        src="src/assets/images/about/about_img_2.jpg"
-                        alt="Cat Image"
-                      />
-                    </div>
-                    <div className="image_3">
-                      <img
-                        src="src/assets/images/about/about_img_3.jpg"
-                        alt="Dog Image"
-                      />
-                    </div>
-                    <div className="shape_img_1">
-                      <img
-                        src="src/assets/images/shape/shape_circle_1.svg"
-                        alt="Yellow Circle"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="decoration_item shape_dot_1">
-              <img
-                src="src/assets/images/shape/shape_dot_group_1.svg"
-                alt="Colorful Dots"
-              />
-            </div>
-          </section>
+
           <section className="gallery_section section_space_lg decoration_wrap">
             <div className="container">
               <div className="section_title text-center">
@@ -1768,7 +1613,7 @@ function HomePage() {
                       </li>
                     </ul>
                     <a className="btn btn_primary" href="service_details">
-                      <i className="fas fa-paw" />
+                    <FontAwesomeIcon icon={faPaw} />{" "}
                       Get Service
                     </a>
                   </div>
@@ -1938,7 +1783,7 @@ function HomePage() {
               </div>
               <div className="text-center">
                 <a className="btn btn_primary" href="team">
-                  <i className="fas fa-paw" />
+                <FontAwesomeIcon icon={faPaw} />{" "}
                   Our Team
                 </a>
               </div>
