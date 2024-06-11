@@ -2,7 +2,7 @@
 // import { Separator } from "@/components/ui/separator";
 // import { MoveRight } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPhoneFlip } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faPhoneFlip } from "@fortawesome/free-solid-svg-icons";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -136,7 +136,7 @@ const Footer = () => {
                         placeholder="Email"
                       />
                       <button type="submit">
-                        <i className="far fa-arrow-right" />
+                      <FontAwesomeIcon icon={faArrowRight} />{" "}
                       </button>
                     </div>
                   </div>

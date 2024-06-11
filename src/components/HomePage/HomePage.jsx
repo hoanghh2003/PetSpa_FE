@@ -1,7 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaw } from "@fortawesome/free-solid-svg-icons";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faEnvelope, faLocationDot, faPaw, faPhoneVolume } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faQuoteRight } from "@fortawesome/free-solid-svg-icons";
+import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 import "../../assets/js/email-decode.min.js";
 import "../../assets/js/jquery.min.js";
@@ -15,8 +21,42 @@ import "../../assets/js/jquery-ui.js";
 import "../../assets/js/vanilla-calendar.min.js";
 import "../../assets/js/countdown.js";
 import "../../assets/js/main.js";
+import Slider from "react-slick";
+import PropTypes from "prop-types";
+import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
 
 function HomePage() {
+  const CustomNextArrow = ({ onClick }) => (
+    <button type="button" className="arrow-button top-right" onClick={onClick}>
+      <FontAwesomeIcon icon={faArrowRight} />
+    </button>
+  );
+  
+  // CustomPrevArrow component
+  const CustomPrevArrow = ({ onClick }) => (
+    <button type="button" className="arrow-button top-left" onClick={onClick}>
+      <FontAwesomeIcon icon={faArrowLeft} />
+    </button>
+  );
+  CustomPrevArrow.propTypes = {
+    onClick: PropTypes.func.isRequired,
+  };
+
+  CustomNextArrow.propTypes = {
+    onClick: PropTypes.func.isRequired,
+  };
+  
+  const settings = {
+    dots: false,
+    centerMode: true,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    infinite: true,
+    centerPadding: "0",
+    prevArrow: <CustomPrevArrow />,
+    nextArrow: <CustomNextArrow />
+  };
+
   return (
     <>
       {/* Hello world */}
@@ -637,34 +677,34 @@ function HomePage() {
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCircleCheck} />{" "}
                               <span>Bath (Hypo-Allergenic)</span>
                             </li>
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Conditioning Treatment</span>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCircleCheck} />{" "}
                                 <span>Ears Flushed &amp; Cleaned</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCircleCheck} />{" "}
                                 <span>Watering Plants</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Handscissor Finish</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Setting Length of Coat</span>
                               </del>
                             </li>
@@ -682,34 +722,34 @@ function HomePage() {
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Bath (Hypo-Allergenic)</span>
                             </li>
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Conditioning Treatment</span>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Ears Flushed &amp; Cleaned</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Watering Plants</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Handscissor Finish</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Setting Length of Coat</span>
                               </del>
                             </li>
@@ -727,34 +767,34 @@ function HomePage() {
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Bath (Hypo-Allergenic)</span>
                             </li>
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Conditioning Treatment</span>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Ears Flushed &amp; Cleaned</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Watering Plants</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Handscissor Finish</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Setting Length of Coat</span>
                               </del>
                             </li>
@@ -774,34 +814,34 @@ function HomePage() {
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Bath (Hypo-Allergenic)</span>
                             </li>
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Conditioning Treatment</span>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Ears Flushed &amp; Cleaned</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Watering Plants</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Handscissor Finish</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Setting Length of Coat</span>
                               </del>
                             </li>
@@ -827,34 +867,34 @@ function HomePage() {
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Bath (Hypo-Allergenic)</span>
                             </li>
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Conditioning Treatment</span>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Ears Flushed &amp; Cleaned</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Watering Plants</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Handscissor Finish</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Setting Length of Coat</span>
                               </del>
                             </li>
@@ -872,34 +912,34 @@ function HomePage() {
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Bath (Hypo-Allergenic)</span>
                             </li>
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Conditioning Treatment</span>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Ears Flushed &amp; Cleaned</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Watering Plants</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Handscissor Finish</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Setting Length of Coat</span>
                               </del>
                             </li>
@@ -917,34 +957,34 @@ function HomePage() {
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Bath (Hypo-Allergenic)</span>
                             </li>
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Conditioning Treatment</span>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Ears Flushed &amp; Cleaned</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Watering Plants</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Handscissor Finish</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Setting Length of Coat</span>
                               </del>
                             </li>
@@ -964,34 +1004,34 @@ function HomePage() {
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Bath (Hypo-Allergenic)</span>
                             </li>
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Conditioning Treatment</span>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Ears Flushed &amp; Cleaned</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Watering Plants</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Handscissor Finish</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Setting Length of Coat</span>
                               </del>
                             </li>
@@ -1017,34 +1057,34 @@ function HomePage() {
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Bath (Hypo-Allergenic)</span>
                             </li>
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Conditioning Treatment</span>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Ears Flushed &amp; Cleaned</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Watering Plants</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Handscissor Finish</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Setting Length of Coat</span>
                               </del>
                             </li>
@@ -1062,34 +1102,34 @@ function HomePage() {
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Bath (Hypo-Allergenic)</span>
                             </li>
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Conditioning Treatment</span>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Ears Flushed &amp; Cleaned</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Watering Plants</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Handscissor Finish</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Setting Length of Coat</span>
                               </del>
                             </li>
@@ -1107,34 +1147,34 @@ function HomePage() {
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Bath (Hypo-Allergenic)</span>
                             </li>
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Conditioning Treatment</span>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Ears Flushed &amp; Cleaned</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Watering Plants</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Handscissor Finish</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Setting Length of Coat</span>
                               </del>
                             </li>
@@ -1154,34 +1194,34 @@ function HomePage() {
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Bath (Hypo-Allergenic)</span>
                             </li>
                             <li>
-                              <i className="fas fa-check-circle" />
+                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
                               <span>Conditioning Treatment</span>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Ears Flushed &amp; Cleaned</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Watering Plants</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Handscissor Finish</span>
                               </del>
                             </li>
                             <li>
                               <del>
-                                <i className="fas fa-check-circle" />
+                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
                                 <span>Setting Length of Coat</span>
                               </del>
                             </li>
@@ -1218,11 +1258,9 @@ function HomePage() {
                 </h2>
               </div>
             </div>
+
             <div className="testimonial_carousel">
-              <div
-                className="row common_carousel_3col"
-                data-slick='{"dots": false, "centerMode": true}'
-              >
+              <Slider {...settings}>
                 <div className="col carousel_item">
                   <div className="testimonial_item">
                     <div className="testimonial_admin">
@@ -1239,19 +1277,19 @@ function HomePage() {
                     </div>
                     <ul className="rating_star">
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                     </ul>
                     <p className="mb-0">
@@ -1259,7 +1297,172 @@ function HomePage() {
                       Massa enim nec dui nunc mattis enim ut tellus
                     </p>
                     <span className="quote_icon">
-                      <i className="fas fa-quote-right" />
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="col carousel_item">
+                  <div className="testimonial_item">
+                    <div className="testimonial_admin">
+                      <div className="admin_thumbnail">
+                        <img
+                          src="src/assets/images/meta/thumbnail_img_2.png"
+                          alt="Pet Thumbnail Image"
+                        />
+                      </div>
+                      <div className="admin_info">
+                        <h4 className="admin_name">Dog Boarding</h4>
+                        <span className="admin_designation">
+                          Wilhelm Dowall
+                        </span>
+                      </div>
+                    </div>
+                    <ul className="rating_star">
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                    </ul>
+                    <p className="mb-0">
+                      Lectus magna fringilla urna porttitor rhoncus dolor purus
+                      non enim. Tellus in hac habitasse platea dictumst
+                    </p>
+                    <span className="quote_icon">
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                    </span>
+                  </div>
+                </div>
+                <div className="col carousel_item">
+                  <div className="testimonial_item">
+                    <div className="testimonial_admin">
+                      <div className="admin_thumbnail">
+                        <img
+                          src="src/assets/images/meta/thumbnail_img_3.png"
+                          alt="Pet Thumbnail Image"
+                        />
+                      </div>
+                      <div className="admin_info">
+                        <h4 className="admin_name">Pet Training</h4>
+                        <span className="admin_designation">Lara Madrigal</span>
+                      </div>
+                    </div>
+                    <ul className="rating_star">
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                    </ul>
+                    <p className="mb-0">
+                      Ut tortor pretium viverra suspendisse potenti nullam.
+                      Venenatis urna cursus eget nunc scelerisque viverra mauris
+                      in aliquam
+                    </p>
+                    <span className="quote_icon">
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                    </span>
+                  </div>
+                </div>
+                <div className="col carousel_item">
+                  <div className="testimonial_item">
+                    <div className="testimonial_admin">
+                      <div className="admin_thumbnail">
+                        <img
+                          src="src/assets/images/meta/thumbnail_img_4.png"
+                          alt="Pet Thumbnail Image"
+                        />
+                      </div>
+                      <div className="admin_info">
+                        <h4 className="admin_name">Home Visit</h4>
+                        <span className="admin_designation">Lara Madrigal</span>
+                      </div>
+                    </div>
+                    <ul className="rating_star">
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                    </ul>
+                    <p className="mb-0">
+                      Ut tortor pretium viverra suspendisse potenti nullam.
+                      Venenatis urna cursus eget nunc scelerisque viverra mauris
+                      in aliquam
+                    </p>
+                    <span className="quote_icon">
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                    </span>
+                  </div>
+                </div>
+                <div className="col carousel_item">
+                  <div className="testimonial_item">
+                    <div className="testimonial_admin">
+                      <div className="admin_thumbnail">
+                        <img
+                          src="src/assets/images/meta/thumbnail_img_1.png"
+                          alt="Pet Thumbnail Image"
+                        />
+                      </div>
+                      <div className="admin_info">
+                        <h4 className="admin_name">Home Visits</h4>
+                        <span className="admin_designation">Lucas Simões</span>
+                      </div>
+                    </div>
+                    <ul className="rating_star">
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                    </ul>
+                    <p className="mb-0">
+                      Tristique nulla aliquet enim tortor at auctor urna nunc.
+                      Massa enim nec dui nunc mattis enim ut tellus
+                    </p>
+                    <span className="quote_icon">
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
                     </span>
                   </div>
                 </div>
@@ -1281,19 +1484,19 @@ function HomePage() {
                     </div>
                     <ul className="rating_star">
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                     </ul>
                     <p className="mb-0">
@@ -1301,7 +1504,7 @@ function HomePage() {
                       non enim. Tellus in hac habitasse platea dictumst
                     </p>
                     <span className="quote_icon">
-                      <i className="fas fa-quote-right" />
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
                     </span>
                   </div>
                 </div>
@@ -1321,19 +1524,19 @@ function HomePage() {
                     </div>
                     <ul className="rating_star">
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                     </ul>
                     <p className="mb-0">
@@ -1342,7 +1545,7 @@ function HomePage() {
                       in aliquam
                     </p>
                     <span className="quote_icon">
-                      <i className="fas fa-quote-right" />
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
                     </span>
                   </div>
                 </div>
@@ -1362,19 +1565,19 @@ function HomePage() {
                     </div>
                     <ul className="rating_star">
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                       <li>
-                        <i className="fas fa-star" />
+                        <FontAwesomeIcon icon={faStar} />{" "}
                       </li>
                     </ul>
                     <p className="mb-0">
@@ -1383,185 +1586,11 @@ function HomePage() {
                       in aliquam
                     </p>
                     <span className="quote_icon">
-                      <i className="fas fa-quote-right" />
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
                     </span>
                   </div>
                 </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_1.png"
-                          alt="Pet Thumbnail Image"
-                        />
-                      </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Home Visits</h4>
-                        <span className="admin_designation">Lucas Simões</span>
-                      </div>
-                    </div>
-                    <ul className="rating_star">
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Tristique nulla aliquet enim tortor at auctor urna nunc.
-                      Massa enim nec dui nunc mattis enim ut tellus
-                    </p>
-                    <span className="quote_icon">
-                      <i className="fas fa-quote-right" />
-                    </span>
-                  </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_2.png"
-                          alt="Pet Thumbnail Image"
-                        />
-                      </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Dog Boarding</h4>
-                        <span className="admin_designation">
-                          Wilhelm Dowall
-                        </span>
-                      </div>
-                    </div>
-                    <ul className="rating_star">
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Lectus magna fringilla urna porttitor rhoncus dolor purus
-                      non enim. Tellus in hac habitasse platea dictumst
-                    </p>
-                    <span className="quote_icon">
-                      <i className="fas fa-quote-right" />
-                    </span>
-                  </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_3.png"
-                          alt="Pet Thumbnail Image"
-                        />
-                      </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Pet Training</h4>
-                        <span className="admin_designation">Lara Madrigal</span>
-                      </div>
-                    </div>
-                    <ul className="rating_star">
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Ut tortor pretium viverra suspendisse potenti nullam.
-                      Venenatis urna cursus eget nunc scelerisque viverra mauris
-                      in aliquam
-                    </p>
-                    <span className="quote_icon">
-                      <i className="fas fa-quote-right" />
-                    </span>
-                  </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_4.png"
-                          alt="Pet Thumbnail Image"
-                        />
-                      </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Home Visit</h4>
-                        <span className="admin_designation">Lara Madrigal</span>
-                      </div>
-                    </div>
-                    <ul className="rating_star">
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                      <li>
-                        <i className="fas fa-star" />
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Ut tortor pretium viverra suspendisse potenti nullam.
-                      Venenatis urna cursus eget nunc scelerisque viverra mauris
-                      in aliquam
-                    </p>
-                    <span className="quote_icon">
-                      <i className="fas fa-quote-right" />
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="carousel_arrow">
-                <div className="container">
-                  <button type="button" className="cc3c_left_arrow">
-                    <i className="far fa-arrow-left" />
-                  </button>
-                  <button type="button" className="cc3c_right_arrow">
-                    <i className="far fa-arrow-right" />
-                  </button>
-                </div>
-              </div>
+              </Slider>
             </div>
           </section>
           <section
@@ -1594,27 +1623,26 @@ function HomePage() {
                     <h2 className="item_title">Pet Grooming Service</h2>
                     <ul className="icon_list unorder_list_block">
                       <li>
-                        <i className="fas fa-check-circle" />
+                        <FontAwesomeIcon icon={faCheckCircle} />{" "}
                         <span>Bathing – wash and fluff dry</span>
                       </li>
                       <li>
-                        <i className="fas fa-check-circle" />
+                        <FontAwesomeIcon icon={faCheckCircle} />{" "}
                         <span>Pawdicure – nail trimming and filing</span>
                       </li>
                       <li>
-                        <i className="fas fa-check-circle" />
+                        <FontAwesomeIcon icon={faCheckCircle} />{" "}
                         <span>
                           Breed specific styling, cutting and stripping
                         </span>
                       </li>
                       <li>
-                        <i className="fas fa-check-circle" />
+                        <FontAwesomeIcon icon={faCheckCircle} />{" "}
                         <span>De-matting and detangling</span>
                       </li>
                     </ul>
                     <a className="btn btn_primary" href="service_details">
-                    <FontAwesomeIcon icon={faPaw} />{" "}
-                      Get Service
+                      <FontAwesomeIcon icon={faPaw} /> Get Service
                     </a>
                   </div>
                 </div>
@@ -1657,24 +1685,19 @@ function HomePage() {
                       />
                     </div>
                     <div className="item_content">
-                      <h3 className="item_title">Cameron Rogers</h3>
+                      <h3 className="item_title">Ha Huy Hoang</h3>
                       <span className="item_designation">
                         President &amp; CEO
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="#!">
-                            <i className="fab fa-facebook-f" />
+                          <a href="https://www.facebook.com/2010.HaHuyHoanglacuaai.2003">
+                          <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
-                          <a href="#!">
-                            <i className="fab fa-instagram" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#!">
-                            <i className="fab fa-twitter" />
+                          <a href="https://www.instagram.com/hardy._.03">
+                          <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
                       </ul>
@@ -1690,24 +1713,19 @@ function HomePage() {
                       />
                     </div>
                     <div className="item_content">
-                      <h3 className="item_title">Irene Sotelo</h3>
+                      <h3 className="item_title">Le Xuan Phuong Nam</h3>
                       <span className="item_designation">
                         President &amp; CEO
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="#!">
-                            <i className="fab fa-facebook-f" />
+                          <a href="https://www.facebook.com/namtheshy2mai">
+                          <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
-                          <a href="#!">
-                            <i className="fab fa-instagram" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#!">
-                            <i className="fab fa-twitter" />
+                          <a href="https://www.instagram.com/namle2330">
+                          <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
                       </ul>
@@ -1723,57 +1741,19 @@ function HomePage() {
                       />
                     </div>
                     <div className="item_content">
-                      <h3 className="item_title">Cameron Rogers</h3>
+                      <h3 className="item_title">Nguyen Ba Minh Duc</h3>
                       <span className="item_designation">
                         President &amp; CEO
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="#!">
-                            <i className="fab fa-facebook-f" />
+                          <a href="https://www.facebook.com/profile.php?id=100024098480982">
+                          <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
                           <a href="#!">
-                            <i className="fab fa-instagram" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#!">
-                            <i className="fab fa-twitter" />
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="col col-lg-3 col-md-6 col-sm-6">
-                  <div className="team_item text-center">
-                    <div className="item_image">
-                      <img
-                        src="src/assets/images/team/team_img_4.png"
-                        alt="Team Image"
-                      />
-                    </div>
-                    <div className="item_content">
-                      <h3 className="item_title">Tiontay Carroll</h3>
-                      <span className="item_designation">
-                        President &amp; CEO
-                      </span>
-                      <ul className="social_links unorder_list">
-                        <li>
-                          <a href="#!">
-                            <i className="fab fa-facebook-f" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#!">
-                            <i className="fab fa-instagram" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#!">
-                            <i className="fab fa-twitter" />
+                          <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
                       </ul>
@@ -1783,8 +1763,7 @@ function HomePage() {
               </div>
               <div className="text-center">
                 <a className="btn btn_primary" href="team">
-                <FontAwesomeIcon icon={faPaw} />{" "}
-                  Our Team
+                  <FontAwesomeIcon icon={faPaw} /> Our Team
                 </a>
               </div>
             </div>
@@ -1804,13 +1783,12 @@ function HomePage() {
                 <div className="col col-lg-3 col-md-6 col-sm-6">
                   <div className="iconbox_item iconbox_overicon">
                     <div className="item_icon">
-                      <i className="fas fa-phone" />
+                    <FontAwesomeIcon icon={faPhoneVolume} />{" "}
                     </div>
                     <div className="item_content">
                       <h3 className="item_title">Phone</h3>
                       <ul className="item_info_list unorder_list_block">
-                        <li>0356.105.488</li>
-                        <li>0356.105.488</li>
+                        <li>0123.456.789</li>
                       </ul>
                     </div>
                   </div>
@@ -1818,7 +1796,7 @@ function HomePage() {
                 <div className="col col-lg-3 col-md-6 col-sm-6">
                   <div className="iconbox_item iconbox_overicon">
                     <div className="item_icon">
-                      <i className="fas fa-envelope" />
+                    <FontAwesomeIcon icon={faEnvelope} />{" "}
                     </div>
                     <div className="item_content">
                       <h3 className="item_title">Email</h3>
@@ -1829,16 +1807,7 @@ function HomePage() {
                             className="__cf_email__"
                             data-cfemail="4e272028210e2f2a3d2321603820"
                           >
-                            [email &nbsp;protected]
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="/cdn-cgi/l/email-protection"
-                            className="__cf_email__"
-                            data-cfemail="254c4b434a65444156484a0b534b"
-                          >
-                            [email &nbsp;protected]
+                            petspaswp391@gmail.com
                           </a>
                         </li>
                       </ul>
@@ -1848,13 +1817,13 @@ function HomePage() {
                 <div className="col col-lg-3 col-md-6 col-sm-6">
                   <div className="iconbox_item iconbox_overicon">
                     <div className="item_icon">
-                      <i className="fas fa-map-marker-alt" />
+                    <FontAwesomeIcon icon={faLocationDot} />{" "}
                     </div>
                     <div className="item_content">
                       <h3 className="item_title">Address</h3>
                       <ul className="item_info_list unorder_list_block">
-                        <li>17 Parkman Place, 2122</li>
-                        <li>United States</li>
+                        <li>123 Le Van Viet</li>
+                        <li>Thu Duc</li>
                       </ul>
                     </div>
                   </div>
@@ -1862,7 +1831,7 @@ function HomePage() {
                 <div className="col col-lg-3 col-md-6 col-sm-6">
                   <div className="iconbox_item iconbox_overicon">
                     <div className="item_icon">
-                      <i className="fas fa-clock" />
+                    <FontAwesomeIcon icon={faClock} />{" "}
                     </div>
                     <div className="item_content">
                       <h3 className="item_title">Open Hours</h3>

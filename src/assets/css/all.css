@@ -30503,3 +30503,15 @@ blockquote cite {
     border-style: solid;
     border-width: 0 10px 8px
 }
+.arrow-button {
+    position: absolute;
+    bottom: -30px;    
+  }
+  
+  .arrow-button:first-child {
+    left: 720px;
+  }
+  
+  .arrow-button:last-child {
+    right: 720px;
+  }
