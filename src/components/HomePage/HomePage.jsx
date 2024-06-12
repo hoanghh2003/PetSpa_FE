@@ -1823,7 +1823,6 @@ function HomePage() {
                       <h3 className="item_title">Address</h3>
                       <ul className="item_info_list unorder_list_block">
                         <li>123 Le Van Viet</li>
-                        <li>Thu Duc</li>
                       </ul>
                     </div>
                   </div>
@@ -1836,8 +1835,7 @@ function HomePage() {
                     <div className="item_content">
                       <h3 className="item_title">Open Hours</h3>
                       <ul className="item_info_list unorder_list_block">
-                        <li>Mon - Fri: 7am - 6pm</li>
-                        <li>Saturday: 9am - 4pm</li>
+                        <li>Mon - Sat: 8am - 8pm</li>
                       </ul>
                     </div>
                   </div>

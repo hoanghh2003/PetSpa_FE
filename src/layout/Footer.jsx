@@ -44,12 +44,8 @@ const Footer = () => {
                 <div className="office_hour">
                   <ul className="unorder_list_block">
                     <li>
-                      <span>Mon - Fri:</span>
-                      <span>7am – 6pm</span>
-                    </li>
-                    <li>
-                      <span>Saturday:</span>
-                      <span>9am – 4pm</span>
+                      <span>Mon - Sat:</span>
+                      <span>8am – 8pm</span>
                     </li>
                     <li>
                       <span>Sunday:</span>

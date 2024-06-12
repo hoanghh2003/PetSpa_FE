@@ -13,6 +13,8 @@ import Service from "./components/Service/Service";
 import Service_Details from "./components/Service_Details/Service_Details";
 import Cart from "./components/Cart/Cart";
 import MainLayout from "./layout/MainLayout";
+import Account from "./components/Account/Account";
+import AccountSetting from "./components/Account/AccountSetting";
 //route
 const router = createBrowserRouter([
   {
@@ -54,12 +56,22 @@ const router = createBrowserRouter([
         path: "/Service_Details",
         element: <Service_Details />,
       },
-      {
-        path: "/Cart",
-        element: <Cart/>,
-      },
+      
+      
     ],
   },
+  {
+    path: "/Account",
+    element: <Account/>,
+  },
+  {
+    path: "/AccountSetting",
+    element: <AccountSetting/>,
+  },
+  {
+    path: "/Cart",
+    element: <Cart/>,
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
