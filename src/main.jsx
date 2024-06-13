@@ -22,7 +22,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <HomePage />,
       },
       {
         path: "/login",
@@ -71,7 +71,7 @@ const router = createBrowserRouter([
   {
     path: "/Cart",
     element: <Cart/>,
-  }
+  }   
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

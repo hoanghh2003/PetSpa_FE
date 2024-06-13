@@ -1,5 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faEnvelope, faLocationDot, faPaw, faPhoneVolume } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClock,
+  faEnvelope,
+  faLocationDot,
+  faPaw,
+  faPhoneVolume,
+} from "@fortawesome/free-solid-svg-icons";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -31,7 +37,7 @@ function HomePage() {
       <FontAwesomeIcon icon={faArrowRight} />
     </button>
   );
-  
+
   // CustomPrevArrow component
   const CustomPrevArrow = ({ onClick }) => (
     <button type="button" className="arrow-button top-left" onClick={onClick}>
@@ -45,7 +51,7 @@ function HomePage() {
   CustomNextArrow.propTypes = {
     onClick: PropTypes.func.isRequired,
   };
-  
+
   const settings = {
     dots: false,
     centerMode: true,
@@ -54,7 +60,7 @@ function HomePage() {
     infinite: true,
     centerPadding: "0",
     prevArrow: <CustomPrevArrow />,
-    nextArrow: <CustomNextArrow />
+    nextArrow: <CustomNextArrow />,
   };
 
   return (
@@ -1680,7 +1686,7 @@ function HomePage() {
                   <div className="team_item text-center">
                     <div className="item_image">
                       <img
-                        src="src/assets/images/team/team_img_1.png"
+                        src="src/assets/images/team/team_img_1.jpg"
                         alt="Team Image"
                       />
                     </div>
@@ -1692,12 +1698,12 @@ function HomePage() {
                       <ul className="social_links unorder_list">
                         <li>
                           <a href="https://www.facebook.com/2010.HaHuyHoanglacuaai.2003">
-                          <FontAwesomeIcon icon={faFacebook} />{" "}
+                            <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
                           <a href="https://www.instagram.com/hardy._.03">
-                          <FontAwesomeIcon icon={faInstagram} />{" "}
+                            <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
                       </ul>
@@ -1708,7 +1714,7 @@ function HomePage() {
                   <div className="team_item text-center">
                     <div className="item_image">
                       <img
-                        src="src/assets/images/team/team_img_2.png"
+                        src="src/assets/images/team/team_img_1.jpg"
                         alt="Team Image"
                       />
                     </div>
@@ -1720,12 +1726,12 @@ function HomePage() {
                       <ul className="social_links unorder_list">
                         <li>
                           <a href="https://www.facebook.com/namtheshy2mai">
-                          <FontAwesomeIcon icon={faFacebook} />{" "}
+                            <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
                           <a href="https://www.instagram.com/namle2330">
-                          <FontAwesomeIcon icon={faInstagram} />{" "}
+                            <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
                       </ul>
@@ -1736,7 +1742,7 @@ function HomePage() {
                   <div className="team_item text-center">
                     <div className="item_image">
                       <img
-                        src="src/assets/images/team/team_img_3.png"
+                        src="src/assets/images/team/team_img_1.jpg"
                         alt="Team Image"
                       />
                     </div>
@@ -1748,12 +1754,12 @@ function HomePage() {
                       <ul className="social_links unorder_list">
                         <li>
                           <a href="https://www.facebook.com/profile.php?id=100024098480982">
-                          <FontAwesomeIcon icon={faFacebook} />{" "}
+                            <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
                           <a href="#!">
-                          <FontAwesomeIcon icon={faInstagram} />{" "}
+                            <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
                       </ul>
@@ -1783,7 +1789,7 @@ function HomePage() {
                 <div className="col col-lg-3 col-md-6 col-sm-6">
                   <div className="iconbox_item iconbox_overicon">
                     <div className="item_icon">
-                    <FontAwesomeIcon icon={faPhoneVolume} />{" "}
+                      <FontAwesomeIcon icon={faPhoneVolume} />{" "}
                     </div>
                     <div className="item_content">
                       <h3 className="item_title">Phone</h3>
@@ -1796,7 +1802,7 @@ function HomePage() {
                 <div className="col col-lg-3 col-md-6 col-sm-6">
                   <div className="iconbox_item iconbox_overicon">
                     <div className="item_icon">
-                    <FontAwesomeIcon icon={faEnvelope} />{" "}
+                      <FontAwesomeIcon icon={faEnvelope} />{" "}
                     </div>
                     <div className="item_content">
                       <h3 className="item_title">Email</h3>
@@ -1817,7 +1823,7 @@ function HomePage() {
                 <div className="col col-lg-3 col-md-6 col-sm-6">
                   <div className="iconbox_item iconbox_overicon">
                     <div className="item_icon">
-                    <FontAwesomeIcon icon={faLocationDot} />{" "}
+                      <FontAwesomeIcon icon={faLocationDot} />{" "}
                     </div>
                     <div className="item_content">
                       <h3 className="item_title">Address</h3>
@@ -1830,7 +1836,7 @@ function HomePage() {
                 <div className="col col-lg-3 col-md-6 col-sm-6">
                   <div className="iconbox_item iconbox_overicon">
                     <div className="item_icon">
-                    <FontAwesomeIcon icon={faClock} />{" "}
+                      <FontAwesomeIcon icon={faClock} />{" "}
                     </div>
                     <div className="item_content">
                       <h3 className="item_title">Open Hours</h3>
