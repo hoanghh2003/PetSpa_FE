@@ -2,6 +2,7 @@
 //   primary: "#060606",
 //   background: "#E0E0E0",
 //   disbaled: "#D9D9D9",
+import { Link } from "react-router-dom";
 import COVER_IMAGE from "../LoginPage/login.jpg";
 import { useState } from "react";
 
@@ -93,12 +94,6 @@ const Register = () => {
   return (
     <div className="w-700 h-screen flex items-start my-1 ">
       <div className="relative w-1/2 h-full flex flex-col">
-        <div className="absolute top-[20%] left-[10%] flex flex-col">
-          <h1 className="text-4x1 text-[#1e1a1a] font-extrabold m--5">
-            Pet Spa helps you care for and relax your pets, creating the best conditions for them to showcase optimal beauty and health.
-          </h1>
-        </div>
-
         <img
           src={COVER_IMAGE}
           className="h-full w-full object-cover bg-center"
@@ -173,6 +168,21 @@ const Register = () => {
               <option value="female">Female</option>
               <option value="other">Other</option>
             </select>
+            <div className="mb-3 fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="terms-conditions"
+                  name="terms"
+                />
+                <label className="form-check-label" htmlFor="terms-conditions">
+                  I agree to {" "}
+                  <a href="javascript:void(0);">privacy policy &amp; terms</a>
+                </label>
+                <div className="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback" />
+              </div>
+            </div>
           </div>
           <p style={{ color: "red" }}>{error}</p>
           <div className="w-full flex flex-col my-4">
@@ -190,11 +200,11 @@ const Register = () => {
           </div> */}
         </div>
         <div className="w-full flex items-center justify-center py-2">
-          <p className="text-sm font-normal text-[#060606]">
-            Dont have a account?
-            <span className="font-semibold underline underline-offset-2 cursor-pointer">
-              Sign in
-            </span>
+          <p className="text-lg font-normal text-[#060606]">
+            Already have an account?{" "}
+            <Link to={"/login"}>
+              <span className="font-semibold cursor-pointer">Sign in</span>
+            </Link>
           </p>
         </div>
       </div>

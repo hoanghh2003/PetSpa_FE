@@ -16,8 +16,7 @@ import { faPaw } from "@fortawesome/free-solid-svg-icons";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
-
-
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -27,19 +26,19 @@ const Header = () => {
           <link rel="stylesheet" href="src/assets/css/all.css" />
           <div className="box_wrap d-flex align-items-center justify-content-between">
             <div className="site_logo">
-              <a href="HomePage">
+              <Link to="/HomePage">
                 <img
                   className="logo_before"
                   src="src/assets/images/logo/logo.png"
                   alt="Petpia Logo"
                 />
-              </a>
+              </Link>
             </div>
             <nav className="main_menu navbar navbar-expand-lg">
               <div id="main_menu_dropdown">
                 <ul className="main_menu_list unorder_list_center">
                   <li>
-                    <a href="HomePage">Home</a>
+                    <Link to="/HomePage">Home</Link>
                   </li>
                   {/* <li class="active dropdown">
                                   <a class="nav-link" href="#" id="home_submenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">Home</a>
@@ -68,13 +67,10 @@ const Header = () => {
                       aria-labelledby="service_submenu"
                     >
                       <li>
-                        <a href="service">Our Service</a>
+                      <Link to="/service">Our Service</Link>
                       </li>
                       <li>
-                        <a href="service_details">Service Details</a>
-                      </li>
-                      <li>
-                        <a href="gallery">Our Gallery</a>
+                      <Link to="/service_details">Service Details</Link>
                       </li>
                     </ul>
                   </li>
@@ -103,7 +99,7 @@ const Header = () => {
                         <a href="sales">Sales Page</a>
                       </li>
                       <li>
-                        <a href="cart">Shopping Cart</a>
+                      <Link to="/cart">Shopping Cart</Link>
                       </li>
                       <li>
                         <a href="shipping_info">Shipping Info</a>
@@ -179,58 +175,49 @@ const Header = () => {
                 >
                   <FontAwesomeIcon icon={faBars} />{" "}
                 </button>
-                <div
-                  className="dropdown-menu"
-                  aria-labelledby="cart_dropdown"
-                >
+                <div className="dropdown-menu" aria-labelledby="cart_dropdown">
                   <ul className="cart_items_list unorder_list_block">
                     <li>
-                      <a className="item_image" href="account">
-                      </a>
+                      <a className="item_image" href="account"></a>
                       <div className="item_content">
                         <h3 className="item_title ">
-                        <FontAwesomeIcon icon={faCircleUser} />{" "}
-                        <a href="account">Account</a>
+                          <FontAwesomeIcon icon={faCircleUser} />{" "}
+                          <Link to="/account">Account</Link>
                         </h3>
                       </div>
                     </li>
                     <li>
-                      <a className="item_image" href="account">
-                      </a>
+                      <a className="item_image" href="account"></a>
                       <div className="item_content">
                         <h3 className="item_title ">
-                        <FontAwesomeIcon icon={faPaw} />{" "}
-                        <a href="Pet">Pet</a>
+                          <FontAwesomeIcon icon={faPaw} /> <Link to="/Pet">Pet</Link>
                         </h3>
                       </div>
                     </li>
                     <li>
-                      <a className="item_image" href="account">
-                      </a>
+                      <a className="item_image" href="account"></a>
                       <div className="item_content">
                         <h3 className="item_title ">
-                        <FontAwesomeIcon icon={faCartShopping} />{" "}
-                        <a href="Cart">Cart</a>
+                          <FontAwesomeIcon icon={faCartShopping} />{" "}
+                          <Link to="/Cart">Cart</Link>
                         </h3>
                       </div>
                     </li>
                     <li>
-                      <a className="item_image" href="account">
-                      </a>
+                      <a className="item_image" href="account"></a>
                       <div className="item_content">
                         <h3 className="item_title ">
-                        <FontAwesomeIcon icon={faArrowRightToBracket} />{" "}
-                        <a href="Login">Log in</a>
+                          <FontAwesomeIcon icon={faArrowRightToBracket} />{" "}
+                          <Link to="/Login">Log in</Link>
                         </h3>
                       </div>
                     </li>
                     <li>
-                      <a className="item_image" href="account">
-                      </a>
+                      <a className="item_image" href="account"></a>
                       <div className="item_content">
                         <h3 className="item_title ">
-                        <FontAwesomeIcon icon={faArrowRightFromBracket} />{" "}
-                        <a href="Logout">Log out</a>
+                          <FontAwesomeIcon icon={faArrowRightFromBracket} />{" "}
+                          <Link to="/Logout">Log out</Link>
                         </h3>
                       </div>
                     </li>

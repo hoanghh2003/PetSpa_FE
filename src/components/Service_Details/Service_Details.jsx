@@ -1,6 +1,9 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faPaw, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowLeft,
+  faQuoteRight,
+} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import "../../assets/js/email-decode.min.js";
 import "../../assets/js/jquery.min.js";
 import "../../assets/js/popper.min.js";
@@ -13,11 +16,12 @@ import "../../assets/js/jquery-ui.js";
 import "../../assets/js/vanilla-calendar.min.js";
 import "../../assets/js/countdown.js";
 import "../../assets/js/main.js";
-import { faClock, faStar } from '@fortawesome/free-regular-svg-icons';
+import { faClock, faStar } from "@fortawesome/free-regular-svg-icons";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 function Service_Details() {
   const CustomNextArrow = ({ onClick }) => (
@@ -60,7 +64,10 @@ function Service_Details() {
         />
         <meta httpEquiv="x-ua-compatible" content="ie=edge" />
         <title>Service Details - Petpia – Pet Care Service Template</title>
-        <link rel="shortcut icon" href="src/assets/images/logo/favourite_icon.png" />
+        <link
+          rel="shortcut icon"
+          href="src/assets/images/logo/favourite_icon.png"
+        />
         <link rel="stylesheet" href="src/assets/css/all.css" />
         <div className="body_wrap">
           <div className="backtotop">
@@ -75,7 +82,7 @@ function Service_Details() {
                   <div className="col col-lg-4 col-md-7 col-sm-9">
                     <ul className="breadcrumb_nav">
                       <li>
-                        <a href="Homepage">Home</a>
+                            <Link to="/Homepage">Home</Link>
                       </li>
                       <li>Single</li>
                     </ul>
@@ -97,7 +104,8 @@ function Service_Details() {
             <section
               className="service_section bg_gray section_space_lg"
               style={{
-                backgroundImage: 'url("src/assets/images/shape/shape_paws_bg_2.svg")',
+                backgroundImage:
+                  'url("src/assets/images/shape/shape_paws_bg_2.svg")',
               }}
             >
               <div className="container">
@@ -129,8 +137,7 @@ function Service_Details() {
                         <div className="item_content">
                           <div className="d-flex justify-content-between align-items-center">
                             <div className="service_time">
-                            <FontAwesomeIcon icon={faClock} />{" "}
-                             15 minute visit
+                              <FontAwesomeIcon icon={faClock} /> 15 minute visit
                             </div>
                             <div className="item_price">
                               <span>$22.00</span>
@@ -141,9 +148,9 @@ function Service_Details() {
                             quote
                           </h3>
                         </div>
-                        <a
+                        <Link
                           className="item_global_link"
-                          href="service_details"
+                          to="/service_details"
                         />
                       </div>
                       <div className="service_price_item">
@@ -156,7 +163,7 @@ function Service_Details() {
                         <div className="item_content">
                           <div className="d-flex justify-content-between align-items-center">
                             <div className="service_time">
-                               <FontAwesomeIcon icon={faClock} />{" "} 30 minute visit
+                              <FontAwesomeIcon icon={faClock} /> 30 minute visit
                             </div>
                             <div className="item_price">
                               <span>$29.00</span>
@@ -167,9 +174,9 @@ function Service_Details() {
                             morning visit
                           </h3>
                         </div>
-                        <a
+                        <Link
                           className="item_global_link"
-                          href="service_details"
+                          to="/service_details"
                         />
                       </div>
                       <div className="service_price_item">
@@ -182,7 +189,7 @@ function Service_Details() {
                         <div className="item_content">
                           <div className="d-flex justify-content-between align-items-center">
                             <div className="service_time">
-                               <FontAwesomeIcon icon={faClock} />{" "} 45 minute visit
+                              <FontAwesomeIcon icon={faClock} /> 45 minute visit
                             </div>
                             <div className="item_price">
                               <span>$36.00</span>
@@ -193,9 +200,9 @@ function Service_Details() {
                             additional dog.
                           </h3>
                         </div>
-                        <a
+                        <Link
                           className="item_global_link"
-                          href="service_details"
+                          to="/service_details"
                         />
                       </div>
                     </div>
@@ -212,7 +219,7 @@ function Service_Details() {
                         <div className="item_content">
                           <div className="d-flex justify-content-between align-items-center">
                             <div className="service_time">
-                               <FontAwesomeIcon icon={faClock} />{" "} 29 minute visit
+                              <FontAwesomeIcon icon={faClock} /> 29 minute visit
                             </div>
                             <div className="item_price">
                               <span>$22.00</span>
@@ -223,9 +230,9 @@ function Service_Details() {
                             quote
                           </h3>
                         </div>
-                        <a
+                        <link
                           className="item_global_link"
-                          href="service_details"
+                          to="/service_details"
                         />
                       </div>
                       <div className="service_price_item">
@@ -238,8 +245,8 @@ function Service_Details() {
                         <div className="item_content">
                           <div className="d-flex justify-content-between align-items-center">
                             <div className="service_time">
-                               <FontAwesomeIcon icon={faClock} />{" "} 65 Overnight Pet
-                              Sitting
+                              <FontAwesomeIcon icon={faClock} /> 65 Overnight
+                              Pet Sitting
                             </div>
                             <div className="item_price">
                               <span>$29.00</span>
@@ -250,9 +257,9 @@ function Service_Details() {
                             morning visit
                           </h3>
                         </div>
-                        <a
+                        <Link
                           className="item_global_link"
-                          href="service_details"
+                          to="/service_details"
                         />
                       </div>
                       <div className="service_price_item">
@@ -265,7 +272,8 @@ function Service_Details() {
                         <div className="item_content">
                           <div className="d-flex justify-content-between align-items-center">
                             <div className="service_time">
-                               <FontAwesomeIcon icon={faClock} />{" "} 40 Private Boarding
+                              <FontAwesomeIcon icon={faClock} /> 40 Private
+                              Boarding
                             </div>
                             <div className="item_price">
                               <span>$36.00</span>
@@ -276,9 +284,9 @@ function Service_Details() {
                             additional dog.
                           </h3>
                         </div>
-                        <a
+                        <Link
                           className="item_global_link"
-                          href="service_details"
+                          to="/service_details"
                         />
                       </div>
                     </div>
@@ -296,338 +304,350 @@ function Service_Details() {
                 </div>
               </div>
               <div className="testimonial_carousel">
-              <Slider {...settings}>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_1.png"
-                          alt="Pet Thumbnail Image"
-                        />
+                <Slider {...settings}>
+                  <div className="col carousel_item">
+                    <div className="testimonial_item">
+                      <div className="testimonial_admin">
+                        <div className="admin_thumbnail">
+                          <img
+                            src="src/assets/images/meta/thumbnail_img_1.png"
+                            alt="Pet Thumbnail Image"
+                          />
+                        </div>
+                        <div className="admin_info">
+                          <h4 className="admin_name">Home Visits</h4>
+                          <span className="admin_designation">
+                            Lucas Simões
+                          </span>
+                        </div>
                       </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Home Visits</h4>
-                        <span className="admin_designation">Lucas Simões</span>
-                      </div>
+                      <ul className="rating_star">
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                      </ul>
+                      <p className="mb-0">
+                        Tristique nulla aliquet enim tortor at auctor urna nunc.
+                        Massa enim nec dui nunc mattis enim ut tellus
+                      </p>
+                      <span className="quote_icon">
+                        <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                      </span>
                     </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Tristique nulla aliquet enim tortor at auctor urna nunc.
-                      Massa enim nec dui nunc mattis enim ut tellus
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
                   </div>
-                </div>
 
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_2.png"
-                          alt="Pet Thumbnail Image"
-                        />
+                  <div className="col carousel_item">
+                    <div className="testimonial_item">
+                      <div className="testimonial_admin">
+                        <div className="admin_thumbnail">
+                          <img
+                            src="src/assets/images/meta/thumbnail_img_2.png"
+                            alt="Pet Thumbnail Image"
+                          />
+                        </div>
+                        <div className="admin_info">
+                          <h4 className="admin_name">Dog Boarding</h4>
+                          <span className="admin_designation">
+                            Wilhelm Dowall
+                          </span>
+                        </div>
                       </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Dog Boarding</h4>
-                        <span className="admin_designation">
-                          Wilhelm Dowall
-                        </span>
-                      </div>
+                      <ul className="rating_star">
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                      </ul>
+                      <p className="mb-0">
+                        Lectus magna fringilla urna porttitor rhoncus dolor
+                        purus non enim. Tellus in hac habitasse platea dictumst
+                      </p>
+                      <span className="quote_icon">
+                        <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                      </span>
                     </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Lectus magna fringilla urna porttitor rhoncus dolor purus
-                      non enim. Tellus in hac habitasse platea dictumst
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
                   </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_3.png"
-                          alt="Pet Thumbnail Image"
-                        />
+                  <div className="col carousel_item">
+                    <div className="testimonial_item">
+                      <div className="testimonial_admin">
+                        <div className="admin_thumbnail">
+                          <img
+                            src="src/assets/images/meta/thumbnail_img_3.png"
+                            alt="Pet Thumbnail Image"
+                          />
+                        </div>
+                        <div className="admin_info">
+                          <h4 className="admin_name">Pet Training</h4>
+                          <span className="admin_designation">
+                            Lara Madrigal
+                          </span>
+                        </div>
                       </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Pet Training</h4>
-                        <span className="admin_designation">Lara Madrigal</span>
-                      </div>
+                      <ul className="rating_star">
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                      </ul>
+                      <p className="mb-0">
+                        Ut tortor pretium viverra suspendisse potenti nullam.
+                        Venenatis urna cursus eget nunc scelerisque viverra
+                        mauris in aliquam
+                      </p>
+                      <span className="quote_icon">
+                        <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                      </span>
                     </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Ut tortor pretium viverra suspendisse potenti nullam.
-                      Venenatis urna cursus eget nunc scelerisque viverra mauris
-                      in aliquam
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
                   </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_4.png"
-                          alt="Pet Thumbnail Image"
-                        />
+                  <div className="col carousel_item">
+                    <div className="testimonial_item">
+                      <div className="testimonial_admin">
+                        <div className="admin_thumbnail">
+                          <img
+                            src="src/assets/images/meta/thumbnail_img_4.png"
+                            alt="Pet Thumbnail Image"
+                          />
+                        </div>
+                        <div className="admin_info">
+                          <h4 className="admin_name">Home Visit</h4>
+                          <span className="admin_designation">
+                            Lara Madrigal
+                          </span>
+                        </div>
                       </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Home Visit</h4>
-                        <span className="admin_designation">Lara Madrigal</span>
-                      </div>
+                      <ul className="rating_star">
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                      </ul>
+                      <p className="mb-0">
+                        Ut tortor pretium viverra suspendisse potenti nullam.
+                        Venenatis urna cursus eget nunc scelerisque viverra
+                        mauris in aliquam
+                      </p>
+                      <span className="quote_icon">
+                        <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                      </span>
                     </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Ut tortor pretium viverra suspendisse potenti nullam.
-                      Venenatis urna cursus eget nunc scelerisque viverra mauris
-                      in aliquam
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
                   </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_1.png"
-                          alt="Pet Thumbnail Image"
-                        />
+                  <div className="col carousel_item">
+                    <div className="testimonial_item">
+                      <div className="testimonial_admin">
+                        <div className="admin_thumbnail">
+                          <img
+                            src="src/assets/images/meta/thumbnail_img_1.png"
+                            alt="Pet Thumbnail Image"
+                          />
+                        </div>
+                        <div className="admin_info">
+                          <h4 className="admin_name">Home Visits</h4>
+                          <span className="admin_designation">
+                            Lucas Simões
+                          </span>
+                        </div>
                       </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Home Visits</h4>
-                        <span className="admin_designation">Lucas Simões</span>
-                      </div>
+                      <ul className="rating_star">
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                      </ul>
+                      <p className="mb-0">
+                        Tristique nulla aliquet enim tortor at auctor urna nunc.
+                        Massa enim nec dui nunc mattis enim ut tellus
+                      </p>
+                      <span className="quote_icon">
+                        <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                      </span>
                     </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Tristique nulla aliquet enim tortor at auctor urna nunc.
-                      Massa enim nec dui nunc mattis enim ut tellus
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
                   </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_2.png"
-                          alt="Pet Thumbnail Image"
-                        />
+                  <div className="col carousel_item">
+                    <div className="testimonial_item">
+                      <div className="testimonial_admin">
+                        <div className="admin_thumbnail">
+                          <img
+                            src="src/assets/images/meta/thumbnail_img_2.png"
+                            alt="Pet Thumbnail Image"
+                          />
+                        </div>
+                        <div className="admin_info">
+                          <h4 className="admin_name">Dog Boarding</h4>
+                          <span className="admin_designation">
+                            Wilhelm Dowall
+                          </span>
+                        </div>
                       </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Dog Boarding</h4>
-                        <span className="admin_designation">
-                          Wilhelm Dowall
-                        </span>
-                      </div>
+                      <ul className="rating_star">
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                      </ul>
+                      <p className="mb-0">
+                        Lectus magna fringilla urna porttitor rhoncus dolor
+                        purus non enim. Tellus in hac habitasse platea dictumst
+                      </p>
+                      <span className="quote_icon">
+                        <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                      </span>
                     </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Lectus magna fringilla urna porttitor rhoncus dolor purus
-                      non enim. Tellus in hac habitasse platea dictumst
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
                   </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_3.png"
-                          alt="Pet Thumbnail Image"
-                        />
+                  <div className="col carousel_item">
+                    <div className="testimonial_item">
+                      <div className="testimonial_admin">
+                        <div className="admin_thumbnail">
+                          <img
+                            src="src/assets/images/meta/thumbnail_img_3.png"
+                            alt="Pet Thumbnail Image"
+                          />
+                        </div>
+                        <div className="admin_info">
+                          <h4 className="admin_name">Pet Training</h4>
+                          <span className="admin_designation">
+                            Lara Madrigal
+                          </span>
+                        </div>
                       </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Pet Training</h4>
-                        <span className="admin_designation">Lara Madrigal</span>
-                      </div>
+                      <ul className="rating_star">
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                      </ul>
+                      <p className="mb-0">
+                        Ut tortor pretium viverra suspendisse potenti nullam.
+                        Venenatis urna cursus eget nunc scelerisque viverra
+                        mauris in aliquam
+                      </p>
+                      <span className="quote_icon">
+                        <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                      </span>
                     </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Ut tortor pretium viverra suspendisse potenti nullam.
-                      Venenatis urna cursus eget nunc scelerisque viverra mauris
-                      in aliquam
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
                   </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_4.png"
-                          alt="Pet Thumbnail Image"
-                        />
+                  <div className="col carousel_item">
+                    <div className="testimonial_item">
+                      <div className="testimonial_admin">
+                        <div className="admin_thumbnail">
+                          <img
+                            src="src/assets/images/meta/thumbnail_img_4.png"
+                            alt="Pet Thumbnail Image"
+                          />
+                        </div>
+                        <div className="admin_info">
+                          <h4 className="admin_name">Home Visit</h4>
+                          <span className="admin_designation">
+                            Lara Madrigal
+                          </span>
+                        </div>
                       </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Home Visit</h4>
-                        <span className="admin_designation">Lara Madrigal</span>
-                      </div>
+                      <ul className="rating_star">
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faStar} />{" "}
+                        </li>
+                      </ul>
+                      <p className="mb-0">
+                        Ut tortor pretium viverra suspendisse potenti nullam.
+                        Venenatis urna cursus eget nunc scelerisque viverra
+                        mauris in aliquam
+                      </p>
+                      <span className="quote_icon">
+                        <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                      </span>
                     </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Ut tortor pretium viverra suspendisse potenti nullam.
-                      Venenatis urna cursus eget nunc scelerisque viverra mauris
-                      in aliquam
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
                   </div>
-                </div>
-              </Slider>
-            </div>
+                </Slider>
+              </div>
             </section>
             <section className="service_section section_space_lg pb-0">
               <div className="container">
@@ -659,10 +679,10 @@ function Service_Details() {
                       <div className="item_price">
                         <span>From $27 / hour</span>
                       </div>
-                      <a className="btn_unfill" href="service_details">
+                      <Link className="btn_unfill" to="/service_details">
                         <span>Get Service</span>{" "}
                         <FontAwesomeIcon icon={faArrowRight} />
-                      </a>
+                      </Link>
                       <div className="decoration_image">
                         <img
                           src="src/assets/images/shape/shape_paws.svg"
@@ -695,10 +715,10 @@ function Service_Details() {
                       <div className="item_price">
                         <span>From $39 / complex</span>
                       </div>
-                      <a className="btn_unfill" href="service_details">
+                      <Link className="btn_unfill" to="/service_details">
                         <span>Get Service</span>{" "}
                         <FontAwesomeIcon icon={faArrowRight} />
-                      </a>
+                      </Link>
                       <div className="decoration_image">
                         <img
                           src="src/assets/images/shape/shape_paws.svg"
@@ -733,10 +753,10 @@ function Service_Details() {
                       <div className="item_price">
                         <span>From $15 / hour</span>
                       </div>
-                      <a className="btn_unfill" href="service_details">
+                      <Link className="btn_unfill" to="/service_details">
                         <span>Get Service</span>{" "}
                         <FontAwesomeIcon icon={faArrowRight} />
-                      </a>
+                      </Link>
                       <div className="decoration_image">
                         <img
                           src="src/assets/images/shape/shape_paws.svg"

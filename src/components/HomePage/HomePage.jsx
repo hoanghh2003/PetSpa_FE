@@ -11,7 +11,6 @@ import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { faQuoteRight } from "@fortawesome/free-solid-svg-icons";
-import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -30,6 +29,7 @@ import "../../assets/js/main.js";
 import Slider from "react-slick";
 import PropTypes from "prop-types";
 import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   const CustomNextArrow = ({ onClick }) => (
@@ -114,9 +114,9 @@ function HomePage() {
                   your pets receive the love, attention, and professional care
                   they deserve.
                 </p>
-                <a className="btn btn_primary" href="service">
+                <Link className="btn btn_primary" to="/service">
                   <FontAwesomeIcon icon={faPaw} /> Our Service
-                </a>
+                </Link>
                 <div className="banner_services_wrap row">
                   <div className="col">
                     <div className="iconbox_item iconbox_overicon">
@@ -137,7 +137,7 @@ function HomePage() {
                       <div className="item_content">
                         <h3 className="item_title mb-0">Vet services</h3>
                       </div>
-                      <a className="item_global_link" href="service" />
+                      <Link className="item_global_link" to="/service" />
                     </div>
                   </div>
                   <div className="col">
@@ -159,7 +159,7 @@ function HomePage() {
                       <div className="item_content">
                         <h3 className="item_title mb-0">Special care</h3>
                       </div>
-                      <a className="item_global_link" href="service" />
+                      <Link className="item_global_link" to="/service" />
                     </div>
                   </div>
                   <div className="col">
@@ -181,7 +181,7 @@ function HomePage() {
                       <div className="item_content">
                         <h3 className="item_title mb-0">High quality</h3>
                       </div>
-                      <a className="item_global_link" href="service" />
+                      <Link className="item_global_link" to="/service" />
                     </div>
                   </div>
                 </div>
@@ -299,10 +299,10 @@ function HomePage() {
                     <div className="item_price">
                       <span>From $15 / hour</span>
                     </div>
-                    <a className="btn_unfill" href="service_details">
+                    <Link className="btn_unfill" to="/service_details">
                       <span>Get Service</span>{" "}
                       <FontAwesomeIcon icon={faArrowRight} />{" "}
-                    </a>
+                    </Link>
                     <div className="decoration_image">
                       <img
                         src="src/assets/images/shape/shape_paws.svg"
@@ -335,10 +335,10 @@ function HomePage() {
                     <div className="item_price">
                       <span>From $39 / complex</span>
                     </div>
-                    <a className="btn_unfill" href="service_details">
+                    <Link className="btn_unfill" to="/service_details">
                       <span>Get Service</span>{" "}
                       <FontAwesomeIcon icon={faArrowRight} />{" "}
-                    </a>
+                    </Link>
                     <div className="decoration_image">
                       <img
                         src="src/assets/images/shape/shape_paws.svg"
@@ -371,10 +371,10 @@ function HomePage() {
                     <div className="item_price">
                       <span>From $27 / hour</span>
                     </div>
-                    <a className="btn_unfill" href="service_details">
+                    <Link className="btn_unfill" to="/service_details">
                       <span>Get Service</span>{" "}
                       <FontAwesomeIcon icon={faArrowRight} />{" "}
-                    </a>
+                    </Link>
                     <div className="decoration_image">
                       <img
                         src="src/assets/images/shape/shape_paws.svg"
@@ -407,10 +407,10 @@ function HomePage() {
                     <div className="item_price">
                       <span>From $22 / trip</span>
                     </div>
-                    <a className="btn_unfill" href="service_details">
+                    <Link className="btn_unfill" to="/service_details">
                       <span>Get Service</span>{" "}
                       <FontAwesomeIcon icon={faArrowRight} />
-                    </a>
+                    </Link>
                     <div className="decoration_image">
                       <img
                         src="src/assets/images/shape/shape_paws.svg"
@@ -443,10 +443,10 @@ function HomePage() {
                     <div className="item_price">
                       <span>From $39/ visit</span>
                     </div>
-                    <a className="btn_unfill" href="service_details">
+                    <Link className="btn_unfill" to="/service_details">
                       <span>Get Service</span>{" "}
                       <FontAwesomeIcon icon={faArrowRight} />{" "}
-                    </a>
+                    </Link>
                     <div className="decoration_image">
                       <img
                         src="src/assets/images/shape/shape_paws.svg"
@@ -479,10 +479,10 @@ function HomePage() {
                     <div className="item_price">
                       <span>From $15 / night</span>
                     </div>
-                    <a className="btn_unfill" href="service_details">
+                    <Link className="btn_unfill" to="/service_details">
                       <span>Get Service</span>{" "}
                       <FontAwesomeIcon icon={faArrowRight} />{" "}
-                    </a>
+                    </Link>
                     <div className="decoration_image">
                       <img
                         src="src/assets/images/shape/shape_paws.svg"
@@ -608,649 +608,6 @@ function HomePage() {
             <div className="decoration_item shape_dot_1">
               <img
                 src="src/assets/images/shape/shape_dot_group_2.svg"
-                alt="Colorful Dots"
-              />
-            </div>
-          </section>
-          <section className="pricing_section bg_gray section_space_lg decoration_wrap">
-            <div className="container">
-              <div className="section_title text-center">
-                <h2 className="title_text">
-                  <span className="sub_title">Our prices</span>
-                  Dog Grooming Services &amp; Pricing
-                </h2>
-                <div className="row justify-content-center">
-                  <div className="col col-lg-6">
-                    <p className="mb-0">
-                      We can fully customize your pet sitting schedule to fit
-                      your pet’s needs. Pick and choose what visits work best
-                      for you and your family
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="pricing_tab_wrap">
-                <ul className="nav tabs_nav unorder_list_center" role="tablist">
-                  <li className="nav-item" role="presentation">
-                    <button
-                      className="nav-link active"
-                      data-bs-toggle="tab"
-                      data-bs-target="#tab_small_dog"
-                      type="button"
-                      role="tab"
-                      aria-selected="true"
-                    >
-                      Small Dog
-                    </button>
-                  </li>
-                  <li className="nav-item" role="presentation">
-                    <button
-                      className="nav-link"
-                      data-bs-toggle="tab"
-                      data-bs-target="#tab_medium_dog"
-                      type="button"
-                      role="tab"
-                      aria-selected="false"
-                    >
-                      Medium Dog
-                    </button>
-                  </li>
-                  <li className="nav-item" role="presentation">
-                    <button
-                      className="nav-link"
-                      data-bs-toggle="tab"
-                      data-bs-target="#tab_large_dog"
-                      type="button"
-                      role="tab"
-                      aria-selected="false"
-                    >
-                      Large Dog
-                    </button>
-                  </li>
-                </ul>
-                <div className="tab-content">
-                  <div
-                    className="tab-pane fade show active"
-                    id="tab_small_dog"
-                    role="tabpanel"
-                  >
-                    <div className="row">
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">Bath &amp; Brush</h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$13 – $18</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <FontAwesomeIcon icon={faCircleCheck} />{" "}
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCircleCheck} />{" "}
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCircleCheck} />{" "}
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">Mini Groom</h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$20 – $25</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item active">
-                          <h3 className="pricing_heading">Complete Groom</h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$35 – $40</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn btn_warning" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">
-                            Hand Scissor Groom
-                          </h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$50 – $55</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="tab-pane fade"
-                    id="tab_medium_dog"
-                    role="tabpanel"
-                  >
-                    <div className="row">
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">Bath &amp; Brush</h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$13 – $18</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">Mini Groom</h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$20 – $25</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item active">
-                          <h3 className="pricing_heading">Complete Groom</h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$35 – $40</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn btn_warning" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">
-                            Hand Scissor Groom
-                          </h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$50 – $55</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="tab-pane fade"
-                    id="tab_large_dog"
-                    role="tabpanel"
-                  >
-                    <div className="row">
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">Bath &amp; Brush</h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$13 – $18</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">Mini Groom</h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$20 – $25</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item active">
-                          <h3 className="pricing_heading">Complete Groom</h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$35 – $40</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn btn_warning" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">
-                            Hand Scissor Groom
-                          </h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$50 – $55</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="decoration_item shape_dot_1">
-              <img
-                src="src/assets/images/shape/shape_dot_group_3.svg"
-                alt="Colorful Dots"
-              />
-            </div>
-            <div className="decoration_item shape_dot_2">
-              <img
-                src="src/assets/images/shape/shape_dot_group_4.svg"
                 alt="Colorful Dots"
               />
             </div>
@@ -1647,9 +1004,9 @@ function HomePage() {
                         <span>De-matting and detangling</span>
                       </li>
                     </ul>
-                    <a className="btn btn_primary" href="service_details">
+                    <Link className="btn btn_primary" to="/service_details">
                       <FontAwesomeIcon icon={faPaw} /> Get Service
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -1697,12 +1054,12 @@ function HomePage() {
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="https://www.facebook.com/2010.HaHuyHoanglacuaai.2003">
+                          <a href="https://www.facebook.com/2010.HaHuyHoanglacuaai.2003" target="_blank" rel="noopener noreferrer">
                             <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
-                          <a href="https://www.instagram.com/hardy._.03">
+                          <a href="https://www.instagram.com/hardy._.03" target="_blank" rel="noopener noreferrer">
                             <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
@@ -1725,12 +1082,12 @@ function HomePage() {
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="https://www.facebook.com/namtheshy2mai">
+                          <a href="https://www.facebook.com/namtheshy2mai" target="_blank" rel="noopener noreferrer">
                             <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
-                          <a href="https://www.instagram.com/namle2330">
+                          <a href="https://www.instagram.com/namle2330" target="_blank" rel="noopener noreferrer">
                             <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
@@ -1753,12 +1110,12 @@ function HomePage() {
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="https://www.facebook.com/profile.php?id=100024098480982">
+                          <a href="https://www.facebook.com/profile.php?id=100024098480982" target="_blank" rel="noopener noreferrer">
                             <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
-                          <a href="#!">
+                          <a href="#!" target="_blank" rel="noopener noreferrer">
                             <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
@@ -1767,11 +1124,11 @@ function HomePage() {
                   </div>
                 </div>
               </div>
-              <div className="text-center">
-                <a className="btn btn_primary" href="team">
+              {/* <div className="text-center">
+                <Link className="btn btn_primary" to="/team">
                   <FontAwesomeIcon icon={faPaw} /> Our Team
-                </a>
-              </div>
+                </Link>
+              </div> */}
             </div>
           </section>
           <section className="contact_section bg_gray section_space_lg decoration_wrap">

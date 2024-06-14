@@ -142,9 +142,9 @@
     visibility: hidden
 }
 
-.bs-stepper-pane:not(.fade),.bs-stepper .content:not(.fade) {
+/* .bs-stepper-pane:not(.fade),.bs-stepper .content:not(.fade) {
     display: none;
-}
+} */
 
 .bs-stepper .content.fade,.bs-stepper-pane.fade {
     visibility: hidden;

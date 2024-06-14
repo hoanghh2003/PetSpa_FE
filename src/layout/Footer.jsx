@@ -4,8 +4,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faPhoneFlip } from "@fortawesome/free-solid-svg-icons";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
-
-
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -63,54 +62,32 @@ const Footer = () => {
                 <div className="page_list">
                   <ul className="unorder_list_block">
                     <li>
-                      <a href="HomePage">
-                        <FontAwesomeIcon icon={faCircle} size="xs" /> {" "}
-                        Home
-                      </a>
+                      <Link to="/HomePage">
+                        <FontAwesomeIcon icon={faCircle} size="xs" /> Home
+                      </Link>
                     </li>
                     <li>
-                      <a href="about">
-                        <FontAwesomeIcon icon={faCircle} size="xs" /> {" "}
-                        About
-                      </a>
+                      <Link to="/about">
+                        <FontAwesomeIcon icon={faCircle} size="xs" /> About
+                      </Link>
                     </li>
                     <li>
-                      <a href="service">
-                        <FontAwesomeIcon icon={faCircle} size="xs" />{" "}
-                        Services
-                      </a>
-                    </li>
-                    <li>
-                      <a href="shop">
-                        <FontAwesomeIcon icon={faCircle} size="xs" /> {" "}
-                        Shop
-                      </a>
-                    </li>
+                    <Link to="/service">
+                        <FontAwesomeIcon icon={faCircle} size="xs" /> Services
+                     </Link>
+                     </li>
+
                   </ul>
                   <ul className="unorder_list_block">
                     <li>
-                      <a href="faq">
-                        <FontAwesomeIcon icon={faCircle} size="xs" /> {" "} 
-                        FAQ
-                      </a>
+                    <Link to="/faq">
+                        <FontAwesomeIcon icon={faCircle} size="xs" /> FAQ
+                      </Link>
                     </li>
                     <li>
-                      <a href="gallery">
-                        <FontAwesomeIcon icon={faCircle} size="xs" /> {" "}
-                        Gallery
-                      </a>
-                    </li>
-                    <li>
-                      <a href="shipping_info">
-                        <FontAwesomeIcon icon={faCircle} size="xs" />{" "}
-                        Delivery
-                      </a>
-                    </li>
-                    <li>
-                      <a href="deals">
-                        <FontAwesomeIcon icon={faCircle} size="xs" /> {" "}
-                        Sales
-                      </a>
+                    <Link to="/shop">
+                        <FontAwesomeIcon icon={faCircle} size="xs" /> Shop
+                    </Link>
                     </li>
                   </ul>
                 </div>
@@ -132,7 +109,7 @@ const Footer = () => {
                         placeholder="Email"
                       />
                       <button type="submit">
-                      <FontAwesomeIcon icon={faArrowRight} />{" "}
+                        <FontAwesomeIcon icon={faArrowRight} />{" "}
                       </button>
                     </div>
                   </div>

@@ -78,11 +78,6 @@ const LoginPage = () => {
   return (
     <div className="w-700 h-screen flex items-start my-1 ">
       <div className="relative w-1/2 h-full flex flex-col">
-        <div className="absolute top-[10%] left-[10%] flex flex-col">
-          <h1 className="text-4x1 text-[#1e1a1a] font-extrabold m--5">
-            Pet Spa
-          </h1>
-        </div>
 
         <img
           src={COVER_IMAGE}
@@ -114,22 +109,22 @@ const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)} />
               <p style={{ color: "black" }}>{error}</p>
             </div>
-            <div className="w-full flex items-center justify-between">
-              <div className="w-full flex items-center">
+            <div className="w-full flex justify-between">
+              <div className="w-full flex ">
                 <input type="checkbox" className="w-4 h-4 mr-2" />
-                <p className="text-sm">Remeber me for 30 days</p>
+                <p className="text-sm ">Remeber Me</p>
               </div>
               <Link
                 to={"/forgot-password"}
-                className="text-sm font-medium cursor-pointer whitespace-nowrap underline underline-offset-2"
+                className="text-sm font-medium cursor-pointer whitespace-nowrap"
               >
-                Forgot Password ?
+                Forgot Password?
               </Link>
             </div>
             <div className="w-full flex flex-col my-4">
               <button
                 onClick={login}
-                className="w-full text-white my-2 font-semibold bg-[#060606] rounded-md p-4 text-center flex items-center justify-center cursor-pointer"
+                className="w-full text-white my-2 font-semibold bg-[#9966FF] rounded-md p-4 text-center flex items-center justify-center cursor-pointer"
                 disabled={isLoading}
               >
                 {isLoading ? "Loading..." : "Log in"}
@@ -153,11 +148,13 @@ const LoginPage = () => {
           </div>
         </div>
         <div className="w-full flex items-center justify-center py-3">
-          <p className="text-sm font-normal text-[#060606]">
-            Dont have a account?
-            <span className="font-semibold underline underline-offset-2 cursor-pointer">
-              Sign up for free
+          <p className="text-lg font-normal text-[#060606]">
+            Dont have a account?{" "}
+            <Link to={"/register"}>
+            <span className="font-semibold cursor-pointer">
+              Sign up
             </span>
+            </Link>
           </p>
         </div>
       </div>

@@ -19,6 +19,7 @@ import "../../assets/js/vanilla-calendar.min.js";
 import "../../assets/js/countdown.js";
 import "../../assets/js/main.js";
 import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import { Link } from "react-router-dom";
 
 function Service() {
   return (
@@ -56,7 +57,7 @@ function Service() {
                 <div className="col col-lg-4 col-md-7 col-sm-9">
                   <ul className="breadcrumb_nav">
                     <li>
-                      <a href="Homepage">Home</a>
+                      <Link to="/Homepage">Home</Link>
                     </li>
                     <li>Service</li>
                   </ul>
@@ -114,10 +115,10 @@ function Service() {
                     <div className="item_price">
                       <span>From $15 / hour</span>
                     </div>
-                    <a className="btn_unfill" href="service_details">
+                    <Link className="btn_unfill" to="/service_details">
                       <span>Get Service</span>{" "}
                       <FontAwesomeIcon icon={faArrowRight} />
-                    </a>
+                    </Link>
                     <div className="decoration_image">
                       <img
                         src="src/assets/images/shape/shape_paws.svg"
@@ -150,10 +151,10 @@ function Service() {
                     <div className="item_price">
                       <span>From $39 / complex</span>
                     </div>
-                    <a className="btn_unfill" href="service_details">
+                    <Link className="btn_unfill" to="/service_details">
                       <span>Get Service</span>{" "}
                       <FontAwesomeIcon icon={faArrowRight} />
-                    </a>
+                    </Link>
                     <div className="decoration_image">
                       <img
                         src="src/assets/images/shape/shape_paws.svg"
@@ -186,10 +187,10 @@ function Service() {
                     <div className="item_price">
                       <span>From $27 / hour</span>
                     </div>
-                    <a className="btn_unfill" href="service_details">
+                    <Link className="btn_unfill" to="/service_details">
                       <span>Get Service</span>{" "}
                       <FontAwesomeIcon icon={faArrowRight} />
-                    </a>
+                    </Link>
                     <div className="decoration_image">
                       <img
                         src="src/assets/images/shape/shape_paws.svg"
@@ -222,10 +223,10 @@ function Service() {
                     <div className="item_price">
                       <span>From $22 / trip</span>
                     </div>
-                    <a className="btn_unfill" href="service_details">
+                    <Link className="btn_unfill" to="/service_details">
                       <span>Get Service</span>{" "}
                       <FontAwesomeIcon icon={faArrowRight} />
-                    </a>
+                    </Link>
                     <div className="decoration_image">
                       <img
                         src="src/assets/images/shape/shape_paws.svg"
@@ -258,10 +259,10 @@ function Service() {
                     <div className="item_price">
                       <span>From $39/ visit</span>
                     </div>
-                    <a className="btn_unfill" href="service_details">
+                    <Link className="btn_unfill" to="/service_details">
                       <span>Get Service</span>{" "}
                       <FontAwesomeIcon icon={faArrowRight} />
-                    </a>
+                    </Link>
                     <div className="decoration_image">
                       <img
                         src="src/assets/images/shape/shape_paws.svg"
@@ -294,10 +295,10 @@ function Service() {
                     <div className="item_price">
                       <span>From $15 / night</span>
                     </div>
-                    <a className="btn_unfill" href="service_details">
+                    <Link className="btn_unfill" to="/service_details">
                       <span>Get Service</span>{" "}
                       <FontAwesomeIcon icon={faArrowRight} />
-                    </a>
+                    </Link>
                     <div className="decoration_image">
                       <img
                         src="src/assets/images/shape/shape_paws.svg"
@@ -357,9 +358,9 @@ function Service() {
                         <span>De-matting and detangling</span>
                       </li>
                     </ul>
-                    <a className="btn btn_primary" href="service_details">
+                    <Link className="btn btn_primary" to="/service_details">
                       <FontAwesomeIcon icon={faPaw} /> Get Service
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -488,9 +489,9 @@ function Service() {
                                 per quote
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -518,9 +519,9 @@ function Service() {
                                 morning visit
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -548,9 +549,9 @@ function Service() {
                                 each additional dog.
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                         </div>
@@ -582,9 +583,9 @@ function Service() {
                                 per quote
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -612,9 +613,9 @@ function Service() {
                                 morning visit
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -642,9 +643,9 @@ function Service() {
                                 each additional dog.
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                         </div>
@@ -684,9 +685,9 @@ function Service() {
                                 per quote
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -714,9 +715,9 @@ function Service() {
                                 morning visit
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -744,9 +745,9 @@ function Service() {
                                 each additional dog.
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                         </div>
@@ -778,9 +779,9 @@ function Service() {
                                 per quote
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -808,9 +809,9 @@ function Service() {
                                 morning visit
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -838,9 +839,9 @@ function Service() {
                                 each additional dog.
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                         </div>
@@ -880,9 +881,9 @@ function Service() {
                                 per quote
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -910,9 +911,9 @@ function Service() {
                                 morning visit
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -940,9 +941,9 @@ function Service() {
                                 each additional dog.
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                         </div>
@@ -974,9 +975,9 @@ function Service() {
                                 per quote
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -1004,9 +1005,9 @@ function Service() {
                                 morning visit
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -1034,9 +1035,9 @@ function Service() {
                                 each additional dog.
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                         </div>
@@ -1076,9 +1077,9 @@ function Service() {
                                 per quote
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -1106,9 +1107,9 @@ function Service() {
                                 morning visit
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -1136,9 +1137,9 @@ function Service() {
                                 each additional dog.
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                         </div>
@@ -1170,9 +1171,9 @@ function Service() {
                                 per quote
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -1200,9 +1201,9 @@ function Service() {
                                 morning visit
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                           <div className="service_price_item">
@@ -1230,9 +1231,9 @@ function Service() {
                                 each additional dog.
                               </h3>
                             </div>
-                            <a
+                            <Link
                               className="item_global_link"
-                              href="service_details"
+                              to="/service_details"
                             />
                           </div>
                         </div>
@@ -1337,11 +1338,11 @@ function Service() {
                   </div>
                 </div>
               </div>
-              <div className="text-center">
-                <a className="btn btn_primary" href="team">
+              {/* <div className="text-center">
+                <Link className="btn btn_primary" to="/team">
                   <FontAwesomeIcon icon={faPaw} /> Our Team
-                </a>
-              </div>
+                </Link>
+              </div> */}
             </div>
           </section>
         </main>
