@@ -25871,7 +25871,7 @@ hr {
     line-height: 1;
     font-size: 15px;
     font-weight: 600;
-    content: "\f107";
+    /* content: "\f107"; */
     font-weight: 400;
     margin: 2px 0 0 5px;
     font-family: "Font Awesome 5 Pro"

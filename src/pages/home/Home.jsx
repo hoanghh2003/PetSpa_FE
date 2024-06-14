@@ -69,7 +69,7 @@ const Home = () => {
       <section className="mt-10 p-3 montserrat-regular lg:max-w-[900px] mx-auto">
         <div className="text-2xl">Our best service</div>
 
-        <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-3">
+        <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3">
           {Array.isArray(services) &&
             services.map((service) => (
               <ServiceCard
@@ -88,7 +88,7 @@ const Home = () => {
       <section className="mt-10 p-3 montserrat-regular lg:max-w-[900px] mx-auto">
         <div className="text-2xl">Combos</div>
 
-        <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-3">
+        <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3">
           <ServiceCard />
           <ServiceCard />
           <ServiceCard />

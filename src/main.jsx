@@ -1,6 +1,6 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import MainLayout from "./layout/MainLayout";
-import Home from "./pages/home/Home";
+
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import LoginPage from "./components/LoginPage/login";
@@ -10,6 +10,12 @@ import ResetPassword from "./components/ResetPassword/ResetPassword";
 import Petmanagement from "./components/Petmanagement/Petmanagement";
 import HomePage from "./components/HomePage/HomePage";
 import ComfirmedEmail from "./components/ComfirmedEmail/ComfirmedEmail";
+import Service from "./components/ServicePage/Service";
+import Service_Details from "./components/Service_Details/Service_Detail";
+import Cart from "./components/Carts/Cart";
+
+import AccountInfoPage from "./components/ProfileUser/ProfileUser";
+
 //route
 const router = createBrowserRouter([
   {
@@ -17,7 +23,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <HomePage />,
       },
       {
         path: "/login",
@@ -40,12 +46,24 @@ const router = createBrowserRouter([
         element: <Petmanagement />,
       },
       {
-        path: "/HOMEPage",
-        element: <HomePage />,
+        path: "/Service",
+        element: <Service />,
+      },
+      {
+        path: "/Service_Details",
+        element: <Service_Details />,
+      },
+      {
+        path: "/Cart",
+        element: <Cart />,
       },
       {
         path: "/comfirmed-email",
         element: <ComfirmedEmail />,
+      },
+      {
+        path: "/profile",
+        element: <AccountInfoPage />,
       },
     ],
   },

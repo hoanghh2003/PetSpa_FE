@@ -75,14 +75,15 @@ const Register = () => {
       if (!response.ok) {
         // Nếu đăng ký thất bại
         const errorData = await response.json(); // Lấy thông tin lỗi từ response
-        setError(errorData.message || "Đăng ký thất bại"); // Hiển thị thông báo lỗi
+        setError(errorData.message || "Email is already Registered"); // Hiển thị thông báo lỗi
       } else {
         // Nếu đăng ký thành công
 
         const result = await response.json();
         localStorage.setItem("user-info", JSON.stringify(result));
         console.log(result);
-        setError("Register successfully"); // Xóa thông báo lỗi nếu có
+        setError("Register successfully");
+        navigator("/"); // Xóa thông báo lỗi nếu có
         // history.push("/"); // Chuyển hướng về trang chủ
       }
     } catch (error) {

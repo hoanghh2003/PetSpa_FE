@@ -115,6 +115,56 @@ function ResetPassword() {
         {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
       </div>
     </form>
+
+    // <Title level={3}>Change Password</Title>
+    // <Form
+    //   form={passwordForm}
+    //   onFinish={handleSubmit}
+    //   layout="vertical"
+    // >
+    //
+    //   <Form.Item
+    //     label="New Password"
+    //     name="newPassword"
+    //onChange={(e) => setNewPassword(e.target.value)}
+    //     rules={[
+    //       { required: true, message: "Please input your new password!" },
+    //       { min: 6, message: "Password must be at least 6 characters" },
+    //     ]}
+    //   >
+    //     <Input.Password />
+    //   </Form.Item>
+    //   <Form.Item
+    //     label="Confirm New Password"
+    //     name="confirmNewPassword"
+    //onChange={(e) => setConfirmPassword(e.target.value)}
+    //     dependencies={["newPassword"]}
+    //     hasFeedback
+    //     rules={[
+    //       {
+    //         required: true,
+    //         message: "Please confirm your new password!",
+    //       },
+    //       ({ getFieldValue }) => ({
+    //         validator(_, value) {
+    //           if (!value || getFieldValue("newPassword") === value) {
+    //             return Promise.resolve();
+    //           }
+    //           return Promise.reject(
+    //             new Error("The two passwords do not match!")
+    //           );
+    //         },
+    //       }),
+    //     ]}
+    //   >
+    //     <Input.Password />
+    //   </Form.Item>
+    //   <Form.Item>
+    //     <Button type="primary" htmlType="submit" loading={loading}>
+    //       Change Password
+    //     </Button>
+    //   </Form.Item>
+    // </Form>
   );
 }
 export default ResetPassword;
