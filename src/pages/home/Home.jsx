@@ -3,8 +3,40 @@ import mainImg from "../../assets/images/main-img.jpg";
 import mainImg2 from "../../assets/images/main-2-img.jpg";
 import FilterBadge from "@/components/FilterBadge";
 import ServiceCard from "@/components/ServiceCard";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Home = () => {
+  const [services, setServices] = useState([]);
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+  const handleBookNow = (serviceID) => {
+    // Do something with the serviceID, such as redirecting to booking page or sending request to server
+    var petId = "1122233333";
+    const newItem = { serviceID, petId };
+    setCart((prevCart) => [...prevCart, newItem]);
+    console.log(newItem);
+    // Lưu giỏ hàng vào localStorage
+    localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
+  };
+  const fetchServices = async () => {
+    try {
+      const response = await axios.get("https://localhost:7150/api/Service");
+      const result = response.data;
+      setServices(result.data.data);
+      localStorage.setItem("service", JSON.stringify(result));
+
+      console.log(setServices);
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    }
+  };
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
   return (
     <>
       {/* section 1 */}
@@ -38,10 +70,16 @@ const Home = () => {
         <div className="text-2xl">Our best service</div>
 
         <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-3">
-          <ServiceCard />
-          <ServiceCard />
-          <ServiceCard />
-          <ServiceCard />
+          {Array.isArray(services) &&
+            services.map((service) => (
+              <ServiceCard
+                key={service.serviceId}
+                serviceID={service.serviceId}
+                serviceName={service.serviceName}
+                serviceImg={service.serviceImg}
+                onBookNow={handleBookNow}
+              />
+            ))}
         </div>
       </section>
 
