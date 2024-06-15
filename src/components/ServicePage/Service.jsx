@@ -16,8 +16,8 @@ import {
   Button,
   DatePicker,
   Form,
-  Image,
   Modal,
+  Select,
   Space,
   Table,
   message,
@@ -25,8 +25,8 @@ import {
 //import serviceImg from "../assets/images/main-img.jpg";
 import { useNavigate } from "react-router-dom";
 import Search from "antd/es/input/Search.js";
-
-//import { Button } from "./ui/button";
+import { Option } from "antd/es/mentions/index.js";
+import { useForm } from "antd/es/form/Form.js";
 
 function Service() {
   const [error, setError] = useState();
@@ -36,178 +36,123 @@ function Service() {
   const navigate = useNavigate();
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [date, setDate] = useState();
-  const [petId, setPetId] = useState();
-  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectStaffId, setSelectStaffId] = useState();
+  const [form] = useForm();
   const [selectedPetId, setSelectedPetId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
-  const handleRowClick = (record) => {
-    setSelectedRow(record.key);
-  };
 
+  const [staffList, setStaffList] = useState([]);
   const columns = [
     {
-      title: "Name",
+      title: <span className="text-lg text-blue-500 font-semibold">Name</span>,
       dataIndex: "petName",
       key: "petName",
+      align: "center",
+      width: "27%", // Adjust width
+      render: (petName) => (
+        <span className="text-base text-black font-medium">{petName}</span>
+      ),
     },
     {
-      title: "Poster",
+      title: (
+        <span className="text-lg text-blue-500 font-semibold">Poster</span>
+      ),
       dataIndex: "image",
       key: "image",
-      render: (image) => <Image src={image} width={150} />,
+      align: "center",
+      width: "30%", // Adjust width
+      render: (image) => (
+        <div className="flex justify-center">
+          <img
+            src={image ? image : null}
+            width={150}
+            className="rounded-lg"
+            alt="Pet"
+          />
+        </div>
+      ),
     },
     {
-      title: "Action",
+      title: (
+        <span className="text-lg text-blue-500 font-semibold">Action</span>
+      ),
       dataIndex: "petId",
       key: "petId",
+      align: "center",
+      width: "28%", // Adjust width
       render: (petId) => (
         <Button
-          onClick={() => setPetId(petId)}
-          style={{
-            backgroundColor: petId === selectedPetId ? "#1890ff" : "",
-            color: petId === selectedPetId ? "#fff" : "",
-            borderColor: petId === selectedPetId ? "#1890ff" : "",
-          }}
+          onClick={() => setSelectedPetId(petId)}
+          className={`border-2 rounded-md px-4 py-2 transition-colors ${
+            petId === selectedPetId
+              ? "bg-blue-400 text-white border-blue-500"
+              : "bg-white text-blue-600 border-blue-700 hover:bg-blue-600 hover:text-white"
+          }`}
         >
           Choice
         </Button>
       ),
     },
   ];
-  // async function handleBooking() {
-  //   setIsLoading(true);
-  //   const userInfoString = localStorage.getItem("user-info");
-  //   const userInfo = JSON.parse(userInfoString);
-
-  //   if (birthday == null) {
-  //     setError("Biriday is required");
-  //     setIsLoading(false);
-  //     return;
-  //   }
-  //   console.log(birthday.format("YYYY-MM-DDTHH:mm:ss"));
-  //   if (userInfo != null) {
-  //     console.log(userInfo.data.token);
-
-  //     if (userInfo.data.user.id != null) {
-  //       const requestData = {
-  //         cusId: userInfo.data.user.id, // Customer ID
-  //         bookingSchedule: birthday.format("YYYY-MM-DDTHH:mm:ss"), // Booking schedule (replace with actual date)
-  //         bookingDetails: [],
-  //       };
-
-  //       // Add booking details for each product
-  //       products.forEach((item) => {
-  //         if (item.selected) {
-  //           console.log(item.selected);
-  //           requestData.bookingDetails.push({
-  //             petId: item.petId,
-  //             serviceId: item.serviceId,
-  //             comboId: null, // Replace with actual combo ID if available
-  //             staffId: null, // Replace with actual staff ID if available
-  //             status: true, // Change status if needed
-  //             comboType: "string", // Replace with actual combo type if available
-  //           });
-  //         }
-  //       });
-
-  //       try {
-  //         // Sending POST request to the backend
-  //         const response = await axios.post(
-  //           `https://localhost:7150/api/Booking`,
-  //           requestData
-  //           // ,
-  //           // {
-  //           //   headers: {
-  //           //     Authorization: `Bearer ${userInfo.data.token}`,
-  //           //   },
-  //           // }
-  //         );
-
-  //         if (response.status === 401) {
-  //           console.log("Token expired. Please log in again.");
-  //           setError("Token expired. Please log in again.");
-  //           return;
-  //         }
-
-  //         const result = response.data;
-  //         console.log(result);
-  //         localStorage.removeItem("cart");
-  //         toast.success("Booking successful!");
-
-  //         // Redirect to home page after a delay
-  //         setTimeout(() => {
-  //           navigate("/");
-  //         }, 1000); // Adjust delay as needed
-  //       } catch (error) {
-  //         if (error.response) {
-  //           if (error.response.status === 401) {
-  //             console.log("Token expired. Please log in again.");
-  //             toast.error(error.response.data);
-  //             setError("Token expired. Please log in again.");
-  //           } else {
-  //             console.error("Error response:", error.response.data);
-  //             toast.error(error.response.data || "An error occurred.");
-  //             setError(error.response.data || "An error occurred.");
-  //           }
-  //         } else {
-  //           console.error("Error:", error);
-  //           toast.error(error.response.data);
-  //           setError("An unexpected error occurred.");
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-  async function handleChoice() {
+  const handleStaffChange = (staffId) => {
+    setSelectStaffId(staffId);
+  };
+  const handleChoice = async () => {
     const savedCart = localStorage.getItem("cart");
     const cart = savedCart ? JSON.parse(savedCart) : [];
-    if (petId == null || date == null) {
+    if (selectedPetId == null || date == null) {
       setError("Please select a pet and a birthday.");
       return;
     }
+    setError("");
     const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
     const token = userInfo?.data?.token;
 
     const isAlreadyInCart = cart.some(
       (item) =>
-        item.petId === petId && item.selectedServiceId === selectedServiceId
+        item.petId === selectedPetId && item.serviceId === selectedServiceId
     );
 
     if (isAlreadyInCart) {
       message.warning("This pet has already used this service.");
       return;
     }
+
+    setLoading(true); // Start loading
+
     try {
       // Sending POST request to the backend
-      const response = await axios.get(
-        `https://localhost:7150/api/Booking/available?startTime=${date.format(
-          "YYYY-MM-DDTHH:mm:ss"
-        )}&serviceCode=${selectedServiceId}`,
+      let url = `https://localhost:7150/api/Booking/available?startTime=${date.format(
+        "YYYY-MM-DDTHH:mm:ss"
+      )}&serviceCode=${selectedServiceId}`;
 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      if (selectStaffId) {
+        url += `&staffId=${selectStaffId}`;
+      }
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.status === 401) {
         console.log("Token expired. Please log in again.");
         setError("Token expired. Please log in again.");
+        setLoading(false); // Stop loading
         return;
       }
 
-      console.log(services);
       const selectedService = services.find(
         (service) => service.serviceId === selectedServiceId
       );
-      console.log(selectedService);
-      const selectedPet = dataSource.find((pet) => pet.petId === petId);
-      console.log(selectedPet);
+
+      const selectedPet = dataSource.find((pet) => pet.petId === selectedPetId);
       const newItem = {
         serviceId: selectedService.serviceId,
         data: date.format("YYYY-MM-DDTHH:mm:ss"),
@@ -217,10 +162,16 @@ function Service() {
         petName: selectedPet.petName,
       };
       setCart((prevCart) => [...prevCart, newItem]);
-      console.log(newItem);
       message.success("Booking for pet successfully");
       // Lưu giỏ hàng vào localStorage
       localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
+      setSelectedPetId(null);
+      setDate(null);
+      setSelectStaffId(null);
+      setSelectedServiceId(null);
+      form.resetFields();
+      setLoading(false); // Reset Ant Design form fields
+      setIsOpen(false);
     } catch (error) {
       if (error.response) {
         if (error.response.status === 401) {
@@ -229,43 +180,23 @@ function Service() {
           setTimeout(() => {
             navigate("/");
           }, 1000);
+          setLoading(false);
         } else {
           console.error("Error response:", error.response.data);
           message.error(error.response.data || "An error occurred.");
-          setError(error.response.data || "An error occurred.");
+          setLoading(false);
           return;
+          //setError(error.response.data || "An error occurred.");
         }
       } else {
         console.error("Error:", error);
-        message.error(error.response.data);
-        setError("An unexpected error occurred.");
+        message.error("An unexpected error occurred.");
+        setLoading(false);
         return;
+        //setError("An unexpected error occurred.");
       }
     }
-
-    // console.log(services);
-    // const selectedService = services.find(
-    //   (service) => service.serviceId === selectedServiceId
-    // );
-    // console.log(selectedService);
-    // const selectedPet = dataSource.find((pet) => pet.petId === petId);
-    // console.log(selectedPet);
-    // const newItem = {
-    //   serviceId: selectedService.serviceId,
-    //   data: date.format("YYYY-MM-DDTHH:mm:ss"),
-    //   serviceName: selectedService.serviceName,
-    //   servicePrice: selectedService.price,
-    //   petId: selectedPet.petId,
-    //   petName: selectedPet.petName,
-    // };
-
-    // setCart((prevCart) => [...prevCart, newItem]);
-    // console.log(newItem);
-    // // Lưu giỏ hàng vào localStorage
-    // localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
-    setSelectedServiceId(null);
-    setIsOpen(false);
-  }
+  };
 
   async function fetchMovies() {
     const userInfoString = localStorage.getItem("user-info");
@@ -365,8 +296,19 @@ function Service() {
       }
     }
   };
+  const fetchStaff = async () => {
+    try {
+      const response = await axios.get("https://localhost:7150/api/Staff");
+      setStaffList(response.data.data);
+      console.log(response.data.data);
+    } catch (error) {
+      message.error("Failed to fetch staff members");
+    }
+  };
+
   useEffect(() => {
     fetchServices();
+    fetchStaff();
   }, [dataSource]);
   return (
     <div>
@@ -389,32 +331,53 @@ function Service() {
           src="https://www.googletagmanager.com/gtag/js?id=G-TSZFRP5V2X"
         ></script>
       </div>
-      <Modal open={isOpen} onOk={handleChoice} onCancel={handleHideModal}>
+      <Modal open={isOpen} footer={null} onCancel={handleHideModal} width={800}>
         <Table
           columns={columns}
           dataSource={dataSource}
-          onRow={(record) => ({
-            onClick: () => handleRowClick(record),
-            style: {
-              backgroundColor: record.key === selectedRow ? "#e6f7ff" : "",
-            },
-          })}
           rowClassName={(record) =>
-            record.key === selectedRow ? "selected-row" : ""
+            record.petId === selectedPetId ? "bg-cyan-100" : ""
           }
+          rowKey="petId"
+          pagination={false} // Remove if you need pagination
+          scroll={{ x: 800 }} // Enables horizontal scrolling
         />
-        <Form>
-          <Form.Item label="Birthday">
-            <Space direction="vertical">
-              <DatePicker
-                showTime
-                value={date}
-                onChange={(date) => setDate(date)}
-              />
-            </Space>
-          </Form.Item>
-          <p style={{ color: "red" }}>{error}</p>
+        <Form layout="vertical" className="mt-5">
+          <div className="flex space-x-4">
+            <Form.Item label="Date" className="w-1/2">
+              <Space direction="vertical" className="w-full">
+                <DatePicker
+                  showTime
+                  value={date}
+                  onChange={(date) => setDate(date)}
+                  className="w-full"
+                />
+              </Space>
+            </Form.Item>
+            <Form.Item label="Select Staff" className="w-1/2">
+              <Select
+                showSearch
+                placeholder="Select a staff"
+                optionFilterProp="children"
+                onChange={handleStaffChange}
+                className="w-full"
+              >
+                {Array.isArray(staffList) &&
+                  staffList.map((staff) => (
+                    <Option key={staff.staffId} value={staff.staffId}>
+                      {staff.fullName}
+                    </Option>
+                  ))}
+              </Select>
+            </Form.Item>
+          </div>
+          <p className="text-red-500">{error}</p>
         </Form>
+        <div className="flex justify-end mt-2">
+          <Button type="primary" onClick={handleChoice} loading={loading}>
+            Book
+          </Button>
+        </div>
       </Modal>
 
       <div className="body_wrap">
@@ -745,10 +708,6 @@ function Service() {
                         <span>
                           Breed specific styling, cutting and stripping
                         </span>
-                      </li>
-                      <li>
-                        <i className="fas fa-check-circle" />{" "}
-                        <span>De-matting and detangling</span>
                       </li>
                     </ul>
                     <a className="btn btn_primary" href="service_details">

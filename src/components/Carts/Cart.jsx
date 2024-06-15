@@ -12,11 +12,12 @@ import "../../assets/js/countdown.js";
 import "../../assets/js/main.js";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Checkbox, Form } from "antd";
+import { Checkbox, Form, message } from "antd";
 import { DatePicker, Space } from "antd";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+
 function Cart() {
   const [birthday, setBirthday] = useState();
   const [products, setProducts] = useState([]);
@@ -24,10 +25,10 @@ function Cart() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleCheckboxChange = (productId) => {
+  const handleCheckboxChange = (productId, petId) => {
     setProducts((prevStoredProducts) => {
       return prevStoredProducts.map((product) => {
-        if (product.serviceId === productId) {
+        if (product.serviceId === productId && product.petId === petId) {
           return { ...product, selected: !product.selected };
         }
         return product;
@@ -47,93 +48,97 @@ function Cart() {
       );
     }
   }, []);
+
   function getFromLocalStorage() {
     const jsonData = localStorage.getItem("cart");
     return JSON.parse(jsonData);
   }
+
   async function handleBooking() {
     setIsLoading(true);
     const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
 
-    if (birthday == null) {
-      setError("Biriday is required");
-      setIsLoading(false);
-      return;
-    }
-    console.log(birthday.format("YYYY-MM-DDTHH:mm:ss"));
     if (userInfo != null) {
-      console.log(userInfo.data.token);
+      const token = userInfo.data.token;
+      const userId = userInfo.data.user.id;
 
-      if (userInfo.data.user.id != null) {
-        const requestData = {
-          cusId: userInfo.data.user.id, // Customer ID
-          bookingSchedule: birthday.format("YYYY-MM-DDTHH:mm:ss"), // Booking schedule (replace with actual date)
-          bookingDetails: [],
-        };
+      if (userId != null) {
+        const savedCart = localStorage.getItem("cart");
+        const cart = savedCart ? JSON.parse(savedCart) : [];
 
-        // Add booking details for each product
-        products.forEach((item) => {
-          if (item.selected) {
-            console.log(item.selected);
-            requestData.bookingDetails.push({
-              petId: item.petId,
-              serviceId: item.serviceId,
-              comboId: null, // Replace with actual combo ID if available
-              staffId: null, // Replace with actual staff ID if available
-              status: true, // Change status if needed
-              comboType: "string", // Replace with actual combo type if available
-            });
-          }
+        if (cart.length === 0) {
+          setError("Your cart is empty.");
+          setIsLoading(false);
+          return;
+        }
+
+        const bookingPromises = cart.map((item) => {
+          const requestData = {
+            cusId: userId, // Customer ID
+            bookingSchedule: item.data, // Assuming item.data is already formatted as "YYYY-MM-DDTHH:mm:ss"
+            bookingDetails: [
+              {
+                petId: item.petId,
+                serviceId: item.serviceId,
+                comboId: item.comboId || null, // Replace with actual combo ID if available
+                staffId: item.staffId || null, // Replace with actual staff ID if available
+                status: true, // Change status if needed
+                comboType: "string", // Replace with actual combo type if available
+              },
+            ],
+          };
+
+          return axios.post(`https://localhost:7150/api/Booking`, requestData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
         });
 
         try {
-          // Sending POST request to the backend
-          const response = await axios.post(
-            `https://localhost:7150/api/Booking`,
-            requestData
-            // ,
-            // {
-            //   headers: {
-            //     Authorization: `Bearer ${userInfo.data.token}`,
-            //   },
-            // }
+          const responses = await Promise.all(bookingPromises);
+
+          const successfulResponses = responses.filter(
+            (response) => response.status === 200
           );
 
-          if (response.status === 401) {
-            console.log("Token expired. Please log in again.");
-            setError("Token expired. Please log in again.");
-            return;
+          if (successfulResponses.length === cart.length) {
+            console.log("All bookings were successful.");
+            localStorage.removeItem("cart");
+            message.success("All bookings were successful!");
+
+            // Redirect to home page after a delay
+            setTimeout(() => {
+              navigate("/");
+            }, 1000); // Adjust delay as needed
+          } else {
+            console.log("Some bookings were not successful.");
+            message.warning("Some bookings were not successful.");
           }
-
-          const result = response.data;
-          console.log(result);
-          localStorage.removeItem("cart");
-          toast.success("Booking successful!");
-
-          // Redirect to home page after a delay
-          setTimeout(() => {
-            navigate("/");
-          }, 1000); // Adjust delay as needed
         } catch (error) {
           if (error.response) {
             if (error.response.status === 401) {
               console.log("Token expired. Please log in again.");
-              toast.error(error.response.data);
+              message.error(error.response.data);
               setError("Token expired. Please log in again.");
             } else {
               console.error("Error response:", error.response.data);
-              toast.error(error.response.data || "An error occurred.");
+              message.error(error.response.data || "An error occurred.");
               setError(error.response.data || "An error occurred.");
             }
           } else {
             console.error("Error:", error);
-            toast.error(error.response.data);
+            toast.error("An unexpected error occurred.");
             setError("An unexpected error occurred.");
           }
         }
       }
+    } else {
+      message.error("User not logged in.");
     }
+
+    setIsLoading(false);
   }
 
   return (
@@ -175,7 +180,7 @@ function Cart() {
                   <div className="table_header d-none d-lg-block">
                     <ul className="table_wrap unorder_list">
                       <li>
-                        <span className="col_title">Serive</span>
+                        <span className="col_title">Service</span>
                       </li>
                       <li>
                         <span className="col_title">PetName</span>
@@ -195,7 +200,10 @@ function Cart() {
                           <Checkbox
                             checked={product.selected}
                             onChange={() =>
-                              handleCheckboxChange(product.serviceId)
+                              handleCheckboxChange(
+                                product.serviceId,
+                                product.petId
+                              )
                             }
                           ></Checkbox>
 
@@ -227,7 +235,7 @@ function Cart() {
                         <li>
                           <span className="col_title d-lg-none">Total</span>
                           <div className="item_price">
-                            <span>{products.servicePrice}</span>
+                            <span>{product.servicePrice}</span>
                           </div>
                         </li>
                       </ul>
@@ -302,17 +310,16 @@ function Cart() {
                               </Form.Item>
                             </Form>
                             <ToastContainer />
-                            <a className="btn btn_primary" href="#!">
-                              {products.length > 0 && (
-                                <button
-                                  onClick={handleBooking}
-                                  id="checkout-button"
-                                  disabled={isLoading}
-                                >
-                                  Checkout
-                                </button>
-                              )}
-                            </a>
+                            {products.length > 0 && (
+                              <button
+                                onClick={handleBooking}
+                                id="checkout-button"
+                                className="btn btn_primary"
+                                disabled={isLoading}
+                              >
+                                Checkout
+                              </button>
+                            )}
                           </li>
                         </ul>
                       </div>

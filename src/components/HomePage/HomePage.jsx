@@ -762,12 +762,14 @@ function HomePage() {
                     id="tab_small_dog"
                     role="tabpanel"
                   >
-                    <div className="row">
+                    <div className="row text-center flex justify-center">
                       <div className="col col-lg-3 col-md-6 col-sm-6">
                         <div className="pricing_table_item">
                           <h3 className="pricing_heading">Bath &amp; Brush</h3>
                           <div className="pricing_value">
-                            <span className="value_text">$13 – $18</span>
+                            <span className="value_text text-center flex justify-center">
+                              $13 – $18
+                            </span>
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
@@ -894,53 +896,6 @@ function HomePage() {
                             </li>
                           </ul>
                           <a className="btn btn_warning" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">
-                            Hand Scissor Groom
-                          </h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$50 – $55</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
                             Purchase Now
                           </a>
                         </div>

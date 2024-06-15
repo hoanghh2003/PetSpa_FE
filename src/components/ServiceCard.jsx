@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable react/prop-types */
+
 import { Card } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import serviceImg from "../assets/images/main-img.jpg";
