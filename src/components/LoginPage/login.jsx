@@ -96,8 +96,7 @@ const LoginPage = () => {
       }
 
       let item = { username: email, password: password };
-      console.log(email);
-      console.log(password);
+
       try {
         let response = await fetch("https://localhost:7150/api/Auth/Login", {
           method: "POST",

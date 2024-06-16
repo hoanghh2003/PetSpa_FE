@@ -1,4 +1,39 @@
+import { message } from "antd";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import BookingCard from "../BookingCard";
+
 function HomePage() {
+  const [comboList, setComboList] = useState([]);
+  const fetchCombo = async () => {
+    try {
+      const response = await axios.get("https://localhost:7150/api/Combo");
+      setComboList(response.data);
+      console.log(response.data);
+    } catch (error) {
+      message.error("Failed to fetch staff members");
+    }
+  };
+  const handleCombo = (comboId) => {
+    setSelectComboId(comboId);
+    console.log(comboId);
+  };
+
+  useEffect(() => {
+    fetchCombo();
+    console.log(comboList);
+  }, []);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectComboId, setSelectComboId] = useState();
+  const handleOpenModal = (comboId) => {
+    setIsOpen(true);
+    console.log(comboId);
+    setSelectComboId(comboId);
+    console.log(selectComboId);
+  };
+  const handleHideModal = () => setIsOpen(false);
+
   return (
     <>
       {/* Hello world */}
@@ -36,6 +71,7 @@ function HomePage() {
                   'url("src/assets/images/overlay/shapes_overlay_1.svg")',
               }}
             />
+
             <div className="container">
               <div className="banner_content">
                 <h1 className="banner_title">
@@ -763,143 +799,52 @@ function HomePage() {
                     role="tabpanel"
                   >
                     <div className="row text-center flex justify-center">
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">Bath &amp; Brush</h3>
-                          <div className="pricing_value">
-                            <span className="value_text text-center flex justify-center">
-                              $13 – $18
-                            </span>
+                      {comboList.map((combo) => (
+                        <div
+                          key={combo.comboId}
+                          className="col col-lg-3 col-md-6 col-sm-6"
+                        >
+                          <div className="pricing_table_item">
+                            <h3 className="pricing_heading">
+                              {combo.comboType}
+                            </h3>
+                            <div className="pricing_value">
+                              <span className="value_text">{combo.price}</span>
+                            </div>
+                            <ul className="pricing_info_list unorder_list_block">
+                              {combo.services.map((service, idx) => (
+                                <li key={idx}>
+                                  <i
+                                    className={`fas fa-check-circle ${
+                                      service.included ? "" : "del"
+                                    }`}
+                                  />
+                                  {service.included ? (
+                                    <span>{service.serviceName}</span>
+                                  ) : (
+                                    <del>
+                                      <span>{service.serviceName}</span>
+                                    </del>
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
                           </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
+                          <button
+                            onClick={() => handleOpenModal(combo.comboId)}
+                            className="btn border_primary"
+                          >
                             Purchase Now
-                          </a>
+                          </button>
+                          {isOpen && selectComboId === combo.comboId && (
+                            <BookingCard
+                              isOpen={isOpen}
+                              handleHideModal={handleHideModal}
+                              comboId={selectComboId}
+                            />
+                          )}
                         </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">Mini Groom</h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$20 – $25</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item active">
-                          <h3 className="pricing_heading">Complete Groom</h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$35 – $40</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn btn_warning" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
                   <div
@@ -913,143 +858,6 @@ function HomePage() {
                           <h3 className="pricing_heading">Bath &amp; Brush</h3>
                           <div className="pricing_value">
                             <span className="value_text">$13 – $18</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">Mini Groom</h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$20 – $25</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item active">
-                          <h3 className="pricing_heading">Complete Groom</h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$35 – $40</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn btn_warning" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">
-                            Hand Scissor Groom
-                          </h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$50 – $55</span>
                           </div>
                           <ul className="pricing_info_list unorder_list_block">
                             <li>
@@ -1229,53 +1037,6 @@ function HomePage() {
                             </li>
                           </ul>
                           <a className="btn btn_warning" href="#!">
-                            Purchase Now
-                          </a>
-                        </div>
-                      </div>
-                      <div className="col col-lg-3 col-md-6 col-sm-6">
-                        <div className="pricing_table_item">
-                          <h3 className="pricing_heading">
-                            Hand Scissor Groom
-                          </h3>
-                          <div className="pricing_value">
-                            <span className="value_text">$50 – $55</span>
-                          </div>
-                          <ul className="pricing_info_list unorder_list_block">
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Bath (Hypo-Allergenic)</span>
-                            </li>
-                            <li>
-                              <i className="fas fa-check-circle" />
-                              <span>Conditioning Treatment</span>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Ears Flushed &amp; Cleaned</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Watering Plants</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Handscissor Finish</span>
-                              </del>
-                            </li>
-                            <li>
-                              <del>
-                                <i className="fas fa-check-circle" />
-                                <span>Setting Length of Coat</span>
-                              </del>
-                            </li>
-                          </ul>
-                          <a className="btn border_primary" href="#!">
                             Purchase Now
                           </a>
                         </div>

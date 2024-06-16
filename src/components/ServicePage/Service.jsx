@@ -99,6 +99,29 @@ function Service() {
       ),
     },
   ];
+  const handleSearch = async (searchTerm) => {
+    if (!searchTerm) {
+      setError(
+        "Sorry, we could not find any results for your search term. Please check your spelling, use more general words, and try again."
+      );
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        //https://localhost:7150/api/Service/search?searchTerm=grooming
+        `https://localhost:7150/api/Service/search?searchTerm=${searchTerm}`
+      );
+      setServices(response.data.data);
+      setError("");
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data.msg);
+      } else {
+        setError("An error occurred while searching");
+      }
+    }
+  };
   const handleStaffChange = (staffId) => {
     setSelectStaffId(staffId);
   };
@@ -160,6 +183,7 @@ function Service() {
         servicePrice: selectedService.price,
         petId: selectedPet.petId,
         petName: selectedPet.petName,
+        comboId: "",
       };
       setCart((prevCart) => [...prevCart, newItem]);
       message.success("Booking for pet successfully");
@@ -176,14 +200,15 @@ function Service() {
       if (error.response) {
         if (error.response.status === 401) {
           console.log("Token expired. Please log in again.");
-          message.error(error.response.data);
+          message.error(error.response);
+          localStorage.removeItem("user-info");
           setTimeout(() => {
             navigate("/");
           }, 1000);
           setLoading(false);
         } else {
           console.error("Error response:", error.response.data);
-          message.error(error.response.data || "An error occurred.");
+          message.error(error.response || "An error occurred.");
           setLoading(false);
           return;
           //setError(error.response.data || "An error occurred.");
@@ -273,29 +298,7 @@ function Service() {
       console.error("Error fetching services:", error);
     }
   };
-  const handleSearch = async (searchTerm) => {
-    if (!searchTerm) {
-      setError(
-        "Sorry, we could not find any results for your search term. Please check your spelling, use more general words, and try again."
-      );
-      return;
-    }
 
-    try {
-      const response = await axios.get(
-        //https://localhost:7150/api/Service/search?searchTerm=grooming
-        `https://localhost:7150/api/Service/search?searchTerm=${searchTerm}`
-      );
-      setServices(response.data.data);
-      setError("");
-    } catch (err) {
-      if (err.response) {
-        setError(err.response.data.msg);
-      } else {
-        setError("An error occurred while searching");
-      }
-    }
-  };
   const fetchStaff = async () => {
     try {
       const response = await axios.get("https://localhost:7150/api/Staff");
