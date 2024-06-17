@@ -1,6 +1,5 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 // import MainLayout from "./layout/MainLayout";
-import Home from "./pages/home/Home";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import LoginPage from "./components/LoginPage/login";
@@ -15,6 +14,8 @@ import Cart from "./components/Cart/Cart";
 import MainLayout from "./layout/MainLayout";
 import Account from "./components/Account/Account";
 import AccountSetting from "./components/Account/AccountSetting";
+import PrivacyPolicyTerms from "./components/Register/policy";
+import Logout from "./components/Logout/logout";
 //route
 const router = createBrowserRouter([
   {
@@ -67,6 +68,18 @@ const router = createBrowserRouter([
       {
         path: "/AccountSetting",
         element: <AccountSetting/>,
+      },
+      {
+        path: "/Pet",
+        element: <Petmanagement/>,
+      },
+      {
+        path: "/policy",
+        element: <PrivacyPolicyTerms/>,
+      },
+      {
+        path: "/logout",
+        element: <Logout/>,
       },
     ],
   },

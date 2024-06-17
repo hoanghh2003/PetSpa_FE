@@ -1,29 +1,119 @@
 import { Link } from "react-router-dom";
+import { Form, Input, Button, Row, Col, Card, Typography } from "antd";
+import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { useState, useEffect } from "react";
+const { Title } = Typography;
+import axios from "axios";
 
 function AccountSetting() {
+  const [form] = Form.useForm();
+  const [passwordForm] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
+  const handleChangePassword = async (values) => {
+    setLoading(true);
+    try {
+      const userInfoString = localStorage.getItem("user-info");
+      const userInfo = JSON.parse(userInfoString);
+      const token = userInfo?.data?.token;
+
+      if (!token) {
+        message.error("You must be logged in");
+        window.location.href = "/login"; // Redirect to login page
+        return;
+      }
+
+      const apiUrl = `https://localhost:7150/api/Auth/change-password`;
+      const data = {
+        email: userInfo.data.user.email,
+        currentPassword: values.oldPassword,
+        newPassword: values.newPassword,
+      };
+
+      const response = await axios({
+        method: "POST",
+        url: apiUrl,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        data: data,
+      });
+
+      if (response.status === 200) {
+        message.success("Password changed successfully");
+        passwordForm.resetFields([
+          "oldPassword",
+          "newPassword",
+          "confirmNewPassword",
+        ]);
+      } else {
+        message.error(response.data.message || "Error changing password");
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        message.error("Session expired. Please log in again.");
+        localStorage.removeItem("user-info"); // Clear expired token
+        window.location.href = "/login"; // Redirect to login page
+      } else {
+        console.error("API error:", error);
+        message.error("Current password wrong to change");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div>
       {/* Core CSS */}
-      <link rel="stylesheet" href="src/assets/vendor/css/rtl/core.css" className="template-customizer-core-css" />
-      <link rel="stylesheet" href="src/assets/vendor/css/rtl/theme-default.css" className="template-customizer-theme-css" />
+      <link
+        rel="stylesheet"
+        href="src/assets/vendor/css/rtl/core.css"
+        className="template-customizer-core-css"
+      />
+      <link
+        rel="stylesheet"
+        href="src/assets/vendor/css/rtl/theme-default.css"
+        className="template-customizer-theme-css"
+      />
       {/* Page CSS */}
-      <link rel="stylesheet" href="src/assets/vendor/css/pages/page-account-settings.css" />
+      <link
+        rel="stylesheet"
+        href="src/assets/vendor/css/pages/page-account-settings.css"
+      />
 
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
           <div className="layout-page">
-            <nav className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+            <nav
+              className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+              id="layout-navbar"
+            >
               <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-                <a className="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <a
+                  className="nav-item nav-link px-0 me-xl-4"
+                  href="javascript:void(0)"
+                >
                   <i className="ti ti-menu-2 ti-sm" />
                 </a>
               </div>
-              <div className="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <div
+                className="navbar-nav-right d-flex align-items-center"
+                id="navbar-collapse"
+              >
                 <ul className="navbar-nav flex-row align-items-center ms-auto">
                   <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                    <a className="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <a
+                      className="nav-link dropdown-toggle hide-arrow"
+                      href="javascript:void(0);"
+                      data-bs-toggle="dropdown"
+                    >
                       <div className="avatar avatar-online">
-                        <img src="src/assets/images/avatars/1.png" alt className="h-auto rounded-circle" />
+                        <img
+                          src="src/assets/images/avatars/1.png"
+                          alt
+                          className="h-auto rounded-circle"
+                        />
                       </div>
                     </a>
                     <ul className="dropdown-menu dropdown-menu-end">
@@ -32,11 +122,17 @@ function AccountSetting() {
                           <div className="d-flex">
                             <div className="flex-shrink-0 me-3">
                               <div className="avatar avatar-online">
-                                <img src="src/assets/images/avatars/1.png" alt className="h-auto rounded-circle" />
+                                <img
+                                  src="src/assets/images/avatars/1.png"
+                                  alt
+                                  className="h-auto rounded-circle"
+                                />
                               </div>
                             </div>
                             <div className="flex-grow-1">
-                              <span className="fw-medium d-block">John Doe</span>
+                              <span className="fw-medium d-block">
+                                John Doe
+                              </span>
                               <small className="text-muted">Admin</small>
                             </div>
                           </div>
@@ -58,7 +154,11 @@ function AccountSetting() {
                         </Link>
                       </li>
                       <li>
-                        <a className="dropdown-item" href="auth-login-cover.html" target="_blank">
+                        <a
+                          className="dropdown-item"
+                          href="auth-login-cover.html"
+                          target="_blank"
+                        >
                           <i className="ti ti-logout me-2 ti-sm" />
                           <span className="align-middle">Log Out</span>
                         </a>
@@ -72,59 +172,148 @@ function AccountSetting() {
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
                 <h4 className="py-3 mb-4">
-                  <span className="ti-xs ti ti-lock me-1"><Link to="/account">Account Settings</Link> /</span> Security
+                  <span className="ti-xs ti ti-lock me-1">
+                    <Link to="/account">Account Settings</Link> /
+                  </span>{" "}
+                  Security
                 </h4>
                 <div className="row">
                   <div className="col-md-12">
                     <ul className="nav nav-pills flex-column flex-md-row mb-4">
-                      <li className="nav-item"><Link className="nav-link" to="/account"><i className="ti-xs ti ti-users me-1" /> Account</Link></li>
-                      <li className="nav-item"><a className="nav-link active" href="javascript:void(0);"><i className="ti-xs ti ti-lock me-1" /> Security</a></li>
+                      <li className="nav-item">
+                        <Link className="nav-link" to="/account">
+                          <i className="ti-xs ti ti-users me-1" /> Account
+                        </Link>
+                      </li>
+                      <li className="nav-item">
+                        <a
+                          className="nav-link active"
+                          href="javascript:void(0);"
+                        >
+                          <i className="ti-xs ti ti-lock me-1" /> Security
+                        </a>
+                      </li>
                     </ul>
 
-                    <div className="card mb-4">
-                      <h5 className="card-header">Change Password</h5>
+                    <Card className="mb-4">
+                      <Title level={5} className="card-header">
+                        Change Password
+                      </Title>
                       <div className="card-body">
-                        <form id="formAccountSettings" method="GET" onSubmit={() => false}>
-                          <div className="row">
-                            <div className="mb-3 col-md-6 form-password-toggle">
-                              <label className="form-label" htmlFor="currentPassword">Current Password</label>
-                              <div className="input-group input-group-merge">
-                                <input className="form-control" type="password" name="currentPassword" id="currentPassword" placeholder="············" />
-                                <span className="input-group-text cursor-pointer"><i className="ti ti-eye-off" /></span>
-                              </div>
-                            </div>
+                        <Form
+                          form={form}
+                          onFinish={handleChangePassword}
+                          layout="vertical"
+                        >
+                          <Row gutter={16}>
+                            <Col span={12}>
+                              <Form.Item
+                                label="Current Password"
+                                name="currentPassword"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message:
+                                      "Please input your current password!",
+                                  },
+                                ]}
+                                className="form-password-toggle"
+                              >
+                                <Input.Password
+                                  placeholder="············"
+                                  iconRender={(visible) =>
+                                    visible ? (
+                                      <EyeTwoTone />
+                                    ) : (
+                                      <EyeInvisibleOutlined />
+                                    )
+                                  }
+                                />
+                              </Form.Item>
+                            </Col>
+                          </Row>
+                          <Row gutter={16}>
+                            <Col span={12}>
+                              <Form.Item
+                                label="New Password"
+                                name="newPassword"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please input your new password!",
+                                  },
+                                ]}
+                                className="form-password-toggle"
+                              >
+                                <Input.Password
+                                  placeholder="············"
+                                  iconRender={(visible) =>
+                                    visible ? (
+                                      <EyeTwoTone />
+                                    ) : (
+                                      <EyeInvisibleOutlined />
+                                    )
+                                  }
+                                />
+                              </Form.Item>
+                            </Col>
+                            <Col span={12}>
+                              <Form.Item
+                                label="Confirm New Password"
+                                name="confirmPassword"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message:
+                                      "Please confirm your new password!",
+                                  },
+                                ]}
+                                className="form-password-toggle"
+                              >
+                                <Input.Password
+                                  placeholder="············"
+                                  iconRender={(visible) =>
+                                    visible ? (
+                                      <EyeTwoTone />
+                                    ) : (
+                                      <EyeInvisibleOutlined />
+                                    )
+                                  }
+                                />
+                              </Form.Item>
+                            </Col>
+                          </Row>
+                          <div className="col-12 mb-4">
+                            <Title level={6}>Password Requirements:</Title>
+                            <ul className="ps-3 mb-0">
+                              <li className="mb-1">
+                                Minimum 8 characters long - the more, the better
+                              </li>
+                              <li className="mb-1">
+                                At least one lowercase character
+                              </li>
+                              <li>
+                                At least one number, symbol, or whitespace
+                                character
+                              </li>
+                            </ul>
                           </div>
-                          <div className="row">
-                            <div className="mb-3 col-md-6 form-password-toggle">
-                              <label className="form-label" htmlFor="newPassword">New Password</label>
-                              <div className="input-group input-group-merge">
-                                <input className="form-control" type="password" id="newPassword" name="newPassword" placeholder="············" />
-                                <span className="input-group-text cursor-pointer"><i className="ti ti-eye-off" /></span>
-                              </div>
-                            </div>
-                            <div className="mb-3 col-md-6 form-password-toggle">
-                              <label className="form-label" htmlFor="confirmPassword">Confirm New Password</label>
-                              <div className="input-group input-group-merge">
-                                <input className="form-control" type="password" name="confirmPassword" id="confirmPassword" placeholder="············" />
-                                <span className="input-group-text cursor-pointer"><i className="ti ti-eye-off" /></span>
-                              </div>
-                            </div>
-                            <div className="col-12 mb-4">
-                              <h6>Password Requirements:</h6>
-                              <ul className="ps-3 mb-0">
-                                <li className="mb-1">Minimum 8 characters long - the more, the better</li>
-                                <li className="mb-1">At least one lowercase character</li>
-                                <li>At least one number, symbol, or whitespace character</li>
-                              </ul>
-                            </div>
-                            <div>
-                              <button type="submit" className="btn btn-primary me-2">Save changes</button>
-                              <button type="reset" className="btn btn-label-secondary">Cancel</button>
-                            </div>
-                          </div>
-                        </form>
+                          <Form.Item>
+                            <Button
+                              type="primary"
+                              htmlType="submit"
+                              loading={loading}
+                              className="me-2"
+                            >
+                              Save changes
+                            </Button>
+                            <Button type="default" htmlType="reset">
+                              Cancel
+                            </Button>
+                          </Form.Item>
+                        </Form>
                       </div>
-                    </div>
+                    </Card>
                   </div>
                 </div>
               </div>

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import COVER_IMAGE from "../../assets/images/background/1.png";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -37,36 +39,58 @@ function ForgotPassword() {
     }
   };
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-md mx-auto p-4 bg-white shadow-md rounded-md"
+    <div
+      className="flex items-center justify-center h-screen"
+      style={{
+        backgroundImage: `url(${COVER_IMAGE})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
     >
-      <h2 className="text-2xl font-semibold mb-4">Quên mật khẩu</h2>
-      <div className="mb-4">
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Địa chỉ email
-        </label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 p-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
-          required
-        />
+      <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
+        <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">
+          Forgot Password
+        </h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md w-full ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isLoading}
+          >
+            {isLoading ? "Sending..." : "Send"}
+          </button>
+          {message && (
+            <p className="mt-4 text-sm text-center text-gray-700">{message}</p>
+          )}
+        </form>
+        <div className="mt-4 text-sm text-gray-700 text-center">
+          <Link
+            to="/login"
+            className="text-blue-500 hover:underline focus:outline-none"
+          >
+            Back to Login
+          </Link>
+        </div>
       </div>
-      <button
-        type="submit"
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        disabled={isLoading} // Vô hiệu hóa nút khi đang gửi
-      >
-        {isLoading ? "Đang gửi..." : "Gửi"}
-      </button>
-      {message && <p className="mt-2 text-sm text-red-500">{message}</p>}
-    </form>
+    </div>
   );
 }
 

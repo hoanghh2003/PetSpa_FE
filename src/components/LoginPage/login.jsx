@@ -8,6 +8,9 @@ import LOGIN_GG from "../LoginPage/google-icon.png";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { auth, googleprovider } from "../../config/firebase";
+import axios from "axios";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,6 +20,62 @@ const LoginPage = () => {
   // const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const handleLoginGoogle = async () => {
+    try {
+      const userInfoString = localStorage.getItem("user-info");
+      const userInfo = JSON.parse(userInfoString);
+
+      if (userInfo == null) {
+        const result = await signInWithPopup(auth, googleprovider);
+
+        // Lấy Google Access Token và thông tin người dùng
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        if (!credential) {
+          throw new Error("Failed to get Google credentials");
+        }
+
+        const user = result.user;
+        console.log(result);
+        if (!user || !user.email) {
+          throw new Error("Failed to get user information from Google");
+        }
+
+        // Gửi yêu cầu đặt lại mật khẩu tới API
+        const response = await axios.post(
+          "https://localhost:7150/api/Auth/google",
+          { email: user.email } // Đảm bảo đúng định dạng yêu cầu API
+        );
+
+        if (response.status === 200) {
+          if (localStorage.getItem("user-info") === null) {
+            localStorage.setItem("user-info", JSON.stringify(response.data));
+          }
+          console.log(result);
+          setError("Login successfully");
+          navigate("/");
+        } else {
+          throw new Error("Failed to login, status code: " + response.status);
+        }
+      } else {
+        setError("You are already logged in.");
+      }
+    } catch (error) {
+      if (error.response) {
+        // Lỗi từ phía server
+        setError(
+          `Server error: ${error.response.data.message || error.message}`
+        );
+      } else if (error.request) {
+        // Không nhận được phản hồi từ server
+        setError("No response from the server. Please try again later.");
+      } else {
+        // Các lỗi khác
+        setError(`Error: ${error.message}`);
+      }
+      console.error("Error during login or password reset: ", error);
+    }
+  };
+
   async function login(event) {
     setIsLoading(true);
     if (isLogin) {
@@ -25,12 +84,14 @@ const LoginPage = () => {
       const minPasswordLength = 6; // Minimum length of the password
 
       if (!emailRegex.test(email)) {
-        setError("Email không hợp lệ");
+        setError("Invalid email format");
+        setIsLoading(false);
         return false;
       }
 
       if (password.length < minPasswordLength) {
-        setError("Mật khẩu phải có ít nhất 6 ký tự");
+        setError("Password must be at least 6 characters long");
+        setIsLoading(false);
         return false;
       }
 
@@ -38,7 +99,7 @@ const LoginPage = () => {
       console.log(email);
       console.log(password);
       try {
-        let result = await fetch("https://localhost:7150/api/Auth/Login", {
+        let response = await fetch("https://localhost:7150/api/Auth/Login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -47,23 +108,31 @@ const LoginPage = () => {
           body: JSON.stringify(item),
         });
 
-        if (!result.ok) {
-          setError("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
+        if (!response.ok) {
+          const errorResponse = await response.json();
+          if (errorResponse && errorResponse.message) {
+            setError(errorResponse.message);
+          } else {
+            setError("Login failed. Please check your credentials.");
+          }
+          setIsLoading(false);
           return false;
         } else {
-          result = await result.json();
+          let result = await response.json();
           localStorage.setItem("user-info", JSON.stringify(result));
           setError("Login successfully");
           console.log(result);
           navigate("/");
         }
       } catch (error) {
-        setError("Có lỗi xảy ra. Vui lòng thử lại sau.");
+        setError("An error occurred. Please try again.");
         console.error("There was an error!", error);
       } finally {
         setIsLoading(false);
       }
-    } else setIsLoading(true);
+    } else {
+      setIsLoading(false);
+    }
   }
   React.useEffect(() => {
     const user = localStorage.getItem("user-info");
@@ -142,10 +211,14 @@ const LoginPage = () => {
             <div className="w-full h-[1px] bg-black/40"></div>
             <p className=" text-lg  absolute text-black/80 bg-[#f5f5f5]">or</p>
           </div>
-          <div className="w-full text-[#060606] my-2 font-semibold bg-white border border-black/40 rounded-md p-4 text-center flex items-center justify-center cursor-pointer">
-            <img src={LOGIN_GG} className="h-6   mr-2" />
+          <button
+            onClick={handleLoginGoogle}
+            className="w-full text-[#060606] my-2 font-semibold bg-white border border-black/40 rounded-md p-4 text-center flex items-center justify-center cursor-pointer"
+            disabled={isLoading}
+          >
+            <img src={LOGIN_GG} className="h-6 mr-2" />
             Sign In With Google
-          </div>
+          </button>
         </div>
         <div className="w-full flex items-center justify-center py-3">
           <p className="text-lg font-normal text-[#060606]">

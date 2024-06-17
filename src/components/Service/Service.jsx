@@ -20,8 +20,308 @@ import "../../assets/js/countdown.js";
 import "../../assets/js/main.js";
 import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  Button,
+  DatePicker,
+  Form,
+  Modal,
+  Select,
+  Space,
+  Table,
+  message,
+} from "antd";
+import { useNavigate } from "react-router-dom";
+import Search from "antd/es/input/Search.js";
+import { Option } from "antd/es/mentions/index.js";
+import { useForm } from "antd/es/form/Form.js";
 
 function Service() {
+  const [error, setError] = useState();
+  const [services, setServices] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [dataSource, setDataSource] = useState([]);
+  const navigate = useNavigate();
+  const [selectedServiceId, setSelectedServiceId] = useState(null);
+  const [date, setDate] = useState();
+  const [selectStaffId, setSelectStaffId] = useState();
+  const [form] = useForm();
+  const [selectedPetId, setSelectedPetId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  const [staffList, setStaffList] = useState([]);
+  const columns = [
+    {
+      title: <span className="text-lg text-blue-500 font-semibold">Name</span>,
+      dataIndex: "petName",
+      key: "petName",
+      align: "center",
+      width: "27%", // Adjust width
+      render: (petName) => (
+        <span className="text-base text-black font-medium">{petName}</span>
+      ),
+    },
+    {
+      title: (
+        <span className="text-lg text-blue-500 font-semibold">Poster</span>
+      ),
+      dataIndex: "image",
+      key: "image",
+      align: "center",
+      width: "30%", // Adjust width
+      render: (image) => (
+        <div className="flex justify-center">
+          <img
+            src={image ? image : null}
+            width={150}
+            className="rounded-lg"
+            alt="Pet"
+          />
+        </div>
+      ),
+    },
+    {
+      title: (
+        <span className="text-lg text-blue-500 font-semibold">Action</span>
+      ),
+      dataIndex: "petId",
+      key: "petId",
+      align: "center",
+      width: "28%", // Adjust width
+      render: (petId) => (
+        <Button
+          onClick={() => setSelectedPetId(petId)}
+          className={`border-2 rounded-md px-4 py-2 transition-colors ${
+            petId === selectedPetId
+              ? "bg-blue-400 text-white border-blue-500"
+              : "bg-white text-blue-600 border-blue-700 hover:bg-blue-600 hover:text-white"
+          }`}
+        >
+          Choice
+        </Button>
+      ),
+    },
+  ];
+  const handleSearch = async (searchTerm) => {
+    if (!searchTerm) {
+      setError(
+        "Sorry, we could not find any results for your search term. Please check your spelling, use more general words, and try again."
+      );
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        //https://localhost:7150/api/Service/search?searchTerm=grooming
+        `https://localhost:7150/api/Service/search?searchTerm=${searchTerm}`
+      );
+      setServices(response.data.data);
+      setError("");
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data.msg);
+      } else {
+        setError("An error occurred while searching");
+      }
+    }
+  };
+  const handleStaffChange = (staffId) => {
+    setSelectStaffId(staffId);
+  };
+  const handleChoice = async () => {
+    const savedCart = localStorage.getItem("cart");
+    const cart = savedCart ? JSON.parse(savedCart) : [];
+    if (selectedPetId == null || date == null) {
+      setError("Please select a pet and a birthday.");
+      return;
+    }
+    setError("");
+    const userInfoString = localStorage.getItem("user-info");
+    const userInfo = JSON.parse(userInfoString);
+    const token = userInfo?.data?.token;
+
+    const isAlreadyInCart = cart.some(
+      (item) =>
+        item.petId === selectedPetId && item.serviceId === selectedServiceId
+    );
+
+    if (isAlreadyInCart) {
+      message.warning("This pet has already used this service.");
+      return;
+    }
+
+    setLoading(true); // Start loading
+
+    try {
+      // Sending POST request to the backend
+      let url = `https://localhost:7150/api/Booking/available?startTime=${date.format(
+        "YYYY-MM-DDTHH:mm:ss"
+      )}&serviceCode=${selectedServiceId}`;
+
+      if (selectStaffId) {
+        url += `&staffId=${selectStaffId}`;
+      }
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        setError("Token expired. Please log in again.");
+        setLoading(false); // Stop loading
+        return;
+      }
+
+      const selectedService = services.find(
+        (service) => service.serviceId === selectedServiceId
+      );
+
+      const selectedPet = dataSource.find((pet) => pet.petId === selectedPetId);
+      const newItem = {
+        serviceId: selectedService.serviceId,
+        data: date.format("YYYY-MM-DDTHH:mm:ss"),
+        serviceName: selectedService.serviceName,
+        servicePrice: selectedService.price,
+        petId: selectedPet.petId,
+        petName: selectedPet.petName,
+        comboId: "",
+      };
+      setCart((prevCart) => [...prevCart, newItem]);
+      message.success("Booking for pet successfully");
+      // Lưu giỏ hàng vào localStorage
+      localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
+      setSelectedPetId(null);
+      setDate(null);
+      setSelectStaffId(null);
+      setSelectedServiceId(null);
+      form.resetFields();
+      setLoading(false); // Reset Ant Design form fields
+      setIsOpen(false);
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          console.log("Token expired. Please log in again.");
+          message.error(error.response);
+          localStorage.removeItem("user-info");
+          setTimeout(() => {
+            navigate("/");
+          }, 1000);
+          setLoading(false);
+        } else {
+          console.error("Error response:", error.response.data);
+          message.error(error.response || "An error occurred.");
+          setLoading(false);
+          return;
+          //setError(error.response.data || "An error occurred.");
+        }
+      } else {
+        console.error("Error:", error);
+        message.error("An unexpected error occurred.");
+        setLoading(false);
+        return;
+        //setError("An unexpected error occurred.");
+      }
+    }
+  };
+
+  async function fetchMovies() {
+    const userInfoString = localStorage.getItem("user-info");
+    const userInfo = JSON.parse(userInfoString);
+
+    if (userInfo != null) {
+      console.log(userInfo.data.token);
+      if (userInfo.data.user.id != null) {
+        console.log(userInfo.data.user.id);
+        try {
+          const response = await axios.get(
+            `https://localhost:7150/api/Customer/${userInfo.data.user.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${userInfo.data.token}`,
+              },
+            }
+          );
+
+          if (response.status === 401) {
+            // toast.error("Token hết hạn. Vui lòng đăng nhập lại.");
+            localStorage.removeItem("user-info");
+            navigate("/login");
+            return;
+          }
+
+          const result = response.data;
+          localStorage.setItem("pets", JSON.stringify(result));
+          console.log(result.data.pets);
+
+          setDataSource(result.data.pets.filter((x) => x.status !== false));
+        } catch (error) {
+          if (error.response && error.response.status === 401) {
+            localStorage.removeItem("user-info");
+            message.error("Token expired. Please log in again.");
+            navigate("/login");
+          } else {
+            message.error("An error occurred. Please try again.");
+          }
+        }
+      } else {
+        navigate("/login");
+      }
+    } else {
+      navigate("/login");
+    }
+  }
+
+  function handleHideModal() {
+    setIsOpen(false);
+  }
+
+  const handleBookNow = (serviceID) => {
+    // Do something with the serviceID, such as redirecting to booking page or sending request to server
+    // var petId = "1122233333";
+    fetchMovies();
+    setIsOpen(true);
+    setSelectedServiceId(serviceID);
+    console.log(serviceID);
+    // const newItem = { serviceID, petId };
+    // setCart((prevCart) => [...prevCart, newItem]);
+    // console.log(newItem);
+    // // Lưu giỏ hàng vào localStorage
+    // localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
+  };
+  const fetchServices = async () => {
+    try {
+      const response = await axios.get("https://localhost:7150/api/Service");
+      const result = response.data;
+      setServices(result.data.data);
+      console.log(result.data.data);
+      localStorage.setItem("service", JSON.stringify(result));
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    }
+  };
+
+  const fetchStaff = async () => {
+    try {
+      const response = await axios.get("https://localhost:7150/api/Staff");
+      setStaffList(response.data.data);
+      console.log(response.data.data);
+    } catch (error) {
+      message.error("Failed to fetch staff members");
+    }
+  };
+
+  useEffect(() => {
+    fetchServices();
+    fetchStaff();
+  }, [dataSource]);
   return (
     <div>
       <div>
@@ -43,6 +343,54 @@ function Service() {
           src="https://www.googletagmanager.com/gtag/js?id=G-TSZFRP5V2X"
         ></script>
       </div>
+      <Modal open={isOpen} footer={null} onCancel={handleHideModal} width={800}>
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          rowClassName={(record) =>
+            record.petId === selectedPetId ? "bg-cyan-100" : ""
+          }
+          rowKey="petId"
+          pagination={false} // Remove if you need pagination
+          scroll={{ x: 800 }} // Enables horizontal scrolling
+        />
+        <Form layout="vertical" className="mt-5">
+          <div className="flex space-x-4">
+            <Form.Item label="Date" className="w-1/2">
+              <Space direction="vertical" className="w-full">
+                <DatePicker
+                  showTime
+                  value={date}
+                  onChange={(date) => setDate(date)}
+                  className="w-full"
+                />
+              </Space>
+            </Form.Item>
+            <Form.Item label="Select Staff" className="w-1/2">
+              <Select
+                showSearch
+                placeholder="Select a staff"
+                optionFilterProp="children"
+                onChange={handleStaffChange}
+                className="w-full"
+              >
+                {Array.isArray(staffList) &&
+                  staffList.map((staff) => (
+                    <Option key={staff.staffId} value={staff.staffId}>
+                      {staff.fullName}
+                    </Option>
+                  ))}
+              </Select>
+            </Form.Item>
+          </div>
+          <p className="text-red-500">{error}</p>
+        </Form>
+        <div className="flex justify-end mt-2">
+          <Button type="primary" onClick={handleChoice} loading={loading}>
+            Book
+          </Button>
+        </div>
+      </Modal>
 
       <div className="body_wrap">
         <div className="backtotop">
@@ -90,43 +438,62 @@ function Service() {
                   Services
                 </h2>
               </div>
+              <div className="flex items-center justify-center flex-wrap bg-gray-100 p-4 rounded-lg shadow-md mb-4">
+  <Search
+    placeholder="Input search text"
+    allowClear
+    onSearch={handleSearch}
+    className="w-full"
+    size="large"
+    enterButton
+  />
+  {error && <p className="text-red-500 mt-2 md:mt-0 md:ml-4">{error}</p>}
+</div>
               <div className="row justify-content-center">
-                <div className="col col-lg-4">
-                  <div
-                    className="service_item"
-                    style={{
-                      backgroundImage:
-                        'url("src/assets/images/shape/shape_path_1.svg")',
-                    }}
-                  >
-                    <div className="title_wrap">
-                      <div className="item_icon">
-                        <img
-                          src="src/assets/images/icon/icon_pet_walking.svg"
-                          alt="Pet Walking"
-                        />
+                {Array.isArray(services) &&
+                  services.map((service) => (
+                    <div key={service.serviceId} className="col col-lg-4">
+                      <div
+                        className="service_item"
+                        style={{
+                          backgroundImage:
+                            'url("src/assets/images/shape/shape_path_1.svg")',
+                        }}
+                      >
+                        <div className="title_wrap">
+                          <div className="item_icon">
+                            <img
+                              src="src/assets/images/icon/icon_pet_walking.svg"
+                              alt=""
+                            />
+                          </div>
+                          <h3 className="item_title mb-0">
+                            {service.serviceName}
+                          </h3>
+                        </div>
+                        <p>{service.serviceDescription}</p>
+                        <div className="item_price">
+                          <span>{service.price}</span>
+                        </div>
+                        <Link className="btn_unfill" to="/service_details">
+                          <span>Get Service</span>{" "}
+                          <FontAwesomeIcon icon={faArrowRight} />
+                        </Link>
+                        <Button
+                          onClick={() => handleBookNow(service.serviceId)}
+                          className="w-24 h-7 m-10  bg-white border-[1px] border-black text-black rounded-full text-xs"
+                        >
+                          Book now
+                        </Button>
+                        <div className="decoration_image">
+                          <img
+                            src="src/assets/images/shape/shape_paws.svg"
+                            alt="Pet Paws"
+                          />
+                        </div>
                       </div>
-                      <h3 className="item_title mb-0">Walking &amp; Sitting</h3>
                     </div>
-                    <p>
-                      Ut tortor pretium viverra suspendisse potenti nullam ac
-                      tortor vitae eget dolor morbi
-                    </p>
-                    <div className="item_price">
-                      <span>From $15 / hour</span>
-                    </div>
-                    <Link className="btn_unfill" to="/service_details">
-                      <span>Get Service</span>{" "}
-                      <FontAwesomeIcon icon={faArrowRight} />
-                    </Link>
-                    <div className="decoration_image">
-                      <img
-                        src="src/assets/images/shape/shape_paws.svg"
-                        alt="Pet Paws"
-                      />
-                    </div>
-                  </div>
-                </div>
+                  ))}
                 <div className="col col-lg-4">
                   <div
                     className="service_item"
@@ -152,9 +519,17 @@ function Service() {
                       <span>From $39 / complex</span>
                     </div>
                     <Link className="btn_unfill" to="/service_details">
-                      <span>Get Service</span>{" "}
+                      <span>View More</span>{" "}
                       <FontAwesomeIcon icon={faArrowRight} />
                     </Link>
+                    <Button
+                      onClick={() => handleBookNow(service.serviceId)}
+                      className="group w-32 h-10 m-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-full shadow-lg hover:from-purple-600 hover:to-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                      <span className="block group-hover:text-black transition duration-300 ease-in-out">
+                        Book now
+                      </span>
+                    </Button>
                     <div className="decoration_image">
                       <img
                         src="src/assets/images/shape/shape_paws.svg"
@@ -163,7 +538,7 @@ function Service() {
                     </div>
                   </div>
                 </div>
-                <div className="col col-lg-4">
+                {/*<div className="col col-lg-4">
                   <div
                     className="service_item"
                     style={{
@@ -306,7 +681,7 @@ function Service() {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </section>
@@ -1269,12 +1644,12 @@ function Service() {
                       <ul className="social_links unorder_list">
                         <li>
                           <a href="https://www.facebook.com/2010.HaHuyHoanglacuaai.2003">
-                          <FontAwesomeIcon icon={faFacebook} />{" "}
+                            <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
                           <a href="https://www.instagram.com/hardy._.03">
-                          <FontAwesomeIcon icon={faInstagram} />{" "}
+                            <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
                       </ul>
@@ -1297,12 +1672,12 @@ function Service() {
                       <ul className="social_links unorder_list">
                         <li>
                           <a href="https://www.facebook.com/namtheshy2mai">
-                          <FontAwesomeIcon icon={faFacebook} />{" "}
+                            <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
                           <a href="https://www.instagram.com/namle2330">
-                          <FontAwesomeIcon icon={faInstagram} />{" "}
+                            <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
                       </ul>
@@ -1325,12 +1700,12 @@ function Service() {
                       <ul className="social_links unorder_list">
                         <li>
                           <a href="https://www.facebook.com/profile.php?id=100024098480982">
-                          <FontAwesomeIcon icon={faFacebook} />{" "}
+                            <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
                           <a href="#!">
-                          <FontAwesomeIcon icon={faInstagram} />{" "}
+                            <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
                       </ul>

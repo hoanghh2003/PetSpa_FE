@@ -1,12 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
+import backgroundImage from "../../assets/images/background/2.jpg";
 
 function ResetPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState(null);
-  const [otp, setOtp] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -66,55 +66,61 @@ function ResetPassword() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="flex flex-col space-y-2">
-        <div>
+    <div
+      className="flex items-center justify-center min-h-screen"
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 rounded-lg shadow-md max-w-md w-full"
+      >
+        <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">
+          Reset Password
+        </h2>
+        <div className="mb-4">
           <label
             htmlFor="newPassword"
             className="block text-sm font-medium text-gray-700"
           >
-            Mật khẩu mới
+            New Password
           </label>
           <input
-            type="text"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-          />
-          <input
             type="password"
-            id="password"
-            name="password"
+            id="newPassword"
+            value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           />
         </div>
-        <div>
+        <div className="mb-6">
           <label
             htmlFor="confirmPassword"
             className="block text-sm font-medium text-gray-700"
           >
-            Xác nhận mật khẩu
+            Confirm Password
           </label>
           <input
             type="password"
             id="confirmPassword"
-            name="confirmPassword"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           />
         </div>
         <button
-          type="submit" // Đảm bảo nút có type="submit" để kích hoạt onSubmit của form
-          className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+          type="submit"
+          className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-md w-full"
         >
           Submit
         </button>
-        {message && <p className="mt-2 text-sm text-red-500">{message}</p>}
-        {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
-      </div>
-    </form>
+        {message && <p className="mt-4 text-sm text-green-500">{message}</p>}
+        {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
+      </form>
+    </div>
   );
 }
 export default ResetPassword;
