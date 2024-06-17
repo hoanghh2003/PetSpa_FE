@@ -217,14 +217,14 @@ function Service() {
           setLoading(false);
         } else {
           console.error("Error response:", error.response.data);
-          message.error(error.response || "An error occurred.");
+          message.error(error.response.data);
           setLoading(false);
           return;
           //setError(error.response.data || "An error occurred.");
         }
       } else {
         console.error("Error:", error);
-        message.error("An unexpected error occurred.");
+        message.error(error.response.data);
         setLoading(false);
         return;
         //setError("An unexpected error occurred.");
@@ -265,10 +265,10 @@ function Service() {
         } catch (error) {
           if (error.response && error.response.status === 401) {
             localStorage.removeItem("user-info");
-            message.error("Token expired. Please log in again.");
+
             navigate("/login");
           } else {
-            message.error("An error occurred. Please try again.");
+            console.log();
           }
         }
       } else {
@@ -287,6 +287,9 @@ function Service() {
     // Do something with the serviceID, such as redirecting to booking page or sending request to server
     // var petId = "1122233333";
     fetchMovies();
+    if (dataSource.length == 0) {
+      message.warning("List not pet");
+    }
     setIsOpen(true);
     setSelectedServiceId(serviceID);
     console.log(serviceID);
@@ -439,16 +442,18 @@ function Service() {
                 </h2>
               </div>
               <div className="flex items-center justify-center flex-wrap bg-gray-100 p-4 rounded-lg shadow-md mb-4">
-  <Search
-    placeholder="Input search text"
-    allowClear
-    onSearch={handleSearch}
-    className="w-full"
-    size="large"
-    enterButton
-  />
-  {error && <p className="text-red-500 mt-2 md:mt-0 md:ml-4">{error}</p>}
-</div>
+                <Search
+                  placeholder="Input search text"
+                  allowClear
+                  onSearch={handleSearch}
+                  className="w-full"
+                  size="large"
+                  enterButton
+                />
+                {error && (
+                  <p className="text-red-500 mt-2 md:mt-0 md:ml-4">{error}</p>
+                )}
+              </div>
               <div className="row justify-content-center">
                 {Array.isArray(services) &&
                   services.map((service) => (
@@ -481,9 +486,11 @@ function Service() {
                         </Link>
                         <Button
                           onClick={() => handleBookNow(service.serviceId)}
-                          className="w-24 h-7 m-10  bg-white border-[1px] border-black text-black rounded-full text-xs"
+                          className="group w-32 h-10 m-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-full shadow-lg hover:from-purple-600 hover:to-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
                         >
-                          Book now
+                          <span className="block group-hover:text-black transition duration-300 ease-in-out">
+                            Book now
+                          </span>
                         </Button>
                         <div className="decoration_image">
                           <img
@@ -523,7 +530,7 @@ function Service() {
                       <FontAwesomeIcon icon={faArrowRight} />
                     </Link>
                     <Button
-                      onClick={() => handleBookNow(service.serviceId)}
+                      onClick={() => handleBookNow()}
                       className="group w-32 h-10 m-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-full shadow-lg hover:from-purple-600 hover:to-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
                     >
                       <span className="block group-hover:text-black transition duration-300 ease-in-out">

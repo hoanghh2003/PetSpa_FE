@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
@@ -16,7 +17,7 @@ const { Title } = Typography;
 
 function Account() {
   const [form] = Form.useForm();
-  const [passwordForm] = Form.useForm();
+
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
 
@@ -49,9 +50,15 @@ function Account() {
 
         if (response.status === 200) {
           const userData = response.data;
-          console.log(response.data);
+          const fullName = userData.data.fullName;
+
+          // Tách fullName thành firstName và lastName
+          const nameParts = fullName.split(" ");
+          const firstName = nameParts[0];
+          const lastName = nameParts.slice(1).join(" ");
           form.setFieldsValue({
-            fullName: userData.data.fullName,
+            firstName: firstName,
+            lastName: lastName,
             email: userData.data.user.email,
             phoneNumber: userData.data.phoneNumber,
             gender: userData.data.gender,
@@ -91,6 +98,7 @@ function Account() {
 
       const apiUrl = `https://localhost:7150/api/Customer/UpdateByUser/${userInfo.data.user.id}`;
       const data = {
+        fullName: values.firstName + " " + values.lastName,
         ...values,
       };
 

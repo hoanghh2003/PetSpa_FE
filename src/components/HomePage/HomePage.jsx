@@ -30,8 +30,37 @@ import Slider from "react-slick";
 import PropTypes from "prop-types";
 import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { message } from "antd";
+import axios from "axios";
+import BookingCombo from "../BookingCombo.jsx";
 
 function HomePage() {
+  const [comboList, setComboList] = useState([]);
+  const fetchCombo = async () => {
+    try {
+      const response = await axios.get("https://localhost:7150/api/Combo");
+      setComboList(response.data);
+      console.log(response.data);
+    } catch (error) {
+      message.error("Failed to fetch staff members");
+    }
+  };
+
+  useEffect(() => {
+    fetchCombo();
+    console.log(comboList);
+  }, []);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectComboId, setSelectComboId] = useState();
+  const handleOpenModal = (comboId) => {
+    setIsOpen(true);
+    console.log(comboId);
+    setSelectComboId(comboId);
+    console.log(selectComboId);
+  };
+  const handleHideModal = () => setIsOpen(false);
   const CustomNextArrow = ({ onClick }) => (
     <button type="button" className="arrow-button top-right" onClick={onClick}>
       <FontAwesomeIcon icon={faArrowRight} />
@@ -956,6 +985,291 @@ function HomePage() {
               </Slider>
             </div>
           </section>
+          <section className="pricing_section bg_gray section_space_lg decoration_wrap">
+            <div className="container">
+              <div className="section_title text-center">
+                <h2 className="title_text">
+                  <span className="sub_title">Our prices</span>
+                  Dog Grooming Services &amp; Pricing
+                </h2>
+                <div className="row justify-content-center">
+                  <div className="col col-lg-6">
+                    <p className="mb-0">
+                      We can fully customize your pet sitting schedule to fit
+                      your pet’s needs. Pick and choose what visits work best
+                      for you and your family
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="pricing_tab_wrap">
+                <div className="tab-content">
+                  <div
+                    className="tab-pane fade show active"
+                    id="tab_small_dog"
+                    role="tabpanel"
+                  >
+                    <div className="row text-center flex justify-center">
+                      {comboList.map((combo) => (
+                        <div
+                          key={combo.comboId}
+                          className="col col-lg-3 col-md-6 col-sm-6"
+                        >
+                          <div className="pricing_table_item">
+                            <h3 className="pricing_heading">
+                              {combo.comboType}
+                            </h3>
+                            <div className="pricing_value">
+                              <span className="value_text">{combo.price}</span>
+                            </div>
+                            <ul className="pricing_info_list unorder_list_block">
+                              {combo.services.map((service, idx) => (
+                                <li key={idx}>
+                                  <i
+                                    className={`fas fa-check-circle ${
+                                      service.included ? "" : "del"
+                                    }`}
+                                  />
+                                  {service.included ? (
+                                    <span>{service.serviceName}</span>
+                                  ) : (
+                                    <del>
+                                      <span>{service.serviceName}</span>
+                                    </del>
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          <button
+                            onClick={() => handleOpenModal(combo.comboId)}
+                            className="btn border_primary"
+                          >
+                            Purchase Now
+                          </button>
+                          {isOpen && selectComboId === combo.comboId && (
+                            <BookingCombo
+                              isOpen={isOpen}
+                              handleHideModal={handleHideModal}
+                              comboId={selectComboId}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div
+                    className="tab-pane fade"
+                    id="tab_medium_dog"
+                    role="tabpanel"
+                  >
+                    <div className="row">
+                      <div className="col col-lg-3 col-md-6 col-sm-6">
+                        <div className="pricing_table_item">
+                          <h3 className="pricing_heading">Bath &amp; Brush</h3>
+                          <div className="pricing_value">
+                            <span className="value_text">$13 – $18</span>
+                          </div>
+                          <ul className="pricing_info_list unorder_list_block">
+                            <li>
+                              <i className="fas fa-check-circle" />
+                              <span>Bath (Hypo-Allergenic)</span>
+                            </li>
+                            <li>
+                              <i className="fas fa-check-circle" />
+                              <span>Conditioning Treatment</span>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Ears Flushed &amp; Cleaned</span>
+                              </del>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Watering Plants</span>
+                              </del>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Handscissor Finish</span>
+                              </del>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Setting Length of Coat</span>
+                              </del>
+                            </li>
+                          </ul>
+                          <a className="btn border_primary" href="#!">
+                            Purchase Now
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    className="tab-pane fade"
+                    id="tab_large_dog"
+                    role="tabpanel"
+                  >
+                    <div className="row">
+                      <div className="col col-lg-3 col-md-6 col-sm-6">
+                        <div className="pricing_table_item">
+                          <h3 className="pricing_heading">Bath &amp; Brush</h3>
+                          <div className="pricing_value">
+                            <span className="value_text">$13 – $18</span>
+                          </div>
+                          <ul className="pricing_info_list unorder_list_block">
+                            <li>
+                              <i className="fas fa-check-circle" />
+                              <span>Bath (Hypo-Allergenic)</span>
+                            </li>
+                            <li>
+                              <i className="fas fa-check-circle" />
+                              <span>Conditioning Treatment</span>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Ears Flushed &amp; Cleaned</span>
+                              </del>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Watering Plants</span>
+                              </del>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Handscissor Finish</span>
+                              </del>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Setting Length of Coat</span>
+                              </del>
+                            </li>
+                          </ul>
+                          <a className="btn border_primary" href="#!">
+                            Purchase Now
+                          </a>
+                        </div>
+                      </div>
+                      <div className="col col-lg-3 col-md-6 col-sm-6">
+                        <div className="pricing_table_item">
+                          <h3 className="pricing_heading">Mini Groom</h3>
+                          <div className="pricing_value">
+                            <span className="value_text">$20 – $25</span>
+                          </div>
+                          <ul className="pricing_info_list unorder_list_block">
+                            <li>
+                              <i className="fas fa-check-circle" />
+                              <span>Bath (Hypo-Allergenic)</span>
+                            </li>
+                            <li>
+                              <i className="fas fa-check-circle" />
+                              <span>Conditioning Treatment</span>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Ears Flushed &amp; Cleaned</span>
+                              </del>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Watering Plants</span>
+                              </del>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Handscissor Finish</span>
+                              </del>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Setting Length of Coat</span>
+                              </del>
+                            </li>
+                          </ul>
+                          <a className="btn border_primary" href="#!">
+                            Purchase Now
+                          </a>
+                        </div>
+                      </div>
+                      <div className="col col-lg-3 col-md-6 col-sm-6">
+                        <div className="pricing_table_item active">
+                          <h3 className="pricing_heading">Complete Groom</h3>
+                          <div className="pricing_value">
+                            <span className="value_text">$35 – $40</span>
+                          </div>
+                          <ul className="pricing_info_list unorder_list_block">
+                            <li>
+                              <i className="fas fa-check-circle" />
+                              <span>Bath (Hypo-Allergenic)</span>
+                            </li>
+                            <li>
+                              <i className="fas fa-check-circle" />
+                              <span>Conditioning Treatment</span>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Ears Flushed &amp; Cleaned</span>
+                              </del>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Watering Plants</span>
+                              </del>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Handscissor Finish</span>
+                              </del>
+                            </li>
+                            <li>
+                              <del>
+                                <i className="fas fa-check-circle" />
+                                <span>Setting Length of Coat</span>
+                              </del>
+                            </li>
+                          </ul>
+                          <a className="btn btn_warning" href="#!">
+                            Purchase Now
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="decoration_item shape_dot_1">
+              <img
+                src="src/assets/images/shape/shape_dot_group_3.svg"
+                alt="Colorful Dots"
+              />
+            </div>
+            <div className="decoration_item shape_dot_2">
+              <img
+                src="src/assets/images/shape/shape_dot_group_4.svg"
+                alt="Colorful Dots"
+              />
+            </div>
+          </section>
           <section
             className="feature_service decoration_wrap"
             style={{
@@ -1054,12 +1368,20 @@ function HomePage() {
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="https://www.facebook.com/2010.HaHuyHoanglacuaai.2003" target="_blank" rel="noopener noreferrer">
+                          <a
+                            href="https://www.facebook.com/2010.HaHuyHoanglacuaai.2003"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
-                          <a href="https://www.instagram.com/hardy._.03" target="_blank" rel="noopener noreferrer">
+                          <a
+                            href="https://www.instagram.com/hardy._.03"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
@@ -1082,12 +1404,20 @@ function HomePage() {
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="https://www.facebook.com/namtheshy2mai" target="_blank" rel="noopener noreferrer">
+                          <a
+                            href="https://www.facebook.com/namtheshy2mai"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
-                          <a href="https://www.instagram.com/namle2330" target="_blank" rel="noopener noreferrer">
+                          <a
+                            href="https://www.instagram.com/namle2330"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
@@ -1110,12 +1440,20 @@ function HomePage() {
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="https://www.facebook.com/profile.php?id=100024098480982" target="_blank" rel="noopener noreferrer">
+                          <a
+                            href="https://www.facebook.com/profile.php?id=100024098480982"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
-                          <a href="#!" target="_blank" rel="noopener noreferrer">
+                          <a
+                            href="#!"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>

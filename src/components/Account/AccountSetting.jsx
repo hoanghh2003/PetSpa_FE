@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { Form, Input, Button, Row, Col, Card, Typography } from "antd";
+import { Form, Input, Button, Row, Col, Card, Typography, message } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 const { Title } = Typography;
 import axios from "axios";
 
@@ -9,7 +9,6 @@ function AccountSetting() {
   const [form] = Form.useForm();
   const [passwordForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [loadingData, setLoadingData] = useState(true);
   const handleChangePassword = async (values) => {
     setLoading(true);
     try {

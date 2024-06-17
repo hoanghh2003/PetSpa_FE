@@ -8,8 +8,10 @@ import LOGIN_GG from "../LoginPage/google-icon.png";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { auth, googleprovider } from "../../config/firebase";
+
 import axios from "axios";
+
+import { auth, googleprovider } from "@/config/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -147,10 +149,10 @@ const LoginPage = () => {
   return (
     <div className="w-700 h-screen flex items-start my-1 ">
       <div className="relative w-1/2 h-full flex flex-col">
-
         <img
           src={COVER_IMAGE}
-          className="h-full w-full object-cover bg-center" />
+          className="h-full w-full object-cover bg-center"
+        />
       </div>
 
       <div className="w-1/2 mr-auto h-full bg-[#f5f5f5] flex flex-col px-20 py-10 justify-between items-center">
@@ -169,13 +171,15 @@ const LoginPage = () => {
                 type="email"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)} />
+                onChange={(e) => setEmail(e.target.value)}
+              />
               <input
                 className="w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none focus:outline-none"
                 type="password"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)} />
+                onChange={(e) => setPassword(e.target.value)}
+              />
               <p style={{ color: "black" }}>{error}</p>
             </div>
             <div className="w-full flex justify-between">
@@ -224,9 +228,7 @@ const LoginPage = () => {
           <p className="text-lg font-normal text-[#060606]">
             Dont have a account?{" "}
             <Link to={"/register"}>
-            <span className="font-semibold cursor-pointer">
-              Sign up
-            </span>
+              <span className="font-semibold cursor-pointer">Sign up</span>
             </Link>
           </p>
         </div>
