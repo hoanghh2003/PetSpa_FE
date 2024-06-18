@@ -1,10 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faArrowLeft,
   faArrowUp,
   faCheckCircle,
   faClock,
   faPaw,
 } from "@fortawesome/free-solid-svg-icons";
+import Slider from "react-slick";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faQuoteRight } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import "../../assets/js/email-decode.min.js";
 import "../../assets/js/jquery.min.js";
@@ -22,6 +26,7 @@ import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import PropTypes from "prop-types";
 // import {
 //   Button,
 //   DatePicker,
@@ -40,6 +45,36 @@ import { Button } from "antd";
 import BookingCard from "../BookingCard.jsx";
 
 function Service() {
+  const CustomNextArrow = ({ onClick }) => (
+    <button type="button" className="arrow-button top-right" onClick={onClick}>
+      <FontAwesomeIcon icon={faArrowRight} />
+    </button>
+  );
+
+  // CustomPrevArrow component
+  const CustomPrevArrow = ({ onClick }) => (
+    <button type="button" className="arrow-button top-left" onClick={onClick}>
+      <FontAwesomeIcon icon={faArrowLeft} />
+    </button>
+  );
+  CustomPrevArrow.propTypes = {
+    onClick: PropTypes.func.isRequired,
+  };
+
+  CustomNextArrow.propTypes = {
+    onClick: PropTypes.func.isRequired,
+  };
+
+  const settings = {
+    dots: false,
+    centerMode: true,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    infinite: true,
+    centerPadding: "0",
+    prevArrow: <CustomPrevArrow />,
+    nextArrow: <CustomNextArrow />,
+  };
   const [error, setError] = useState();
   const [services, setServices] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -1627,6 +1662,350 @@ function Service() {
                   </div>
                 </div>
               </div>
+            </div>
+          </section>
+          <section className="testimonial_section section_space_lg">
+            <div className="container">
+              <div className="section_title">
+                <h2 className="title_text mb-0">
+                  <span className="sub_title">Our Reviews</span>
+                  What People Say
+                </h2>
+              </div>
+            </div>
+
+            <div className="testimonial_carousel">
+              <Slider {...settings}>
+                <div className="col carousel_item">
+                  <div className="testimonial_item">
+                    <div className="testimonial_admin">
+                      <div className="admin_thumbnail">
+                        <img
+                          src="src/assets/images/meta/thumbnail_img_1.png"
+                          alt="Pet Thumbnail Image"
+                        />
+                      </div>
+                      <div className="admin_info">
+                        <h4 className="admin_name">Home Visits</h4>
+                        <span className="admin_designation">Lucas Simões</span>
+                      </div>
+                    </div>
+                    <ul className="rating_star">
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                    </ul>
+                    <p className="mb-0">
+                      Tristique nulla aliquet enim tortor at auctor urna nunc.
+                      Massa enim nec dui nunc mattis enim ut tellus
+                    </p>
+                    <span className="quote_icon">
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="col carousel_item">
+                  <div className="testimonial_item">
+                    <div className="testimonial_admin">
+                      <div className="admin_thumbnail">
+                        <img
+                          src="src/assets/images/meta/thumbnail_img_2.png"
+                          alt="Pet Thumbnail Image"
+                        />
+                      </div>
+                      <div className="admin_info">
+                        <h4 className="admin_name">Dog Boarding</h4>
+                        <span className="admin_designation">
+                          Wilhelm Dowall
+                        </span>
+                      </div>
+                    </div>
+                    <ul className="rating_star">
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                    </ul>
+                    <p className="mb-0">
+                      Lectus magna fringilla urna porttitor rhoncus dolor purus
+                      non enim. Tellus in hac habitasse platea dictumst
+                    </p>
+                    <span className="quote_icon">
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                    </span>
+                  </div>
+                </div>
+                <div className="col carousel_item">
+                  <div className="testimonial_item">
+                    <div className="testimonial_admin">
+                      <div className="admin_thumbnail">
+                        <img
+                          src="src/assets/images/meta/thumbnail_img_3.png"
+                          alt="Pet Thumbnail Image"
+                        />
+                      </div>
+                      <div className="admin_info">
+                        <h4 className="admin_name">Pet Training</h4>
+                        <span className="admin_designation">Lara Madrigal</span>
+                      </div>
+                    </div>
+                    <ul className="rating_star">
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                    </ul>
+                    <p className="mb-0">
+                      Ut tortor pretium viverra suspendisse potenti nullam.
+                      Venenatis urna cursus eget nunc scelerisque viverra mauris
+                      in aliquam
+                    </p>
+                    <span className="quote_icon">
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                    </span>
+                  </div>
+                </div>
+                <div className="col carousel_item">
+                  <div className="testimonial_item">
+                    <div className="testimonial_admin">
+                      <div className="admin_thumbnail">
+                        <img
+                          src="src/assets/images/meta/thumbnail_img_4.png"
+                          alt="Pet Thumbnail Image"
+                        />
+                      </div>
+                      <div className="admin_info">
+                        <h4 className="admin_name">Home Visit</h4>
+                        <span className="admin_designation">Lara Madrigal</span>
+                      </div>
+                    </div>
+                    <ul className="rating_star">
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                    </ul>
+                    <p className="mb-0">
+                      Ut tortor pretium viverra suspendisse potenti nullam.
+                      Venenatis urna cursus eget nunc scelerisque viverra mauris
+                      in aliquam
+                    </p>
+                    <span className="quote_icon">
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                    </span>
+                  </div>
+                </div>
+                <div className="col carousel_item">
+                  <div className="testimonial_item">
+                    <div className="testimonial_admin">
+                      <div className="admin_thumbnail">
+                        <img
+                          src="src/assets/images/meta/thumbnail_img_1.png"
+                          alt="Pet Thumbnail Image"
+                        />
+                      </div>
+                      <div className="admin_info">
+                        <h4 className="admin_name">Home Visits</h4>
+                        <span className="admin_designation">Lucas Simões</span>
+                      </div>
+                    </div>
+                    <ul className="rating_star">
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                    </ul>
+                    <p className="mb-0">
+                      Tristique nulla aliquet enim tortor at auctor urna nunc.
+                      Massa enim nec dui nunc mattis enim ut tellus
+                    </p>
+                    <span className="quote_icon">
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                    </span>
+                  </div>
+                </div>
+                <div className="col carousel_item">
+                  <div className="testimonial_item">
+                    <div className="testimonial_admin">
+                      <div className="admin_thumbnail">
+                        <img
+                          src="src/assets/images/meta/thumbnail_img_2.png"
+                          alt="Pet Thumbnail Image"
+                        />
+                      </div>
+                      <div className="admin_info">
+                        <h4 className="admin_name">Dog Boarding</h4>
+                        <span className="admin_designation">
+                          Wilhelm Dowall
+                        </span>
+                      </div>
+                    </div>
+                    <ul className="rating_star">
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                    </ul>
+                    <p className="mb-0">
+                      Lectus magna fringilla urna porttitor rhoncus dolor purus
+                      non enim. Tellus in hac habitasse platea dictumst
+                    </p>
+                    <span className="quote_icon">
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                    </span>
+                  </div>
+                </div>
+                <div className="col carousel_item">
+                  <div className="testimonial_item">
+                    <div className="testimonial_admin">
+                      <div className="admin_thumbnail">
+                        <img
+                          src="src/assets/images/meta/thumbnail_img_3.png"
+                          alt="Pet Thumbnail Image"
+                        />
+                      </div>
+                      <div className="admin_info">
+                        <h4 className="admin_name">Pet Training</h4>
+                        <span className="admin_designation">Lara Madrigal</span>
+                      </div>
+                    </div>
+                    <ul className="rating_star">
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                    </ul>
+                    <p className="mb-0">
+                      Ut tortor pretium viverra suspendisse potenti nullam.
+                      Venenatis urna cursus eget nunc scelerisque viverra mauris
+                      in aliquam
+                    </p>
+                    <span className="quote_icon">
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                    </span>
+                  </div>
+                </div>
+                <div className="col carousel_item">
+                  <div className="testimonial_item">
+                    <div className="testimonial_admin">
+                      <div className="admin_thumbnail">
+                        <img
+                          src="src/assets/images/meta/thumbnail_img_4.png"
+                          alt="Pet Thumbnail Image"
+                        />
+                      </div>
+                      <div className="admin_info">
+                        <h4 className="admin_name">Home Visit</h4>
+                        <span className="admin_designation">Lara Madrigal</span>
+                      </div>
+                    </div>
+                    <ul className="rating_star">
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                      <li>
+                        <FontAwesomeIcon icon={faStar} />{" "}
+                      </li>
+                    </ul>
+                    <p className="mb-0">
+                      Ut tortor pretium viverra suspendisse potenti nullam.
+                      Venenatis urna cursus eget nunc scelerisque viverra mauris
+                      in aliquam
+                    </p>
+                    <span className="quote_icon">
+                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                    </span>
+                  </div>
+                </div>
+              </Slider>
             </div>
           </section>
           <section className="team_section bg_gray section_space_lg">
