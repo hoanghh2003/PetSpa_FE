@@ -283,7 +283,7 @@ function Cart() {
                   <button
                     type="button"
                     className="step-trigger"
-                    onClick={() => setCurrentStep(3)}
+                    onClick={() => setCurrentStep(2)}
                   >
                     <span className="bs-stepper-icon">
                       <svg viewBox="0 0 58 54">
@@ -300,7 +300,7 @@ function Cart() {
                   <button
                     type="button"
                     className="step-trigger"
-                    onClick={() => setCurrentStep(4)}
+                    onClick={() => setCurrentStep(3)}
                   >
                     <span className="bs-stepper-icon">
                       <svg viewBox="0 0 58 54">
@@ -631,108 +631,6 @@ function Cart() {
                     </div>
                   )}
                   {currentStep === 2 && (
-                    <div id="checkout-address" className="content">
-                      <div className="row">
-                        <div className="col-lg-8 mb-3">
-                          <h5>Delivery Address</h5>
-                          <div className="row g-3">
-                            <div className="col-md-6">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="First Name"
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Last Name"
-                              />
-                            </div>
-                            <div className="col-12">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Address Line 1"
-                              />
-                            </div>
-                            <div className="col-12">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Address Line 2"
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="City"
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="State/Province"
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="ZIP Code"
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Country"
-                              />
-                            </div>
-                            <div className="col-12">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Phone Number"
-                              />
-                            </div>
-                            <div className="col-12">
-                              <textarea
-                                className="form-control"
-                                rows="3"
-                                placeholder="Order Notes"
-                              ></textarea>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="col-lg-4">
-                          <div className="d-grid">
-                            <button
-                              type="button"
-                              className="btn btn-primary btn-next"
-                              onClick={handleNext}
-                            >
-                              Next
-                            </button>
-                          </div>
-                          <div className="d-grid mt-2">
-                            <button
-                              type="button"
-                              className="btn btn-label-primary btn-prev"
-                              onClick={handlePrev}
-                            >
-                              Previous
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {currentStep === 3 && (
                     <div id="checkout-payment" className="content">
                       <div className="row">
                         {/* Payment left */}
@@ -1034,13 +932,13 @@ function Cart() {
                       </div>
                     </div>
                   )}
-                  {currentStep === 4 && (
+                  {currentStep === 3 && (
                     <div className="bs-stepper-content border-top">
                       <form
                         id="wizard-checkout-form"
                         onSubmit={(e) => e.preventDefault()}
                       >
-                        {currentStep === 4 && (
+                        {currentStep === 3 && (
                           <div id="checkout-confirmation" className="content">
                             <div className="row mb-3">
                               <div className="col-12 col-lg-8 mx-auto text-center mb-3">
