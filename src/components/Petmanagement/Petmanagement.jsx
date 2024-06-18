@@ -16,7 +16,7 @@ import { DatePicker, Space } from "antd";
 import { useNavigate } from "react-router-dom";
 
 import ServiceCard from "../ServiceCard";
-
+import moment from "moment";
 import uploadFile from "@/utils/upload";
 
 function Petmanagement() {
@@ -105,20 +105,6 @@ function Petmanagement() {
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
 
-  // const getBase64 = (file) =>
-  //   new Promise((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.readAsDataURL(file);
-  //     reader.onload = () => resolve(reader.result);
-  //     reader.onerror = (error) => reject(error);
-  //   });
-  // const handlePreview = async (file) => {
-  //   if (!file.url && !file.preview) {
-  //     file.preview = await getBase64(file.originFileObj);
-  //   }
-  //   setPreviewImage(file.url || file.preview);
-  //   setPreviewOpen(true);
-  // };
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
   const uploadButton = (
     <button
@@ -283,15 +269,6 @@ function Petmanagement() {
 
   useEffect(function () {
     fetchMovies();
-
-    // const user = localStorage.getItem("user-info");
-    // if (user == null) {
-    //   setIsLoading(true);
-    // } else {
-    //   setIsLoading(false);
-    //   setError("You must Login");
-    //   setIsLoading(false);
-    // }
   }, []);
 
   return (

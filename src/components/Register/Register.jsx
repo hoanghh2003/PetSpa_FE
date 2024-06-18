@@ -2,9 +2,10 @@
 //   primary: "#060606",
 //   background: "#E0E0E0",
 //   disbaled: "#D9D9D9",
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import COVER_IMAGE from "../LoginPage/login.jpg";
 import { useState } from "react";
+import { message } from "antd";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ const Register = () => {
   const [gender, setGender] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
   async function handleRegister(event) {
     event.preventDefault();
 
@@ -82,9 +84,9 @@ const Register = () => {
 
         const result = await response.json();
         localStorage.setItem("user-info", JSON.stringify(result));
-        console.log(result);
-        setError("Register successfully");
-        navigator("/"); // Xóa thông báo lỗi nếu có
+
+        message.success("Register successfully");
+        navigate("/"); // Xóa thông báo lỗi nếu có
         // history.push("/"); // Chuyển hướng về trang chủ
       }
     } catch (error) {
@@ -165,9 +167,9 @@ const Register = () => {
               onChange={(e) => setGender(e.target.value)}
             >
               <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
             </select>
             <div className="mb-3 fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
               <div className="form-check">
@@ -178,11 +180,11 @@ const Register = () => {
                   name="terms"
                 />
                 <label htmlFor="terms-conditions" className="text-[#060606]">
-              I agree to{" "}
-              <Link to="/policy" className="text-blue underline">
-                privacy policy &amp; terms
-              </Link>
-            </label>
+                  I agree to{" "}
+                  <Link to="/policy" className="text-blue underline">
+                    privacy policy &amp; terms
+                  </Link>
+                </label>
                 <div className="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback" />
               </div>
             </div>

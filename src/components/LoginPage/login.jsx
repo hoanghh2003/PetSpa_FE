@@ -13,6 +13,7 @@ import axios from "axios";
 
 import { auth, googleprovider } from "@/config/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { message } from "antd";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,8 +53,8 @@ const LoginPage = () => {
           if (localStorage.getItem("user-info") === null) {
             localStorage.setItem("user-info", JSON.stringify(response.data));
           }
-          console.log(result);
-          setError("Login successfully");
+
+          message.success("Login successfully");
           navigate("/");
         } else {
           throw new Error("Failed to login, status code: " + response.status);
@@ -137,6 +138,7 @@ const LoginPage = () => {
     }
   }
   React.useEffect(() => {
+    localStorage.clear();
     const user = localStorage.getItem("user-info");
     if (user == null) {
       setIsLogin(true);

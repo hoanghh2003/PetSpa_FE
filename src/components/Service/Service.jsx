@@ -22,20 +22,22 @@ import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Button,
-  DatePicker,
-  Form,
-  Modal,
-  Select,
-  Space,
-  Table,
-  message,
-} from "antd";
+// import {
+//   Button,
+//   DatePicker,
+//   Form,
+//   Modal,
+//   Select,
+//   Space,
+//   Table,
+//   message,
+// } from "antd";
 import { useNavigate } from "react-router-dom";
 import Search from "antd/es/input/Search.js";
-import { Option } from "antd/es/mentions/index.js";
-import { useForm } from "antd/es/form/Form.js";
+// import { Option } from "antd/es/mentions/index.js";
+// import { useForm } from "antd/es/form/Form.js";
+import { Button } from "antd";
+import BookingCard from "../BookingCard.jsx";
 
 function Service() {
   const [error, setError] = useState();
@@ -44,70 +46,70 @@ function Service() {
   const [dataSource, setDataSource] = useState([]);
   const navigate = useNavigate();
   const [selectedServiceId, setSelectedServiceId] = useState(null);
-  const [date, setDate] = useState();
-  const [selectStaffId, setSelectStaffId] = useState();
-  const [form] = useForm();
-  const [selectedPetId, setSelectedPetId] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // const [date, setDate] = useState();
+  // const [selectStaffId, setSelectStaffId] = useState();
+  // const [form] = useForm();
+  // const [selectedPetId, setSelectedPetId] = useState(null);
+  // const [loading, setLoading] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
 
-  const [staffList, setStaffList] = useState([]);
-  const columns = [
-    {
-      title: <span className="text-lg text-blue-500 font-semibold">Name</span>,
-      dataIndex: "petName",
-      key: "petName",
-      align: "center",
-      width: "27%", // Adjust width
-      render: (petName) => (
-        <span className="text-base text-black font-medium">{petName}</span>
-      ),
-    },
-    {
-      title: (
-        <span className="text-lg text-blue-500 font-semibold">Poster</span>
-      ),
-      dataIndex: "image",
-      key: "image",
-      align: "center",
-      width: "30%", // Adjust width
-      render: (image) => (
-        <div className="flex justify-center">
-          <img
-            src={image ? image : null}
-            width={150}
-            className="rounded-lg"
-            alt="Pet"
-          />
-        </div>
-      ),
-    },
-    {
-      title: (
-        <span className="text-lg text-blue-500 font-semibold">Action</span>
-      ),
-      dataIndex: "petId",
-      key: "petId",
-      align: "center",
-      width: "28%", // Adjust width
-      render: (petId) => (
-        <Button
-          onClick={() => setSelectedPetId(petId)}
-          className={`border-2 rounded-md px-4 py-2 transition-colors ${
-            petId === selectedPetId
-              ? "bg-blue-400 text-white border-blue-500"
-              : "bg-white text-blue-600 border-blue-700 hover:bg-blue-600 hover:text-white"
-          }`}
-        >
-          Choice
-        </Button>
-      ),
-    },
-  ];
+  // const [staffList, setStaffList] = useState([]);
+  // const columns = [
+  //   {
+  //     title: <span className="text-lg text-blue-500 font-semibold">Name</span>,
+  //     dataIndex: "petName",
+  //     key: "petName",
+  //     align: "center",
+  //     width: "27%", // Adjust width
+  //     render: (petName) => (
+  //       <span className="text-base text-black font-medium">{petName}</span>
+  //     ),
+  //   },
+  //   {
+  //     title: (
+  //       <span className="text-lg text-blue-500 font-semibold">Poster</span>
+  //     ),
+  //     dataIndex: "image",
+  //     key: "image",
+  //     align: "center",
+  //     width: "30%", // Adjust width
+  //     render: (image) => (
+  //       <div className="flex justify-center">
+  //         <img
+  //           src={image ? image : null}
+  //           width={150}
+  //           className="rounded-lg"
+  //           alt="Pet"
+  //         />
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     title: (
+  //       <span className="text-lg text-blue-500 font-semibold">Action</span>
+  //     ),
+  //     dataIndex: "petId",
+  //     key: "petId",
+  //     align: "center",
+  //     width: "28%", // Adjust width
+  //     render: (petId) => (
+  //       <Button
+  //         onClick={() => setSelectedPetId(petId)}
+  //         className={`border-2 rounded-md px-4 py-2 transition-colors ${
+  //           petId === selectedPetId
+  //             ? "bg-blue-400 text-white border-blue-500"
+  //             : "bg-white text-blue-600 border-blue-700 hover:bg-blue-600 hover:text-white"
+  //         }`}
+  //       >
+  //         Choice
+  //       </Button>
+  //     ),
+  //   },
+  // ];
   const handleSearch = async (searchTerm) => {
     if (!searchTerm) {
       setError(
@@ -131,115 +133,113 @@ function Service() {
       }
     }
   };
-  const handleStaffChange = (staffId) => {
-    setSelectStaffId(staffId);
-  };
-  const handleChoice = async () => {
-    const savedCart = localStorage.getItem("cart");
-    const cart = savedCart ? JSON.parse(savedCart) : [];
-    if (selectedPetId == null || date == null) {
-      setError("Please select a pet and a birthday.");
-      return;
-    }
-    setError("");
-    const userInfoString = localStorage.getItem("user-info");
-    const userInfo = JSON.parse(userInfoString);
-    const token = userInfo?.data?.token;
+  // const handleStaffChange = (staffId) => {
+  //   setSelectStaffId(staffId);
+  // };
+  // const handleChoice = async () => {
+  //   const savedCart = localStorage.getItem("cart");
+  //   const cart = savedCart ? JSON.parse(savedCart) : [];
+  //   if (selectedPetId == null || date == null) {
+  //     setError("Please select a pet and a birthday.");
+  //     return;
+  //   }
+  //   setError("");
+  //   const userInfoString = localStorage.getItem("user-info");
+  //   const userInfo = JSON.parse(userInfoString);
+  //   const token = userInfo?.data?.token;
 
-    const isAlreadyInCart = cart.some(
-      (item) =>
-        item.petId === selectedPetId && item.serviceId === selectedServiceId
-    );
+  //   const isAlreadyInCart = cart.some(
+  //     (item) =>
+  //       item.petId === selectedPetId && item.serviceId === selectedServiceId
+  //   );
 
-    if (isAlreadyInCart) {
-      message.warning("This pet has already used this service.");
-      return;
-    }
+  //   if (isAlreadyInCart) {
+  //     message.warning("This pet has already used this service.");
+  //     return;
+  //   }
 
-    setLoading(true); // Start loading
+  //   setLoading(true); // Start loading
 
-    try {
-      // Sending POST request to the backend
-      let url = `https://localhost:7150/api/Booking/available?startTime=${date.format(
-        "YYYY-MM-DDTHH:mm:ss"
-      )}&serviceCode=${selectedServiceId}`;
+  //   try {
+  //     // Sending POST request to the backend
+  //     let url = `https://localhost:7150/api/Booking/available?startTime=${date.format(
+  //       "YYYY-MM-DDTHH:mm:ss"
+  //     )}&serviceCode=${selectedServiceId}`;
 
-      if (selectStaffId) {
-        url += `&staffId=${selectStaffId}`;
-      }
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  //     if (selectStaffId) {
+  //       url += `&staffId=${selectStaffId}`;
+  //     }
+  //     const response = await axios.get(url, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
 
-      if (response.status === 401) {
-        console.log("Token expired. Please log in again.");
-        setError("Token expired. Please log in again.");
-        setLoading(false); // Stop loading
-        return;
-      }
+  //     if (response.status === 401) {
+  //       console.log("Token expired. Please log in again.");
+  //       setError("Token expired. Please log in again.");
+  //       setLoading(false); // Stop loading
+  //       return;
+  //     }
 
-      const selectedService = services.find(
-        (service) => service.serviceId === selectedServiceId
-      );
+  //     const selectedService = services.find(
+  //       (service) => service.serviceId === selectedServiceId
+  //     );
 
-      const selectedPet = dataSource.find((pet) => pet.petId === selectedPetId);
-      const newItem = {
-        serviceId: selectedService.serviceId,
-        data: date.format("YYYY-MM-DDTHH:mm:ss"),
-        serviceName: selectedService.serviceName,
-        servicePrice: selectedService.price,
-        petId: selectedPet.petId,
-        petName: selectedPet.petName,
-        comboId: "",
-      };
-      setCart((prevCart) => [...prevCart, newItem]);
-      message.success("Booking for pet successfully");
-      // Lưu giỏ hàng vào localStorage
-      localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
-      setSelectedPetId(null);
-      setDate(null);
-      setSelectStaffId(null);
-      setSelectedServiceId(null);
-      form.resetFields();
-      setLoading(false); // Reset Ant Design form fields
-      setIsOpen(false);
-    } catch (error) {
-      if (error.response) {
-        if (error.response.status === 401) {
-          console.log("Token expired. Please log in again.");
-          message.error(error.response);
-          localStorage.removeItem("user-info");
-          setTimeout(() => {
-            navigate("/");
-          }, 1000);
-          setLoading(false);
-        } else {
-          console.error("Error response:", error.response.data);
-          message.error(error.response.data);
-          setLoading(false);
-          return;
-          //setError(error.response.data || "An error occurred.");
-        }
-      } else {
-        console.error("Error:", error);
-        message.error(error.response.data);
-        setLoading(false);
-        return;
-        //setError("An unexpected error occurred.");
-      }
-    }
-  };
+  //     const selectedPet = dataSource.find((pet) => pet.petId === selectedPetId);
+  //     const newItem = {
+  //       serviceId: selectedService.serviceId,
+  //       data: date.format("YYYY-MM-DDTHH:mm:ss"),
+  //       serviceName: selectedService.serviceName,
+  //       servicePrice: selectedService.price,
+  //       petId: selectedPet.petId,
+  //       petName: selectedPet.petName,
+  //       comboId: "",
+  //     };
+  //     setCart((prevCart) => [...prevCart, newItem]);
+  //     message.success("Booking for pet successfully");
+  //     // Lưu giỏ hàng vào localStorage
+  //     localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
+  //     setSelectedPetId(null);
+  //     setDate(null);
+  //     setSelectStaffId(null);
+  //     setSelectedServiceId(null);
+  //     form.resetFields();
+  //     setLoading(false); // Reset Ant Design form fields
+  //     setIsOpen(false);
+  //   } catch (error) {
+  //     if (error.response) {
+  //       if (error.response.status === 401) {
+  //         console.log("Token expired. Please log in again.");
+  //         message.error(error.response);
+  //         localStorage.removeItem("user-info");
+  //         setTimeout(() => {
+  //           navigate("/");
+  //         }, 1000);
+  //         setLoading(false);
+  //       } else {
+  //         console.error("Error response:", error.response.data);
+  //         message.error(error.response.data);
+  //         setLoading(false);
+  //         return;
+  //         //setError(error.response.data || "An error occurred.");
+  //       }
+  //     } else {
+  //       console.error("Error:", error);
+  //       message.error(error.response.data);
+  //       setLoading(false);
+  //       return;
+  //       //setError("An unexpected error occurred.");
+  //     }
+  //   }
+  // };
 
   async function fetchMovies() {
     const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
 
     if (userInfo != null) {
-      console.log(userInfo.data.token);
       if (userInfo.data.user.id != null) {
-        console.log(userInfo.data.user.id);
         try {
           const response = await axios.get(
             `https://localhost:7150/api/Customer/${userInfo.data.user.id}`,
@@ -259,7 +259,6 @@ function Service() {
 
           const result = response.data;
           localStorage.setItem("pets", JSON.stringify(result));
-          console.log(result.data.pets);
 
           setDataSource(result.data.pets.filter((x) => x.status !== false));
         } catch (error) {
@@ -287,12 +286,10 @@ function Service() {
     // Do something with the serviceID, such as redirecting to booking page or sending request to server
     // var petId = "1122233333";
     fetchMovies();
-    if (dataSource.length == 0) {
-      message.warning("List not pet");
-    }
+
     setIsOpen(true);
     setSelectedServiceId(serviceID);
-    console.log(serviceID);
+
     // const newItem = { serviceID, petId };
     // setCart((prevCart) => [...prevCart, newItem]);
     // console.log(newItem);
@@ -304,26 +301,25 @@ function Service() {
       const response = await axios.get("https://localhost:7150/api/Service");
       const result = response.data;
       setServices(result.data.data);
-      console.log(result.data.data);
       localStorage.setItem("service", JSON.stringify(result));
     } catch (error) {
       console.error("Error fetching services:", error);
     }
   };
 
-  const fetchStaff = async () => {
-    try {
-      const response = await axios.get("https://localhost:7150/api/Staff");
-      setStaffList(response.data.data);
-      console.log(response.data.data);
-    } catch (error) {
-      message.error("Failed to fetch staff members");
-    }
-  };
+  // const fetchStaff = async () => {
+  //   try {
+  //     const response = await axios.get("https://localhost:7150/api/Staff");
+  //     // setStaffList(response.data.data);
+  //     // console.log(response.data.data);
+  //   } catch (error) {
+  //     message.error("Failed to fetch staff members");
+  //   }
+  // };
 
   useEffect(() => {
     fetchServices();
-    fetchStaff();
+    // fetchStaff();
   }, [dataSource]);
   return (
     <div>
@@ -346,7 +342,7 @@ function Service() {
           src="https://www.googletagmanager.com/gtag/js?id=G-TSZFRP5V2X"
         ></script>
       </div>
-      <Modal open={isOpen} footer={null} onCancel={handleHideModal} width={800}>
+      {/* <Modal open={isOpen} footer={null} onCancel={handleHideModal} width={800}>
         <Table
           columns={columns}
           dataSource={dataSource}
@@ -393,7 +389,7 @@ function Service() {
             Book
           </Button>
         </div>
-      </Modal>
+      </Modal> */}
 
       <div className="body_wrap">
         <div className="backtotop">
@@ -492,6 +488,13 @@ function Service() {
                             Book now
                           </span>
                         </Button>
+                        {isOpen && selectedServiceId === service.serviceId && (
+                          <BookingCard
+                            isOpen={isOpen}
+                            handleHideModal={handleHideModal}
+                            serviceId={service.serviceId}
+                          />
+                        )}
                         <div className="decoration_image">
                           <img
                             src="src/assets/images/shape/shape_paws.svg"

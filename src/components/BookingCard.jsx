@@ -4,65 +4,74 @@ import {
   Button,
   DatePicker,
   Form,
-  Input,
   Modal,
   Select,
   Space,
   Table,
-  Upload,
   message,
 } from "antd";
 import { useForm } from "antd/es/form/Form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-
 import AddingPet from "./AddingPet";
 
 const { Option } = Select;
 
-const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
+const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
   const [selectStaffId, setSelectStaffId] = useState();
   const [error, setError] = useState(null);
   const [dataSource, setDataSource] = useState([]);
-  const [selectedComboId, setSelectedComboId] = useState(comboId);
+  const [selectedServiceId, setSelectedServiceId] = useState(serviceId);
   const [date, setDate] = useState(null);
   const [staffList, setStaffList] = useState([]);
   const [selectedPetId, setSelectedPetId] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [comboList, setcomboList] = useState([]);
-  const [periodicOtion, setPeriodicOption] = useState();
-  const [priceCombo, setPriceCombo] = useState();
-  const [isPetOpen, setIsPetOpen] = useState(false);
-
   const navigate = useNavigate();
   const [form] = useForm();
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
-
-  const fetchCombo = async () => {
-    try {
-      const response = await axios.get("https://localhost:7150/api/Combo");
-      setcomboList(response.data);
-      console.log(response.data);
-      const combo = response.data.find((x) => x.comboId == comboId);
-      setPriceCombo(combo.price);
-    } catch (error) {
-      message.error("Failed to fetch combo details");
-    }
-  };
+  const [priceCombo, setPriceCombo] = useState();
+  const [isPetOpen, setIsPetOpen] = useState(false);
+  const [services, setServices] = useState([]);
+  const [period, setPeriod] = useState();
 
   useEffect(() => {
-    fetchCombo();
-    fetchMovies();
+    fetchPets();
     fetchStaff();
+    fetchServices();
   }, []);
 
-  function handlePrice(value) {
-    setPriceCombo(() => priceCombo * value);
-  }
+  const handlePrice = (value) => {
+    let newPriceCombo = priceCombo;
+
+    switch (value) {
+      case 3:
+        newPriceCombo = priceCombo * 3 * 0.97; // 3 months, 3% discount
+        break;
+      case 6:
+        newPriceCombo = priceCombo * 6 * 0.94; // 6 months, 6% discount
+        break;
+      case 9:
+        newPriceCombo = priceCombo * 9 * 0.92; // 9 months, 8% discount
+        break;
+      default:
+        newPriceCombo = priceCombo; // Default to the initial price if value doesn't match
+    }
+
+    console.log("New Price Combo:", newPriceCombo); // Debugging log
+    setPriceCombo(newPriceCombo);
+    setPeriod(value);
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3,
+    }).format(price);
+  };
 
   const handlePetModalOpen = () => {
     setIsPetOpen(true);
@@ -76,7 +85,7 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
     form.submit();
   };
 
-  async function fetchMovies() {
+  async function fetchPets() {
     const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
 
@@ -180,6 +189,25 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
     },
   ];
 
+  const fetchServices = async () => {
+    try {
+      const response = await axios.get("https://localhost:7150/api/Service");
+      const result = response.data;
+      setServices(result.data.data);
+      localStorage.setItem("service", JSON.stringify(result));
+      if (selectedServiceId) {
+        const service = result.data.data.find(
+          (x) => x.serviceId === selectedServiceId
+        );
+        if (service) {
+          setPriceCombo(service.price);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    }
+  };
+
   const handleChoice = async () => {
     const savedCart = localStorage.getItem("cart");
     const cart = savedCart ? JSON.parse(savedCart) : [];
@@ -192,20 +220,13 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
     const userInfo = JSON.parse(userInfoString);
     const token = userInfo?.data?.token;
     console.log(token);
-    const isServiceAlreadyInCart = cart.some((service) =>
-      cart.some(
-        (item) =>
-          item.petId === selectedPetId &&
-          item.comboId === service.serviceId &&
-          item.data === date.format("YYYY-MM-DDTHH:mm:ss")
-      )
+    const isAlreadyInCart = cart.some(
+      (item) =>
+        item.petId === selectedPetId && item.serviceId === selectedServiceId
     );
 
-    if (isServiceAlreadyInCart) {
-      message.warning(
-        "This pet has already used this combo at the selected time."
-      );
-      setLoading(false);
+    if (isAlreadyInCart) {
+      message.warning("This pet has already used this service.");
       return;
     }
 
@@ -215,10 +236,13 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
       // Sending POST request to the backend
       let url = `https://localhost:7150/api/Booking/available?startTime=${date.format(
         "YYYY-MM-DDTHH:mm:ss"
-      )}&serviceCode=${selectedComboId}`;
+      )}&serviceCode=${selectedServiceId}`;
 
       if (selectStaffId) {
         url += `&staffId=${selectStaffId}`;
+      }
+      if (period) {
+        url += `&periodMonths=${period}`;
       }
       const response = await axios.get(url, {
         headers: {
@@ -227,42 +251,40 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
       });
 
       if (response.status === 401) {
-        console.log("Please log in again.");
-        setError("Please log in again.");
+        console.log("Token expired. Please log in again.");
+        setError("Token expired. Please log in again.");
         setLoading(false); // Stop loading
         return;
       }
 
       const selectedPet = dataSource.find((pet) => pet.petId === selectedPetId);
-      const selectedService = comboList.find(
-        (service) => service.comboId === comboId
+      const selectedService = services.find(
+        (service) => service.serviceId === selectedServiceId
       );
 
-      console.log(selectedService);
       const newItem = {
-        serviceId: "",
-        data: date.format("YYYY-MM-DDTHH:mm:ss"),
-        serviceName: selectedService.comboType,
-        servicePrice: priceCombo,
+        serviceId: selectedService.serviceId,
+        date: date.format("YYYY-MM-DDTHH:mm:ss"),
+        serviceName: selectedService.serviceName,
+        servicePrice: priceCombo, // Use the updated priceCombo
         petId: selectedPet.petId,
         petName: selectedPet.petName,
-        comboId: comboId,
-        period: periodicOtion,
       };
       setCart((prevCart) => [...prevCart, newItem]);
-      message.success("Booking for pet successfully");
-      // Lưu giỏ hàng vào localStorage
+      message.success("Service booked successfully");
+      // Save cart to localStorage
       localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
       setSelectedPetId(null);
       setDate(null);
       setSelectStaffId(null);
+      setSelectedServiceId(null);
       form.resetFields();
       setLoading(false); // Reset Ant Design form fields
       handleHideModal();
     } catch (error) {
       if (error.response) {
         if (error.response.status === 401) {
-          console.log("Please log in again.");
+          console.log("Token expired. Please log in again.");
           message.error(error.response.data);
           setTimeout(() => {
             navigate("/");
@@ -335,13 +357,13 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
                 onChange={(value) => handlePrice(value)}
                 className="w-full"
               >
-                <Option value="0.3">3 months(3%)</Option>
-                <Option value="0.6">6 months(8%)</Option>
-                <Option value="0.9">9 months(10%)</Option>
+                <Option value={3}>3 months (3%)</Option>
+                <Option value={6}>6 months (6%)</Option>
+                <Option value={9}>9 months (8%)</Option>
               </Select>
             </Form.Item>
             <div className="w-1/2 text-right">
-              <p className="text-2xl font-bold">${priceCombo}</p>
+              <p className="text-2xl font-bold">${formatPrice(priceCombo)}</p>
             </div>
           </div>
           <p className="text-red-500">{error}</p>
@@ -362,4 +384,4 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
   );
 };
 
-export default BookingCombo;
+export default BookingCard;

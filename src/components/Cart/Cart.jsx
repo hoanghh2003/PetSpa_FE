@@ -5,7 +5,7 @@ import {
   faMoneyCheckDollar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { message } from "antd";
+import { Checkbox, message } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -31,6 +31,16 @@ function Cart() {
   const [error, setError] = useState();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const handleCheckboxChange = (productId, petId) => {
+    setProducts((prevStoredProducts) => {
+      return prevStoredProducts.map((product) => {
+        if (product.serviceId === productId && product.petId === petId) {
+          return { ...product, selected: !product.selected };
+        }
+        return product;
+      });
+    });
+  };
 
   // const handleCheckboxChange = (productId, petId) => {
   //   setProducts((prevStoredProducts) => {
@@ -407,6 +417,20 @@ function Cart() {
                                             })}
                                           </a>
                                         </div>
+                                        <div className="text-muted mb-2 d-flex flex-wrap">
+                                          <span className="me-1">Period:</span>
+                                          <a
+                                            href="javascript:void(0)"
+                                            className="me-3"
+                                          >
+                                            {new Date(
+                                              product.data
+                                            ).toLocaleTimeString("en-US", {
+                                              hour: "2-digit",
+                                              minute: "2-digit",
+                                            })}
+                                          </a>
+                                        </div>
                                         <div
                                           className="read-only-ratings mb-3"
                                           data-rateyo-read-only="true"
@@ -432,12 +456,15 @@ function Cart() {
                                             </span>
                                             <s className="text-muted">$359</s>
                                           </div>
-                                          <button
-                                            type="button"
-                                            className="btn btn-sm btn-label-primary mt-md-3"
-                                          >
-                                            Move to wishlist
-                                          </button>
+                                          <Checkbox
+                                            checked={product.selected}
+                                            onChange={() =>
+                                              handleCheckboxChange(
+                                                product.serviceId,
+                                                product.petId
+                                              )
+                                            }
+                                          ></Checkbox>
                                         </div>
                                       </div>
                                     </div>
