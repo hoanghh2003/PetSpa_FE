@@ -12,6 +12,11 @@ import { useNavigate } from "react-router-dom";
 
 function Cart() {
   const [currentStep, setCurrentStep] = useState(1);
+  const [products, setProducts] = useState([]);
+  const [error, setError] = useState();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("pills-cc");
 
   const handleNext = () => {
     setCurrentStep(currentStep + 1);
@@ -21,16 +26,10 @@ function Cart() {
     setCurrentStep(currentStep - 1);
   };
 
-  const [activeTab, setActiveTab] = useState("pills-cc");
-
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
   };
 
-  const [products, setProducts] = useState([]);
-  const [error, setError] = useState();
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
   const handleCheckboxChange = (productId, petId) => {
     setProducts((prevStoredProducts) => {
       return prevStoredProducts.map((product) => {
@@ -42,20 +41,9 @@ function Cart() {
     });
   };
 
-  // const handleCheckboxChange = (productId, petId) => {
-  //   setProducts((prevStoredProducts) => {
-  //     return prevStoredProducts.map((product) => {
-  //       if (product.serviceId === productId && product.petId === petId) {
-  //         return { ...product, selected: !product.selected };
-  //       }
-  //       return product;
-  //     });
-  //   });
-  // };
-
   useEffect(() => {
+    setIsLoading(false);
     const storedProducts = getFromLocalStorage();
-
     if (storedProducts) {
       setProducts(
         storedProducts.map((product) => ({
@@ -71,88 +59,145 @@ function Cart() {
     return JSON.parse(jsonData);
   }
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(price);
+  };
+
+  const calculateSubtotal = () => {
+    return products
+      .filter((product) => product.selected)
+      .reduce((total, product) => total + product.servicePrice, 0);
+  };
+
   async function handleBooking() {
     setIsLoading(true);
     const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
 
-    if (userInfo != null) {
-      const token = userInfo.data.token;
-      const userId = userInfo.data.user.id;
+    if (!userInfo) {
+      setIsLoading(false);
+      message.error("User not logged in.");
+      return;
+    }
 
-      if (userId != null) {
-        const savedCart = localStorage.getItem("cart");
-        const cart = savedCart ? JSON.parse(savedCart) : [];
+    const token = userInfo.data.token;
+    const userId = userInfo.data.user.id;
 
-        if (cart.length === 0) {
-          setError("Your cart is empty.");
-          setIsLoading(false);
-          return;
+    if (!userId) {
+      setIsLoading(false);
+      message.error("User ID not found.");
+      return;
+    }
+
+    if (products.every((item) => item.selected === false)) {
+      setIsLoading(false);
+      message.error("Cart list is empty");
+      return;
+    }
+
+    const cart = products.filter((item) => item.selected);
+
+    if (cart.length === 0) {
+      setIsLoading(false);
+      setError("Your cart is empty.");
+      return;
+    }
+
+    const bookingPromises = [];
+
+    for (let item of cart) {
+      if (item.period === "1" && item.selected && item.comboId) {
+        // Combo
+        const comboDetails = await item.comboDetails();
+
+        if (comboDetails && comboDetails.length > 0) {
+          bookingPromises.push({
+            cusId: userId,
+            bookingSchedule: item.date,
+            bookingDetails: comboDetails.map((detail) => ({
+              petId: item.petId,
+              serviceId: detail.serviceId,
+              comboId: item.comboId,
+              staffId: detail.staffId || null,
+              status: true,
+              comboType: detail.comboType || "string",
+            })),
+          });
         }
+      } else if (item.selected) {
+        // Service or Periodic Service
+        const numberOfMonths = parseInt(item.period, 10);
+        for (let i = 0; i < numberOfMonths; i++) {
+          const bookingDate = new Date(item.date);
+          bookingDate.setMonth(bookingDate.getMonth() + i);
 
-        const bookingPromises = cart.map((item) => {
-          const requestData = {
-            cusId: userId, // Customer ID
-            bookingSchedule: item.data, // Assuming item.data is already formatted as "YYYY-MM-DDTHH:mm:ss"
+          bookingPromises.push({
+            cusId: userId,
+            bookingSchedule: bookingDate.toISOString(),
             bookingDetails: [
               {
                 petId: item.petId,
                 serviceId: item.serviceId,
-                comboId: item.comboId || null, // Replace with actual combo ID if available
-                staffId: item.staffId || null, // Replace with actual staff ID if available
-                status: true, // Change status if needed
-                comboType: "string", // Replace with actual combo type if available
+                comboId: null,
+                staffId: item.staffId || null,
+                status: true,
+                comboType: "string",
               },
             ],
-          };
+          });
+        }
+      }
+    }
 
-          return axios.post(`https://localhost:7150/api/Booking`, requestData, {
+    try {
+      const responses = await Promise.all(
+        bookingPromises.map((requestData) =>
+          axios.post(`https://localhost:7150/api/Booking`, requestData, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          });
-        });
+          })
+        )
+      );
 
-        try {
-          const responses = await Promise.all(bookingPromises);
-
-          const successfulResponses = responses.filter(
-            (response) => response.status === 200
-          );
-
-          if (successfulResponses.length === cart.length) {
-            console.log("All bookings were successful.");
-            localStorage.removeItem("cart");
-            message.success("All bookings were successful!");
-
-            // Redirect to home page after a delay
-            setTimeout(() => {
-              navigate("/");
-            }, 1000); // Adjust delay as needed
-          } else {
-            console.log("Some bookings were not successful.");
-            message.warning("Some bookings were not successful.");
-          }
-        } catch (error) {
-          if (error.response) {
-            if (error.response.status === 401) {
-              console.log("Token expired. Please log in again.");
-              message.error(error.response.data);
-              setError("Token expired. Please log in again.");
-            } else {
-              console.error("Error response:", error.response.data);
-              message.error(error.response.data || "An error occurred.");
-              setError(error.response.data || "An error occurred.");
-            }
-          } else {
-            console.error("Error:", error);
-
-            setError("An unexpected error occurred.");
-          }
+      responses.forEach((response, index) => {
+        if (response.status === 200) {
+          // Xóa sản phẩm đã được thanh toán thành công khỏi giỏ hàng
+          const selectedItem = cart[index];
+          selectedItem.selected = false; // Bỏ thuộc tính selected
         }
+      });
+
+      // Lọc lại giỏ hàng chỉ giữ lại những sản phẩm chưa được thanh toán
+      const updatedCart = products.filter((item) => !item.selected);
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+      console.log("All bookings were successful.");
+      message.success("All bookings were successful!");
+
+      // Redirect to home page after a delay
+      setTimeout(() => {
+        navigate("/");
+      }, 1000); // Adjust delay as needed
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          console.log("Token expired. Please log in again.");
+          message.error("Token expired. Please log in again.");
+          navigate("/login");
+        } else {
+          console.error("Error response:", error.response.data);
+          message.error(error.response.data || "An error occurred.");
+          setError(error.response.data || "An error occurred.");
+        }
+      } else {
+        console.error("Error:", error);
+        message.error("An unexpected error occurred.");
+        setError("An unexpected error occurred.");
       }
-    } else {
-      message.error("User not logged in.");
     }
 
     setIsLoading(false);
@@ -374,9 +419,9 @@ function Cart() {
                                             href="javascript:void(0)"
                                             className="text-body"
                                           >
-                                            {product.comboId
-                                              ? `Combo: ${product.serviceName}`
-                                              : `Service: ${product.serviceName}`}
+                                            {product.servieId
+                                              ? `Service: ${product.serviceName}`
+                                              : `Combo: ${product.serviceName}`}
                                           </a>
                                         </p>
                                         <div className="text-muted mb-2 d-flex flex-wrap">
@@ -395,7 +440,7 @@ function Cart() {
                                             className="me-3"
                                           >
                                             {new Date(
-                                              product.data
+                                              product.date
                                             ).toLocaleDateString("en-US", {
                                               year: "numeric",
                                               month: "long",
@@ -410,7 +455,7 @@ function Cart() {
                                             className="me-3"
                                           >
                                             {new Date(
-                                              product.data
+                                              product.date
                                             ).toLocaleTimeString("en-US", {
                                               hour: "2-digit",
                                               minute: "2-digit",
@@ -423,25 +468,11 @@ function Cart() {
                                             href="javascript:void(0)"
                                             className="me-3"
                                           >
-                                            {new Date(
-                                              product.data
-                                            ).toLocaleTimeString("en-US", {
-                                              hour: "2-digit",
-                                              minute: "2-digit",
-                                            })}
+                                            {product.period === "1"
+                                              ? product.period + " time"
+                                              : product.period + " months"}
                                           </a>
                                         </div>
-                                        <div
-                                          className="read-only-ratings mb-3"
-                                          data-rateyo-read-only="true"
-                                        ></div>
-                                        <input
-                                          type="number"
-                                          className="form-control form-control-sm w-px-100 mt-2"
-                                          defaultValue="1"
-                                          min="1"
-                                          max="5"
-                                        />
                                       </div>
                                       <div className="col-md-4">
                                         <div className="text-md-end">
@@ -452,9 +483,10 @@ function Cart() {
                                           ></button>
                                           <div className="my-2 my-md-4 mb-md-5">
                                             <span className="text-primary">
-                                              {product.servicePrice}
+                                              {formatPrice(
+                                                product.servicePrice
+                                              )}
                                             </span>
-                                            <s className="text-muted">$359</s>
                                           </div>
                                           <Checkbox
                                             checked={product.selected}
@@ -472,75 +504,6 @@ function Cart() {
                                 </div>
                               </li>
                             ))}
-                            <li className="list-group-item p-4">
-                              <div className="d-flex gap-3">
-                                <div className="flex-shrink-0 d-flex align-items-center">
-                                  <img
-                                    src="src/assets/images/products/2.png"
-                                    alt="google home"
-                                    className="w-px-100"
-                                  />
-                                </div>
-                                <div className="flex-grow-1">
-                                  <div className="row">
-                                    <div className="col-md-8">
-                                      <p className="me-3">
-                                        <a
-                                          href="javascript:void(0)"
-                                          className="text-body"
-                                        >
-                                          Apple iPhone 11 (64GB, Black)
-                                        </a>
-                                      </p>
-                                      <div className="text-muted mb-2 d-flex flex-wrap">
-                                        <span className="me-1">Sold by:</span>{" "}
-                                        <a
-                                          href="javascript:void(0)"
-                                          className="me-3"
-                                        >
-                                          Apple
-                                        </a>{" "}
-                                        <span className="badge bg-label-success">
-                                          In Stock
-                                        </span>
-                                      </div>
-                                      <div
-                                        className="read-only-ratings mb-3"
-                                        data-rateyo-read-only="true"
-                                      ></div>
-                                      <input
-                                        type="number"
-                                        className="form-control form-control-sm w-px-100 mt-2"
-                                        value="1"
-                                        min="1"
-                                        max="5"
-                                      />
-                                    </div>
-                                    <div className="col-md-4">
-                                      <div className="text-md-end">
-                                        <button
-                                          type="button"
-                                          className="btn-close btn-pinned"
-                                          aria-label="Close"
-                                        ></button>
-                                        <div className="my-2 my-md-4 mb-md-5">
-                                          <span className="text-primary">
-                                            $299/
-                                          </span>
-                                          <s className="text-muted">$359</s>
-                                        </div>
-                                        <button
-                                          type="button"
-                                          className="btn btn-sm btn-label-primary mt-md-3"
-                                        >
-                                          Move to wishlist
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </li>
                           </ul>
 
                           <div className="list-group">
@@ -597,24 +560,20 @@ function Cart() {
 
                             <div className="d-flex justify-content-between mb-2">
                               <span>Subtotal</span>
-                              <span className="text-end">$598</span>
+                              <span className="text-end">
+                                {formatPrice(calculateSubtotal())}
+                              </span>
                             </div>
                             <div className="d-flex justify-content-between mb-2">
-                              <span>Discount (10%)</span>
-                              <span className="text-end">- $59.80</span>
-                            </div>
-                            <div className="d-flex justify-content-between mb-2">
-                              <span>Delivery Charges</span>
-                              <span className="text-end">$5.00</span>
-                            </div>
-                            <div className="d-flex justify-content-between">
-                              <span>Tax (12%)</span>
-                              <span className="text-end">$64.80</span>
+                              <span>Discount</span>
+                              <span className="text-end">$0.00</span>
                             </div>
                             <hr />
                             <div className="d-flex justify-content-between mb-4">
                               <span>Total</span>
-                              <span className="fw-bold text-end">$608</span>
+                              <span className="fw-bold text-end">
+                                {formatPrice(calculateSubtotal())}
+                              </span>
                             </div>
                             <div className="d-grid">
                               <button
@@ -941,6 +900,8 @@ function Cart() {
                                     <button
                                       type="button"
                                       className="btn btn-primary btn-next me-sm-3 me-1"
+                                      onClick={handleBooking}
+                                      disabled={isLoading}
                                     >
                                       Submit
                                     </button>
