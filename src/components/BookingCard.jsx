@@ -42,7 +42,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
     fetchPets();
     fetchStaff();
     fetchServices();
-  }, []);
+  }, [dataSource]);
 
   const handlePrice = (value) => {
     let newPriceCombo = priceCurrent;
