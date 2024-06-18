@@ -31,7 +31,6 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
   const [selectedPetId, setSelectedPetId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [comboList, setcomboList] = useState([]);
-  const [periodicOtion, setPeriodicOption] = useState();
   const [priceCombo, setPriceCombo] = useState();
   const [isPetOpen, setIsPetOpen] = useState(false);
 
@@ -41,6 +40,12 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3,
+    }).format(price);
+  };
 
   const fetchCombo = async () => {
     try {
@@ -49,6 +54,7 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
       console.log(response.data);
       const combo = response.data.find((x) => x.comboId == comboId);
       setPriceCombo(combo.price);
+      setPriceCurrent(combo.price);
     } catch (error) {
       message.error("Failed to fetch combo details");
     }
@@ -59,10 +65,29 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
     fetchMovies();
     fetchStaff();
   }, []);
+  const [priceCurrent, setPriceCurrent] = useState();
+  const [period, setPeriod] = useState();
 
-  function handlePrice(value) {
-    setPriceCombo(() => priceCombo * value);
-  }
+  const handlePrice = (value) => {
+    let newPriceCombo = priceCurrent;
+    switch (value) {
+      case 3:
+        newPriceCombo = priceCurrent * 3 * 0.97; // 3 months, 3% discount
+        break;
+      case 6:
+        newPriceCombo = priceCurrent * 6 * 0.94; // 6 months, 6% discount
+        break;
+      case 9:
+        newPriceCombo = priceCurrent * 9 * 0.92; // 9 months, 8% discount
+        break;
+      default:
+        newPriceCombo = priceCurrent; // Default to the initial price if value doesn't match
+    }
+
+    console.log("New Price Combo:", newPriceCombo); // Debugging log
+    setPriceCombo(newPriceCombo);
+    setPeriod(value);
+  };
 
   const handlePetModalOpen = () => {
     setIsPetOpen(true);
@@ -197,7 +222,7 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
         (item) =>
           item.petId === selectedPetId &&
           item.comboId === service.serviceId &&
-          item.data === date.format("YYYY-MM-DDTHH:mm:ss")
+          item.date === date.format("YYYY-MM-DDTHH:mm:ss")
       )
     );
 
@@ -240,14 +265,13 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
 
       console.log(selectedService);
       const newItem = {
-        serviceId: "",
-        data: date.format("YYYY-MM-DDTHH:mm:ss"),
+        date: date.format("YYYY-MM-DDTHH:mm:ss"),
         serviceName: selectedService.comboType,
         servicePrice: priceCombo,
         petId: selectedPet.petId,
         petName: selectedPet.petName,
-        comboId: comboId,
-        period: periodicOtion,
+        comboDetails: selectedService.services,
+        period: period,
       };
       setCart((prevCart) => [...prevCart, newItem]);
       message.success("Booking for pet successfully");
@@ -335,13 +359,14 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
                 onChange={(value) => handlePrice(value)}
                 className="w-full"
               >
-                <Option value="0.3">3 months(3%)</Option>
-                <Option value="0.6">6 months(8%)</Option>
-                <Option value="0.9">9 months(10%)</Option>
+                <Option value={0}>1 time</Option>
+                <Option value={3}>3 months (3%)</Option>
+                <Option value={6}>6 months (6%)</Option>
+                <Option value={9}>9 months (8%)</Option>
               </Select>
             </Form.Item>
             <div className="w-1/2 text-right">
-              <p className="text-2xl font-bold">${priceCombo}</p>
+              <p className="text-2xl font-bold">${formatPrice(priceCombo)}</p>
             </div>
           </div>
           <p className="text-red-500">{error}</p>

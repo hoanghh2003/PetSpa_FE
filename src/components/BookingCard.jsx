@@ -37,7 +37,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
   const [isPetOpen, setIsPetOpen] = useState(false);
   const [services, setServices] = useState([]);
   const [period, setPeriod] = useState();
-
+  const [priceCurrent, setPriceCurrent] = useState();
   useEffect(() => {
     fetchPets();
     fetchStaff();
@@ -45,25 +45,25 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
   }, []);
 
   const handlePrice = (value) => {
-    let newPriceCombo = priceCombo;
-
+    let newPriceCombo = priceCurrent;
     switch (value) {
       case 3:
-        newPriceCombo = priceCombo * 3 * 0.97; // 3 months, 3% discount
+        newPriceCombo = priceCurrent * 3 * 0.97; // 3 months, 3% discount
         break;
       case 6:
-        newPriceCombo = priceCombo * 6 * 0.94; // 6 months, 6% discount
+        newPriceCombo = priceCurrent * 6 * 0.94; // 6 months, 6% discount
         break;
       case 9:
-        newPriceCombo = priceCombo * 9 * 0.92; // 9 months, 8% discount
+        newPriceCombo = priceCurrent * 9 * 0.92; // 9 months, 8% discount
         break;
       default:
-        newPriceCombo = priceCombo; // Default to the initial price if value doesn't match
+        newPriceCombo = priceCurrent; // Default to the initial price if value doesn't match
     }
 
-    console.log("New Price Combo:", newPriceCombo); // Debugging log
+    console.log("New Price Combo:", value); // Debugging log
     setPriceCombo(newPriceCombo);
     setPeriod(value);
+    console.log("cc" + value);
   };
 
   const formatPrice = (price) => {
@@ -201,6 +201,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
         );
         if (service) {
           setPriceCombo(service.price);
+          setPriceCurrent(service.price);
         }
       }
     } catch (error) {
@@ -269,6 +270,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
         servicePrice: priceCombo, // Use the updated priceCombo
         petId: selectedPet.petId,
         petName: selectedPet.petName,
+        period: period,
       };
       setCart((prevCart) => [...prevCart, newItem]);
       message.success("Service booked successfully");
@@ -357,6 +359,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
                 onChange={(value) => handlePrice(value)}
                 className="w-full"
               >
+                <Option value={0}>1 time</Option>
                 <Option value={3}>3 months (3%)</Option>
                 <Option value={6}>6 months (6%)</Option>
                 <Option value={9}>9 months (8%)</Option>
