@@ -9,7 +9,7 @@ import ResetPassword from "./components/ResetPassword/ResetPassword";
 import Petmanagement from "./components/Petmanagement/Petmanagement";
 import HomePage from "./components/HomePage/HomePage";
 import Service from "./components/Service/Service";
-import Service_Details from "./components/Service_Details/Service_Details";
+import Service_Details from "./components/Service/Service_Details";
 import Cart from "./components/Cart/Cart";
 import MainLayout from "./layout/MainLayout";
 import Account from "./components/Account/Account";
@@ -54,7 +54,7 @@ const router = createBrowserRouter([
         element: <Service />,
       },
       {
-        path: "/Service_Details",
+        path: "/service/:serviceId",
         element: <Service_Details />,
       },
       {

@@ -511,8 +511,8 @@ function Service() {
                         <div className="item_price">
                           <span>{service.price}</span>
                         </div>
-                        <Link className="btn_unfill" to="/service_details">
-                          <span>Get Service</span>{" "}
+                        <Link className="btn_unfill" to={`/service/${service.serviceId}`}>
+                          <span>View More</span>{" "}
                           <FontAwesomeIcon icon={faArrowRight} />
                         </Link>
                         <Button
@@ -539,50 +539,6 @@ function Service() {
                       </div>
                     </div>
                   ))}
-                <div className="col col-lg-4">
-                  <div
-                    className="service_item"
-                    style={{
-                      backgroundImage:
-                        'url("src/assets/images/shape/shape_path_1.svg")',
-                    }}
-                  >
-                    <div className="title_wrap">
-                      <div className="item_icon">
-                        <img
-                          src="src/assets/images/icon/icon_pet_grooming.svg"
-                          alt="Pet Grooming"
-                        />
-                      </div>
-                      <h3 className="item_title mb-0">Pet Grooming</h3>
-                    </div>
-                    <p>
-                      Et odio pellentesque diam volutpat commodo sed egestas
-                      egestas pellentesque nec nam
-                    </p>
-                    <div className="item_price">
-                      <span>From $39 / complex</span>
-                    </div>
-                    <Link className="btn_unfill" to="/service_details">
-                      <span>View More</span>{" "}
-                      <FontAwesomeIcon icon={faArrowRight} />
-                    </Link>
-                    <Button
-                      onClick={() => handleBookNow()}
-                      className="group w-32 h-10 m-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-full shadow-lg hover:from-purple-600 hover:to-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
-                    >
-                      <span className="block group-hover:text-black transition duration-300 ease-in-out">
-                        Book now
-                      </span>
-                    </Button>
-                    <div className="decoration_image">
-                      <img
-                        src="src/assets/images/shape/shape_paws.svg"
-                        alt="Pet Paws"
-                      />
-                    </div>
-                  </div>
-                </div>
                 {/*<div className="col col-lg-4">
                   <div
                     className="service_item"
