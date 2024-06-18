@@ -16,6 +16,7 @@ import Account from "./components/Account/Account";
 import AccountSetting from "./components/Account/AccountSetting";
 import PrivacyPolicyTerms from "./components/Register/policy";
 import Logout from "./components/Logout/logout";
+import Transac from "./components/Service/transac";
 //route
 const router = createBrowserRouter([
   {
@@ -59,27 +60,31 @@ const router = createBrowserRouter([
       },
       {
         path: "/Cart",
-        element: <Cart/>,
+        element: <Cart />,
       },
       {
         path: "/Account",
-        element: <Account/>,
+        element: <Account />,
       },
       {
         path: "/AccountSetting",
-        element: <AccountSetting/>,
+        element: <AccountSetting />,
       },
       {
         path: "/Pet",
-        element: <Petmanagement/>,
+        element: <Petmanagement />,
       },
       {
         path: "/policy",
-        element: <PrivacyPolicyTerms/>,
+        element: <PrivacyPolicyTerms />,
       },
       {
         path: "/logout",
-        element: <Logout/>,
+        element: <Logout />,
+      },
+      {
+        path: "/transac",
+        element: <Transac />,
       },
     ],
   },
