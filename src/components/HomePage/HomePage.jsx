@@ -41,7 +41,6 @@ function HomePage() {
     try {
       const response = await axios.get("https://localhost:7150/api/Combo");
       setComboList(response.data);
-      console.log(response.data);
     } catch (error) {
       message.error("Failed to fetch staff members");
     }
@@ -49,7 +48,6 @@ function HomePage() {
 
   useEffect(() => {
     fetchCombo();
-    console.log(comboList);
   }, []);
 
   const [isOpen, setIsOpen] = useState(false);

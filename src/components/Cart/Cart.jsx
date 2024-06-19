@@ -109,34 +109,68 @@ function Cart() {
     const bookingPromises = [];
 
     for (let item of cart) {
-      if (item.period === "1" && item.selected && item.comboId) {
-        // Combo
-        const comboDetails = await item.comboDetails();
-
-        if (comboDetails && comboDetails.length > 0) {
+      if (item.selected) {
+        if (item.comboDetails && item.period == 1) {
+          // Combo with single booking
           bookingPromises.push({
             cusId: userId,
             bookingSchedule: item.date,
-            bookingDetails: comboDetails.map((detail) => ({
+            bookingDetails: item.comboDetails.map((detail) => ({
               petId: item.petId,
               serviceId: detail.serviceId,
-              comboId: item.comboId,
+              comboId: detail.comboId,
               staffId: detail.staffId || null,
               status: true,
-              comboType: detail.comboType || "string",
+              comboType: item.comboName,
             })),
           });
-        }
-      } else if (item.selected) {
-        // Service or Periodic Service
-        const numberOfMonths = parseInt(item.period, 10);
-        for (let i = 0; i < numberOfMonths; i++) {
-          const bookingDate = new Date(item.date);
-          bookingDate.setMonth(bookingDate.getMonth() + i);
+        } else if (item.comboDetails && item.period > 1) {
+          // Combo with periodic booking
+          const numberOfMonths = parseInt(item.period, 10);
+          for (let i = 0; i < numberOfMonths; i++) {
+            const bookingDate = new Date(item.date);
+            bookingDate.setMonth(bookingDate.getMonth() + i);
 
+            bookingPromises.push({
+              cusId: userId,
+              bookingSchedule: bookingDate.toISOString(),
+              bookingDetails: item.comboDetails.map((detail) => ({
+                petId: item.petId,
+                serviceId: detail.serviceId,
+                comboId: detail.comboId,
+                staffId: detail.staffId || null,
+                status: true,
+                comboType: item.comboName,
+              })),
+            });
+          }
+        } else if (item.period > 1) {
+          // Periodic service
+          const numberOfMonths = parseInt(item.period, 10);
+          for (let i = 0; i < numberOfMonths; i++) {
+            const bookingDate = new Date(item.date);
+            bookingDate.setMonth(bookingDate.getMonth() + i);
+
+            bookingPromises.push({
+              cusId: userId,
+              bookingSchedule: bookingDate.toISOString(),
+              bookingDetails: [
+                {
+                  petId: item.petId,
+                  serviceId: item.serviceId,
+                  comboId: null,
+                  staffId: item.staffId || null,
+                  status: true,
+                  comboType: "string",
+                },
+              ],
+            });
+          }
+        } else {
+          // Single service booking
           bookingPromises.push({
             cusId: userId,
-            bookingSchedule: bookingDate.toISOString(),
+            bookingSchedule: item.date,
             bookingDetails: [
               {
                 petId: item.petId,
@@ -153,25 +187,31 @@ function Cart() {
     }
 
     try {
-      const responses = await Promise.all(
-        bookingPromises.map((requestData) =>
-          axios.post(`https://localhost:7150/api/Booking`, requestData, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-        )
-      );
-
-      responses.forEach((response, index) => {
-        if (response.status === 200) {
-          // Xóa sản phẩm đã được thanh toán thành công khỏi giỏ hàng
-          const selectedItem = cart[index];
-          selectedItem.selected = false; // Bỏ thuộc tính selected
-        }
+      console.log(bookingPromises.length);
+      bookingPromises.forEach((element) => {
+        console.log(element);
       });
 
-      // Lọc lại giỏ hàng chỉ giữ lại những sản phẩm chưa được thanh toán
+      // Uncomment below to actually make API calls and handle responses
+      // const responses = await Promise.all(
+      //   bookingPromises.map((requestData) =>
+      //     axios.post(`https://localhost:7150/api/Booking`, requestData, {
+      //       headers: {
+      //         Authorization: `Bearer ${token}`,
+      //       },
+      //     })
+      //   )
+      // );
+
+      // responses.forEach((response, index) => {
+      //   if (response.status === 200) {
+      //     // Update cart after successful booking
+      //     const selectedItem = cart[index];
+      //     selectedItem.selected = false; // Remove selected flag
+      //   }
+      // });
+
+      //Update local storage cart after successful bookings
       const updatedCart = products.filter((item) => !item.selected);
       localStorage.setItem("cart", JSON.stringify(updatedCart));
 
@@ -202,7 +242,6 @@ function Cart() {
 
     setIsLoading(false);
   }
-
   return (
     <div>
       <head>
@@ -468,7 +507,7 @@ function Cart() {
                                             href="javascript:void(0)"
                                             className="me-3"
                                           >
-                                            {product.period === "1"
+                                            {product.period == "1"
                                               ? product.period + " time"
                                               : product.period + " months"}
                                           </a>

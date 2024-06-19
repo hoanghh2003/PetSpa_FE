@@ -36,13 +36,13 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
   const [priceCombo, setPriceCombo] = useState();
   const [isPetOpen, setIsPetOpen] = useState(false);
   const [services, setServices] = useState([]);
-  const [period, setPeriod] = useState();
+  const [period, setPeriod] = useState(1);
   const [priceCurrent, setPriceCurrent] = useState();
   useEffect(() => {
     fetchPets();
     fetchStaff();
     fetchServices();
-  }, []);
+  }, [dataSource]);
 
   const handlePrice = (value) => {
     let newPriceCombo = priceCurrent;
@@ -60,10 +60,9 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
         newPriceCombo = priceCurrent; // Default to the initial price if value doesn't match
     }
 
-    console.log("New Price Combo:", value); // Debugging log
     setPriceCombo(newPriceCombo);
+
     setPeriod(value);
-    console.log("cc" + value);
   };
 
   const formatPrice = (price) => {
@@ -138,16 +137,6 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
 
   const columns = [
     {
-      title: <span className="text-lg text-blue-500 font-semibold">Name</span>,
-      dataIndex: "petName",
-      key: "petName",
-      align: "center",
-      width: "27%",
-      render: (petName) => (
-        <span className="text-base text-black font-medium">{petName}</span>
-      ),
-    },
-    {
       title: (
         <span className="text-lg text-blue-500 font-semibold">Poster</span>
       ),
@@ -156,14 +145,25 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
       align: "center",
       width: "30%",
       render: (image) => (
-        <div className="flex justify-center">
+        <div className="flex justify-center w-150 h-150 rounded-full">
           <img
             src={image ? image : null}
             width={150}
-            className="rounded-lg"
+            height={100}
+            className="rounded-full object-cover"
             alt="Pet"
           />
         </div>
+      ),
+    },
+    {
+      title: <span className="text-lg text-blue-500 font-semibold">Name</span>,
+      dataIndex: "petName",
+      key: "petName",
+      align: "center",
+      width: "27%",
+      render: (petName) => (
+        <span className="text-base text-black font-medium">{petName}</span>
       ),
     },
     {
@@ -271,6 +271,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
         petId: selectedPet.petId,
         petName: selectedPet.petName,
         period: period,
+        staffId: selectStaffId ? selectStaffId : "",
       };
       setCart((prevCart) => [...prevCart, newItem]);
       message.success("Service booked successfully");
@@ -359,7 +360,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
                 onChange={(value) => handlePrice(value)}
                 className="w-full"
               >
-                <Option value={0}>1 time</Option>
+                <Option value={1}>1 time</Option>
                 <Option value={3}>3 months (3%)</Option>
                 <Option value={6}>6 months (6%)</Option>
                 <Option value={9}>9 months (8%)</Option>
