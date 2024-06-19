@@ -66,7 +66,7 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
     fetchStaff();
   }, [dataSource]);
   const [priceCurrent, setPriceCurrent] = useState();
-  const [period, setPeriod] = useState();
+  const [period, setPeriod] = useState(1);
 
   const handlePrice = (value) => {
     let newPriceCombo = priceCurrent;
@@ -154,16 +154,6 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
 
   const columns = [
     {
-      title: <span className="text-lg text-blue-500 font-semibold">Name</span>,
-      dataIndex: "petName",
-      key: "petName",
-      align: "center",
-      width: "27%",
-      render: (petName) => (
-        <span className="text-base text-black font-medium">{petName}</span>
-      ),
-    },
-    {
       title: (
         <span className="text-lg text-blue-500 font-semibold">Poster</span>
       ),
@@ -176,10 +166,21 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
           <img
             src={image ? image : null}
             width={150}
-            className="rounded-lg"
+            height={150}
+            className="rounded-full"
             alt="Pet"
           />
         </div>
+      ),
+    },
+    {
+      title: <span className="text-lg text-blue-500 font-semibold">Name</span>,
+      dataIndex: "petName",
+      key: "petName",
+      align: "center",
+      width: "27%",
+      render: (petName) => (
+        <span className="text-base text-black font-medium">{petName}</span>
       ),
     },
     {
@@ -263,7 +264,7 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
         (service) => service.comboId === comboId
       );
 
-      console.log(selectedService);
+      console.log(period);
       const newItem = {
         date: date.format("YYYY-MM-DDTHH:mm:ss"),
         serviceName: selectedService.comboType,
@@ -272,6 +273,7 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
         petName: selectedPet.petName,
         comboDetails: selectedService.services,
         period: period,
+        staffId: selectStaffId ? selectStaffId : "",
       };
       setCart((prevCart) => [...prevCart, newItem]);
       message.success("Booking for pet successfully");
@@ -359,7 +361,7 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
                 onChange={(value) => handlePrice(value)}
                 className="w-full"
               >
-                <Option value={0}>1 time</Option>
+                <Option value={1}>1 time</Option>
                 <Option value={3}>3 months (3%)</Option>
                 <Option value={6}>6 months (6%)</Option>
                 <Option value={9}>9 months (8%)</Option>
