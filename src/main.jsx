@@ -17,6 +17,8 @@ import AccountSetting from "./components/Account/AccountSetting";
 import PrivacyPolicyTerms from "./components/Register/policy";
 import Logout from "./components/Logout/logout";
 import Transac from "./components/Service/transac";
+import Blog from "./components/Blog/Blog";
+import BlogDetails from "./components/Blog/Blog_Details";
 //route
 const router = createBrowserRouter([
   {
@@ -85,6 +87,14 @@ const router = createBrowserRouter([
       {
         path: "/transac",
         element: <Transac />,
+      },
+      {
+        path: "/blog",
+        element: <Blog />,
+      },
+      {
+        path: "/post/:id",
+        element: <BlogDetails />,
       },
     ],
   },

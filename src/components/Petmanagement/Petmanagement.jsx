@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import uploadFile from "@/utils/upload";
 
-import "./Petmanagement.css"; // Create a separate CSS file for custom styles
+import "../../components/Petmanagement/Petmanagement.css"; // Create a separate CSS file for custom styles
 
 function Petmanagement() {
   const navigate = useNavigate();

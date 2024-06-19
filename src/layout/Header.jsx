@@ -122,10 +122,10 @@ const Header = () => {
                       aria-labelledby="blog_submenu"
                     >
                       <li>
-                        <a href="blog">Our Blogs</a>
+                        <Link to="/blog">Our Blogs</Link>
                       </li>
                       <li>
-                        <a href="blog_details">Blog Details</a>
+                        <Link to="/post/:id">Blog Details</Link>
                       </li>
                     </ul>
                   </li>
