@@ -78,38 +78,6 @@ const Header = () => {
                     <a
                       className="nav-link"
                       href="#"
-                      id="shop_submenu"
-                      role="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Shop
-                    </a>
-                    <ul
-                      className="dropdown-menu"
-                      aria-labelledby="shop_submenu"
-                    >
-                      <li>
-                        <a href="shop">Our Shop</a>
-                      </li>
-                      <li>
-                        <a href="shop_details">Shop Details</a>
-                      </li>
-                      <li>
-                        <a href="sales">Sales Page</a>
-                      </li>
-                      <li>
-                      <Link to="/cart">Shopping Cart</Link>
-                      </li>
-                      <li>
-                        <a href="shipping_info">Shipping Info</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li className="dropdown">
-                    <a
-                      className="nav-link"
-                      href="#"
                       id="blog_submenu"
                       role="button"
                       data-bs-toggle="dropdown"
@@ -129,38 +97,38 @@ const Header = () => {
                       </li>
                     </ul>
                   </li>
-                  <li className="dropdown">
-                    <a
-                      className="nav-link"
-                      href="#"
-                      id="pages_submenu"
-                      role="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Pages
-                    </a>
-                    <ul
-                      className="dropdown-menu"
-                      aria-labelledby="pages_submenu"
-                    >
-                      <li>
-                        <a href="about">About Us</a>
-                      </li>
-                      <li>
-                        <a href="contact">Contact Us</a>
-                      </li>
-                      <li>
-                        <a href="faq">FAQ</a>
-                      </li>
-                      <li>
-                        <a href="error">Error 404</a>
-                      </li>
-                      <li>
-                        <a href="team">Our Team</a>
-                      </li>
-                    </ul>
-                  </li>
+                    {/* <li className="dropdown">
+                      <a
+                        className="nav-link"
+                        href="#"
+                        id="pages_submenu"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        Pages
+                      </a>
+                      <ul
+                        className="dropdown-menu"
+                        aria-labelledby="pages_submenu"
+                      >
+                        <li>
+                          <a href="about">About Us</a>
+                        </li>
+                        <li>
+                          <a href="contact">Contact Us</a>
+                        </li>
+                        <li>
+                          <a href="faq">FAQ</a>
+                        </li>
+                        <li>
+                          <a href="error">Error 404</a>
+                        </li>
+                        <li>
+                          <a href="team">Our Team</a>
+                        </li>
+                      </ul>
+                    </li> */}
                 </ul>
               </div>
             </nav>
