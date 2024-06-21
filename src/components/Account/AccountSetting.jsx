@@ -245,8 +245,8 @@ function AccountSetting() {
                                     message: "Password must be at least 8 characters long!",
                                   },
                                   {
-                                    max: 15,
-                                    message: "Password must not exceed 15 characters!",
+                                    max: 30,
+                                    message: "Password must not exceed 30 characters!",
                                   },
                                 ]}
                                 className="form-password-toggle"
