@@ -30,16 +30,6 @@ function Petmanagement() {
   const [isUpdate, setIsUpdate] = useState(false);
   const [petId, setPetId] = useState(null);
 
-  // const [status, setStatus] = useState({
-  //   petName: "",
-  //   petCategory: "",
-  //   petWeight: "",
-  //   petHeight: "",
-  //   petBirthday: null,
-  //   image: "",
-  // });
-
-  // const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   const handleDeleteMovie = async (id) => {
@@ -48,7 +38,6 @@ function Petmanagement() {
 
     if (userInfo != null) {
       try {
-        console.log(id);
         const response = await axios.delete(
           `https://localhost:7150/api/Pet/${id}`,
           {
@@ -64,8 +53,6 @@ function Petmanagement() {
           navigate("/login");
           return;
         }
-
-        console.log("Delete response:", response);
 
         if (response.status === 200) {
           const listAfterDelete = dataSource.filter((pet) => pet.petId !== id);
@@ -144,8 +131,10 @@ function Petmanagement() {
           );
 
           if (response.status === 401) {
-            // toast.error("Token hết hạn. Vui lòng đăng nhập lại.");
+            // Token hết hạn, thông báo và chờ 2 giây trước khi điều hướng
+            message.error("Token hết hạn. Vui lòng đăng nhập lại.");
             localStorage.removeItem("user-info");
+            await new Promise((resolve) => setTimeout(resolve, 2000));
             navigate("/login");
             return;
           }
@@ -157,7 +146,8 @@ function Petmanagement() {
         } catch (error) {
           if (error.response && error.response.status === 401) {
             localStorage.removeItem("user-info");
-            message.error("Please,Login in again");
+            message.error("Please, Login in again");
+            await new Promise((resolve) => setTimeout(resolve, 2000));
             navigate("/login");
           } else {
             message.error("Có lỗi xảy ra. Vui lòng thử lại.");
@@ -170,6 +160,7 @@ function Petmanagement() {
       navigate("/");
     }
   }
+
   function handleShowModal() {
     setIsOpen(true);
   }

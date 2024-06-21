@@ -57,59 +57,6 @@ function Service() {
     return savedCart ? JSON.parse(savedCart) : [];
   });
 
-  // const [staffList, setStaffList] = useState([]);
-  // const columns = [
-  //   {
-  //     title: <span className="text-lg text-blue-500 font-semibold">Name</span>,
-  //     dataIndex: "petName",
-  //     key: "petName",
-  //     align: "center",
-  //     width: "27%", // Adjust width
-  //     render: (petName) => (
-  //       <span className="text-base text-black font-medium">{petName}</span>
-  //     ),
-  //   },
-  //   {
-  //     title: (
-  //       <span className="text-lg text-blue-500 font-semibold">Poster</span>
-  //     ),
-  //     dataIndex: "image",
-  //     key: "image",
-  //     align: "center",
-  //     width: "30%", // Adjust width
-  //     render: (image) => (
-  //       <div className="flex justify-center">
-  //         <img
-  //           src={image ? image : null}
-  //           width={150}
-  //           className="rounded-lg"
-  //           alt="Pet"
-  //         />
-  //       </div>
-  //     ),
-  //   },
-  //   {
-  //     title: (
-  //       <span className="text-lg text-blue-500 font-semibold">Action</span>
-  //     ),
-  //     dataIndex: "petId",
-  //     key: "petId",
-  //     align: "center",
-  //     width: "28%", // Adjust width
-  //     render: (petId) => (
-  //       <Button
-  //         onClick={() => setSelectedPetId(petId)}
-  //         className={`border-2 rounded-md px-4 py-2 transition-colors ${
-  //           petId === selectedPetId
-  //             ? "bg-blue-400 text-white border-blue-500"
-  //             : "bg-white text-blue-600 border-blue-700 hover:bg-blue-600 hover:text-white"
-  //         }`}
-  //       >
-  //         Choice
-  //       </Button>
-  //     ),
-  //   },
-  // ];
   const handleSearch = async (searchTerm) => {
     if (!searchTerm) {
       setError(
@@ -133,106 +80,6 @@ function Service() {
       }
     }
   };
-  // const handleStaffChange = (staffId) => {
-  //   setSelectStaffId(staffId);
-  // };
-  // const handleChoice = async () => {
-  //   const savedCart = localStorage.getItem("cart");
-  //   const cart = savedCart ? JSON.parse(savedCart) : [];
-  //   if (selectedPetId == null || date == null) {
-  //     setError("Please select a pet and a birthday.");
-  //     return;
-  //   }
-  //   setError("");
-  //   const userInfoString = localStorage.getItem("user-info");
-  //   const userInfo = JSON.parse(userInfoString);
-  //   const token = userInfo?.data?.token;
-
-  //   const isAlreadyInCart = cart.some(
-  //     (item) =>
-  //       item.petId === selectedPetId && item.serviceId === selectedServiceId
-  //   );
-
-  //   if (isAlreadyInCart) {
-  //     message.warning("This pet has already used this service.");
-  //     return;
-  //   }
-
-  //   setLoading(true); // Start loading
-
-  //   try {
-  //     // Sending POST request to the backend
-  //     let url = `https://localhost:7150/api/Booking/available?startTime=${date.format(
-  //       "YYYY-MM-DDTHH:mm:ss"
-  //     )}&serviceCode=${selectedServiceId}`;
-
-  //     if (selectStaffId) {
-  //       url += `&staffId=${selectStaffId}`;
-  //     }
-  //     const response = await axios.get(url, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     if (response.status === 401) {
-  //       console.log("Token expired. Please log in again.");
-  //       setError("Token expired. Please log in again.");
-  //       setLoading(false); // Stop loading
-  //       return;
-  //     }
-
-  //     const selectedService = services.find(
-  //       (service) => service.serviceId === selectedServiceId
-  //     );
-
-  //     const selectedPet = dataSource.find((pet) => pet.petId === selectedPetId);
-  //     const newItem = {
-  //       serviceId: selectedService.serviceId,
-  //       data: date.format("YYYY-MM-DDTHH:mm:ss"),
-  //       serviceName: selectedService.serviceName,
-  //       servicePrice: selectedService.price,
-  //       petId: selectedPet.petId,
-  //       petName: selectedPet.petName,
-  //       comboId: "",
-  //     };
-  //     setCart((prevCart) => [...prevCart, newItem]);
-  //     message.success("Booking for pet successfully");
-  //     // Lưu giỏ hàng vào localStorage
-  //     localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
-  //     setSelectedPetId(null);
-  //     setDate(null);
-  //     setSelectStaffId(null);
-  //     setSelectedServiceId(null);
-  //     form.resetFields();
-  //     setLoading(false); // Reset Ant Design form fields
-  //     setIsOpen(false);
-  //   } catch (error) {
-  //     if (error.response) {
-  //       if (error.response.status === 401) {
-  //         console.log("Token expired. Please log in again.");
-  //         message.error(error.response);
-  //         localStorage.removeItem("user-info");
-  //         setTimeout(() => {
-  //           navigate("/");
-  //         }, 1000);
-  //         setLoading(false);
-  //       } else {
-  //         console.error("Error response:", error.response.data);
-  //         message.error(error.response.data);
-  //         setLoading(false);
-  //         return;
-  //         //setError(error.response.data || "An error occurred.");
-  //       }
-  //     } else {
-  //       console.error("Error:", error);
-  //       message.error(error.response.data);
-  //       setLoading(false);
-  //       return;
-  //       //setError("An unexpected error occurred.");
-  //     }
-  //   }
-  // };
 
   async function fetchMovies() {
     const userInfoString = localStorage.getItem("user-info");
@@ -289,12 +136,6 @@ function Service() {
 
     setIsOpen(true);
     setSelectedServiceId(serviceID);
-
-    // const newItem = { serviceID, petId };
-    // setCart((prevCart) => [...prevCart, newItem]);
-    // console.log(newItem);
-    // // Lưu giỏ hàng vào localStorage
-    // localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
   };
   const fetchServices = async () => {
     try {
@@ -306,16 +147,6 @@ function Service() {
       console.error("Error fetching services:", error);
     }
   };
-
-  // const fetchStaff = async () => {
-  //   try {
-  //     const response = await axios.get("https://localhost:7150/api/Staff");
-  //     // setStaffList(response.data.data);
-  //     // console.log(response.data.data);
-  //   } catch (error) {
-  //     message.error("Failed to fetch staff members");
-  //   }
-  // };
 
   useEffect(() => {
     fetchServices();
@@ -342,54 +173,6 @@ function Service() {
           src="https://www.googletagmanager.com/gtag/js?id=G-TSZFRP5V2X"
         ></script>
       </div>
-      {/* <Modal open={isOpen} footer={null} onCancel={handleHideModal} width={800}>
-        <Table
-          columns={columns}
-          dataSource={dataSource}
-          rowClassName={(record) =>
-            record.petId === selectedPetId ? "bg-cyan-100" : ""
-          }
-          rowKey="petId"
-          pagination={false} // Remove if you need pagination
-          scroll={{ x: 800 }} // Enables horizontal scrolling
-        />
-        <Form layout="vertical" className="mt-5">
-          <div className="flex space-x-4">
-            <Form.Item label="Date" className="w-1/2">
-              <Space direction="vertical" className="w-full">
-                <DatePicker
-                  showTime
-                  value={date}
-                  onChange={(date) => setDate(date)}
-                  className="w-full"
-                />
-              </Space>
-            </Form.Item>
-            <Form.Item label="Select Staff" className="w-1/2">
-              <Select
-                showSearch
-                placeholder="Select a staff"
-                optionFilterProp="children"
-                onChange={handleStaffChange}
-                className="w-full"
-              >
-                {Array.isArray(staffList) &&
-                  staffList.map((staff) => (
-                    <Option key={staff.staffId} value={staff.staffId}>
-                      {staff.fullName}
-                    </Option>
-                  ))}
-              </Select>
-            </Form.Item>
-          </div>
-          <p className="text-red-500">{error}</p>
-        </Form>
-        <div className="flex justify-end mt-2">
-          <Button type="primary" onClick={handleChoice} loading={loading}>
-            Book
-          </Button>
-        </div>
-      </Modal> */}
 
       <div className="body_wrap">
         <div className="backtotop">

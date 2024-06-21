@@ -45,24 +45,43 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
   }, [dataSource]);
 
   const handlePrice = (value) => {
-    let newPriceCombo = priceCurrent;
-    switch (value) {
-      case 3:
-        newPriceCombo = priceCurrent * 3 * 0.97; // 3 months, 3% discount
-        break;
-      case 6:
-        newPriceCombo = priceCurrent * 6 * 0.94; // 6 months, 6% discount
-        break;
-      case 9:
-        newPriceCombo = priceCurrent * 9 * 0.92; // 9 months, 8% discount
-        break;
-      default:
-        newPriceCombo = priceCurrent; // Default to the initial price if value doesn't match
+    // Kiểm tra giá trị của priceCurrent
+    if (
+      !priceCurrent ||
+      typeof priceCurrent !== "number" ||
+      priceCurrent <= 0
+    ) {
+      console.error("Invalid priceCurrent value:", priceCurrent);
+      return;
     }
 
-    setPriceCombo(newPriceCombo);
+    let newPriceCombo = priceCurrent;
 
+    switch (value) {
+      case 3:
+        newPriceCombo = priceCurrent * 3 * 0.97; // 3 tháng, giảm giá 3%
+        break;
+      case 6:
+        newPriceCombo = priceCurrent * 6 * 0.94; // 6 tháng, giảm giá 6%
+        break;
+      case 9:
+        newPriceCombo = priceCurrent * 9 * 0.92; // 9 tháng, giảm giá 8%
+        break;
+      default:
+        newPriceCombo = priceCurrent; // Mặc định trở về giá ban đầu nếu giá trị không khớp
+    }
+
+    // Đảm bảo newPriceCombo không bị gán giá trị undefined hoặc null
+    if (isNaN(newPriceCombo) || newPriceCombo <= 0) {
+      console.error("Invalid newPriceCombo value:", newPriceCombo);
+      newPriceCombo = priceCurrent; // Trở lại giá trị ban đầu nếu có lỗi
+    }
+
+    // Cập nhật giá trị
+    setPriceCombo(newPriceCombo);
     setPeriod(value);
+
+    console.log("Updated price combo:", newPriceCombo, "for period:", value);
   };
 
   const formatPrice = (price) => {
@@ -107,6 +126,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
           }
 
           const result = response.data;
+
           localStorage.setItem("pets", JSON.stringify(result));
           setDataSource(result.data.pets.filter((x) => x.status !== false));
         } catch (error) {
@@ -220,7 +240,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
     const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
     const token = userInfo?.data?.token;
-    console.log(token);
+
     const isAlreadyInCart = cart.some(
       (item) =>
         item.petId === selectedPetId && item.serviceId === selectedServiceId
@@ -309,7 +329,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
   };
 
   return (
-    <div>
+    <>
       <Modal open={isOpen} footer={null} onCancel={handleHideModal} width={800}>
         <Button type="primary" onClick={handlePetModalOpen}>
           +
@@ -384,7 +404,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
         handleHideModal={handlePetModalClose}
         setDataSource={setDataSource}
       />
-    </div>
+    </>
   );
 };
 
