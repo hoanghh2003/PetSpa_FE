@@ -112,6 +112,11 @@ const LoginPage = () => {
         setIsLoading(false);
         return false;
       }
+      if (password.length > maxPasswordLength) {
+        setError("Password must not exceed 15 characters");
+        setIsLoading(false);
+        return false;
+      }
 
       let item = { username: email, password: password };
       console.log(email);
