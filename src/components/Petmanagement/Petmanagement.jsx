@@ -111,29 +111,37 @@ function Petmanagement() {
           }
         );
 
-        if (response.status === 401) {
-          localStorage.removeItem("user-info");
-          navigate("/login");
-          return;
-        }
+          if (response.status === 401) {
+            // Token hết hạn, thông báo và chờ 2 giây trước khi điều hướng
+            message.error("Token hết hạn. Vui lòng đăng nhập lại.");
+            localStorage.removeItem("user-info");
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            navigate("/login");
+            return;
+          }
 
         const result = response.data;
         localStorage.setItem("pets", JSON.stringify(result));
 
-        setDataSource(result.data.pets.filter((x) => x.status !== false));
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          localStorage.removeItem("user-info");
-          message.error("Please,Login in again");
-          navigate("/login");
-        } else {
-          message.error("Có lỗi xảy ra. Vui lòng thử lại.");
+          setDataSource(result.data.pets.filter((x) => x.status !== false));
+        } catch (error) {
+          if (error.response && error.response.status === 401) {
+            localStorage.removeItem("user-info");
+            message.error("Please, Login in again");
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            navigate("/login");
+          } else {
+            message.error("Có lỗi xảy ra. Vui lòng thử lại.");
+          }
         }
+      } else {
+        navigate("/");
       }
     } else {
       navigate("/");
     }
   }
+
 
   function handleShowModal() {
     setIsOpen(true);

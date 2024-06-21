@@ -14,6 +14,7 @@ import axios from "axios";
 import { auth, googleprovider } from "@/config/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { message } from "antd";
+
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -164,6 +165,7 @@ const LoginPage = () => {
     } else {
       setIsLoading(true);
       setIsLogin(false);
+      setIsLoading(true);
       setError("Logined");
     }
   }, []);

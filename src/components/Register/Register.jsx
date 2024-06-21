@@ -4,7 +4,7 @@
 //   disbaled: "#D9D9D9",
 import { Link, useNavigate } from "react-router-dom";
 import COVER_IMAGE from "../LoginPage/login.jpg";
-import { useState } from "react";
+import React, { useState } from "react";
 import { message } from "antd";
 
 const Register = () => {
@@ -18,82 +18,102 @@ const Register = () => {
   const navigate = useNavigate();
   async function handleRegister(event) {
     event.preventDefault();
+    if (isLogin) {
+      // Biểu thức chính quy và các thông số
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const minPasswordLength = 6;
+      const passwordRegex =
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
 
-    // Biểu thức chính quy và các thông số
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const minPasswordLength = 6;
-    const passwordRegex =
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+      const phoneRegex = /^0\d{9}$/; // Chỉnh regex cho số điện thoại Việt Nam
+      const genderRegex = /^(Male|Female|Other)$/i;
 
-    const phoneRegex = /^0\d{9}$/; // Chỉnh regex cho số điện thoại Việt Nam
-    const genderRegex = /^(Male|Female|Other)$/i;
+      // Validate dữ liệu
+      if (!emailRegex.test(email)) {
+        setError("Email không hợp lệ");
 
-    // Validate dữ liệu
-    if (!emailRegex.test(email)) {
-      setError("Email không hợp lệ");
-      return; // Dừng hàm nếu có lỗi
-    }
-
-    if (!passwordRegex.test(password) || password.length < minPasswordLength) {
-      setError(
-        "Mật khẩu không hợp lệ (tối thiểu 8 ký tự, chứa chữ hoa, chữ thường, số và ký tự đặc biệt)"
-      );
-      return; // Dừng hàm nếu có lỗi
-    }
-
-    if (!phoneRegex.test(phone)) {
-      setError("Số điện thoại không hợp lệ");
-      return; // Dừng hàm nếu có lỗi
-    }
-
-    if (!genderRegex.test(gender)) {
-      setError("Giới tính không hợp lệ");
-      return; // Dừng hàm nếu có lỗi
-    }
-
-    // Kiểm tra mật khẩu trùng khớp
-
-    // Chuẩn bị dữ liệu
-    const item = {
-      email,
-      password,
-      confirmPassword: password, // Không cần gửi lên server
-      fullName: first + last,
-      gender,
-      phoneNumber: phone,
-    };
-
-    try {
-      // Gọi API đăng ký
-      const response = await fetch("https://localhost:7150/api/Auth/Register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(item),
-      });
-
-      // Xử lý response từ API
-      if (!response.ok) {
-        // Nếu đăng ký thất bại
-        const errorData = await response.json(); // Lấy thông tin lỗi từ response
-        setError(errorData.message || "Email is already Registered"); // Hiển thị thông báo lỗi
-      } else {
-        // Nếu đăng ký thành công
-
-        const result = await response.json();
-        localStorage.setItem("user-info", JSON.stringify(result));
-
-        message.success("Register successfully");
-        navigate("/"); // Xóa thông báo lỗi nếu có
-        // history.push("/"); // Chuyển hướng về trang chủ
+        return; // Dừng hàm nếu có lỗi
       }
-    } catch (error) {
-      setError("Có lỗi xảy ra. Vui lòng thử lại sau.");
-      console.error("Lỗi đăng ký:", error);
-    }
+
+      if (
+        !passwordRegex.test(password) ||
+        password.length < minPasswordLength
+      ) {
+        setError(
+          "Mật khẩu không hợp lệ (tối thiểu 8 ký tự, chứa chữ hoa, chữ thường, số và ký tự đặc biệt)"
+        );
+        return; // Dừng hàm nếu có lỗi
+      }
+
+      if (!phoneRegex.test(phone)) {
+        setError("Số điện thoại không hợp lệ");
+        return; // Dừng hàm nếu có lỗi
+      }
+
+      if (!genderRegex.test(gender)) {
+        setError("Giới tính không hợp lệ");
+        return; // Dừng hàm nếu có lỗi
+      }
+
+      // Kiểm tra mật khẩu trùng khớp
+
+      // Chuẩn bị dữ liệu
+      const item = {
+        email,
+        password,
+        confirmPassword: password, // Không cần gửi lên server
+        fullName: first + last,
+        gender,
+        phoneNumber: phone,
+      };
+
+      try {
+        // Gọi API đăng ký
+        const response = await fetch(
+          "https://localhost:7150/api/Auth/Register",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(item),
+          }
+        );
+
+        // Xử lý response từ API
+        if (!response.ok) {
+          // Nếu đăng ký thất bại
+          const errorData = await response.json(); // Lấy thông tin lỗi từ response
+          setError(errorData.message || "Email is already Registered"); // Hiển thị thông báo lỗi
+        } else {
+          // Nếu đăng ký thành công
+
+          const result = await response.json();
+          localStorage.setItem("user-info", JSON.stringify(result));
+
+          message.success("Register successfully");
+          navigate("/"); // Xóa thông báo lỗi nếu có
+          // history.push("/"); // Chuyển hướng về trang chủ
+        }
+      } catch (error) {
+        setError("Có lỗi xảy ra. Vui lòng thử lại sau.");
+        console.error("Lỗi đăng ký:", error);
+      }
+    } else setError("You must log out for register");
   }
+  const [isLoading, setIsLoading] = useState();
+  const [isLogin, setIsLogin] = useState();
+  React.useEffect(() => {
+    const user = localStorage.getItem("user-info");
+    if (user == null) {
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+      setIsLoading(true);
+      setError("Logined");
+    }
+  }, []);
   return (
     <div className="w-700 h-screen flex items-start my-1 ">
       <div className="relative w-1/2 h-full flex flex-col">
@@ -171,6 +191,7 @@ const Register = () => {
               <option value="female">Female</option>
               <option value="other">Other</option>
             </select>
+
             <div className="mb-3 fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
               <div className="form-check">
                 <input
@@ -194,8 +215,9 @@ const Register = () => {
             <button
               onClick={handleRegister}
               className="w-full text-white my-2 font-semibold bg-[#060606] rounded-md p-4 text-center flex items-center justify-center cursor-pointer"
+              disabled={isLoading}
             >
-              Register
+              {isLoading ? "Register..." : "Register"}
             </button>
           </div>
 

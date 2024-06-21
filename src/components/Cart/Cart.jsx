@@ -9,7 +9,7 @@ import { Checkbox, message } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import moment from "moment";
 function Cart() {
   const [currentStep, setCurrentStep] = useState(1);
   const [products, setProducts] = useState([]);
@@ -128,12 +128,13 @@ function Cart() {
           // Combo with periodic booking
           const numberOfMonths = parseInt(item.period, 10);
           for (let i = 0; i < numberOfMonths; i++) {
-            const bookingDate = new Date(item.date);
-            bookingDate.setMonth(bookingDate.getMonth() + i);
+            const bookingDate = moment(item.date)
+              .add(i, "months")
+              .format("YYYY-MM-DDTHH:mm:ss");
 
             bookingPromises.push({
               cusId: userId,
-              bookingSchedule: bookingDate.toISOString(),
+              bookingSchedule: bookingDate,
               bookingDetails: item.comboDetails.map((detail) => ({
                 petId: item.petId,
                 serviceId: detail.serviceId,
@@ -148,12 +149,13 @@ function Cart() {
           // Periodic service
           const numberOfMonths = parseInt(item.period, 10);
           for (let i = 0; i < numberOfMonths; i++) {
-            const bookingDate = new Date(item.date);
-            bookingDate.setMonth(bookingDate.getMonth() + i);
+            const bookingDate = moment(item.date)
+              .add(i, "months")
+              .format("YYYY-MM-DDTHH:mm:ss");
 
             bookingPromises.push({
               cusId: userId,
-              bookingSchedule: bookingDate.toISOString(),
+              bookingSchedule: bookingDate,
               bookingDetails: [
                 {
                   petId: item.petId,
@@ -193,27 +195,34 @@ function Cart() {
       });
 
       // Uncomment below to actually make API calls and handle responses
-      // const responses = await Promise.all(
-      //   bookingPromises.map((requestData) =>
-      //     axios.post(`https://localhost:7150/api/Booking`, requestData, {
-      //       headers: {
-      //         Authorization: `Bearer ${token}`,
-      //       },
-      //     })
-      //   )
-      // );
+      const responses = await Promise.all(
+        bookingPromises.map((requestData) =>
+          axios.post(`https://localhost:7150/api/Booking`, requestData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        )
+      );
 
-      // responses.forEach((response, index) => {
-      //   if (response.status === 200) {
-      //     // Update cart after successful booking
-      //     const selectedItem = cart[index];
-      //     selectedItem.selected = false; // Remove selected flag
-      //   }
-      // });
+      // Collect booking codes from successful bookings
+      const bookingCodes = responses
+        .filter((response) => response.status === 200)
+        .map((response) => response.data.bookingId);
 
-      //Update local storage cart after successful bookings
-      const updatedCart = products.filter((item) => !item.selected);
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      console.log("Booking codes:", bookingCodes);
+
+      // Filter out items that have been successfully booked
+      const successfullyBookedItems = responses
+        .filter((response) => response.status === 200)
+        .map((response, index) => cart[index]);
+
+      const updatedProducts = products.filter(
+        (product) => !successfullyBookedItems.includes(product)
+      );
+
+      // Update local storage cart after successful bookings
+      localStorage.setItem("cart", JSON.stringify(updatedProducts));
 
       console.log("All bookings were successful.");
       message.success("All bookings were successful!");
@@ -242,6 +251,7 @@ function Cart() {
 
     setIsLoading(false);
   }
+
   return (
     <div>
       <head>
