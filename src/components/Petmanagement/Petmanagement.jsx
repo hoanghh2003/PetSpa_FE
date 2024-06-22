@@ -137,9 +137,6 @@ function Petmanagement() {
       } else {
         navigate("/");
       }
-    } else {
-      navigate("/");
-    }
   }
 
 

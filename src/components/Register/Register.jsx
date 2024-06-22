@@ -103,7 +103,7 @@ const Register = () => {
 
         message.success("You Register successfully");
 
-        //navigate("/"); // Clear error message if any
+        navigate("/"); // Clear error message if any
       }
     } catch (error) {
       setError("An error occurred. Please try again later.");
