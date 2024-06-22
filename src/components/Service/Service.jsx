@@ -67,7 +67,7 @@ function Service() {
 
     try {
       const response = await axios.get(
-        //https://localhost:7150/api/Service/search?searchTerm=grooming
+       
         `https://localhost:7150/api/Service/search?searchTerm=${searchTerm}`
       );
       setServices(response.data.data);

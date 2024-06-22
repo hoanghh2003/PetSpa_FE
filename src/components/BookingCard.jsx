@@ -132,7 +132,8 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
         } catch (error) {
           if (error.response && error.response.status === 401) {
             localStorage.removeItem("user-info");
-            message.error("Token expired. Please log in again.");
+            message.error("Please log in again.");
+            
             navigate("/login");
           } else {
             message.error("An error occurred. Please try again.");
@@ -272,8 +273,8 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
       });
 
       if (response.status === 401) {
-        console.log("Token expired. Please log in again.");
-        setError("Token expired. Please log in again.");
+        console.log("Please log in again.");
+        setError("Please log in again.");
         setLoading(false); // Stop loading
         return;
       }
@@ -307,7 +308,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
     } catch (error) {
       if (error.response) {
         if (error.response.status === 401) {
-          console.log("Token expired. Please log in again.");
+          console.log("Please log in again.");
           message.error(error.response.data);
           setTimeout(() => {
             navigate("/");
