@@ -1,15 +1,27 @@
-import { faClock } from "@fortawesome/free-regular-svg-icons";
 import {
   faCartShopping,
   faCircleCheck,
   faMoneyCheckDollar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Checkbox, message } from "antd";
+import {
+  Button,
+  Checkbox,
+  DatePicker,
+  Form,
+  Modal,
+  Space,
+  message,
+} from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import moment from "moment";
+
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import { useForm } from "antd/es/form/Form";
+dayjs.extend(customParseFormat);
+
 function Cart() {
   const [currentStep, setCurrentStep] = useState(1);
   const [products, setProducts] = useState([]);
@@ -17,17 +29,26 @@ function Cart() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("pills-cc");
+  const [form] = useForm();
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [newDate, setNewDate] = useState(null);
 
   const handleNext = () => {
     setCurrentStep(currentStep + 1);
   };
 
-  const handlePrev = () => {
-    setCurrentStep(currentStep - 1);
-  };
-
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
+  };
+
+  const handleDateChange = (index, date) => {
+    const newDate = dayjs(date).format("YYYY-MM-DDTHH:mm:ss");
+    setProducts((prevProducts) =>
+      prevProducts.map((product, i) =>
+        i === index ? { ...product, date: newDate } : product
+      )
+    );
   };
 
   const handleCheckboxChange = (productId, petId) => {
@@ -72,6 +93,105 @@ function Cart() {
       .reduce((total, product) => total + product.servicePrice, 0);
   };
 
+  const handleShowModal = (index) => {
+    setSelectedProduct(products[index]);
+    setNewDate(dayjs(products[index].date, "YYYY-MM-DDTHH:mm:ss"));
+    setIsOpen(true);
+  };
+
+  const handleHideModal = () => {
+    setIsOpen(false);
+    setSelectedProduct(null);
+    setNewDate(null);
+  };
+
+  const handleOk = () => {
+    form.submit();
+  };
+
+  const handleUpdateTime = async () => {
+    const userInfoString = localStorage.getItem("user-info");
+    const userInfo = JSON.parse(userInfoString);
+    const token = userInfo?.data?.token;
+    setError("");
+    setIsLoading(true); // Start loading
+
+    try {
+      // Sending GET request to check availability
+      let url = `https://localhost:7150/api/Booking/available?startTime=${newDate.format(
+        "YYYY-MM-DDTHH:mm:ss"
+      )}&serviceCode=${selectedProduct.serviceId}`;
+
+      if (selectedProduct.staffId) {
+        url += `&staffId=${selectedProduct.staffId}`;
+      }
+
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        setError("Token expired. Please log in again.");
+        localStorage.removeItem("user-info");
+        setIsLoading(false); // Stop loading
+        return;
+      }
+
+      if (response.status === 200) {
+        const bookingId = response.data.bookingId; // Assuming bookingId is returned in response
+
+        try {
+          const updateResponse = await axios.put(
+            `https://localhost:7150/api/Booking/${bookingId}`,
+            { newDateTime: newDate.format("YYYY-MM-DDTHH:mm:ss") },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (updateResponse.status === 200) {
+            console.log("Booking time updated successfully.");
+            message.success("Booking time updated successfully.");
+            setError("");
+          } else {
+            throw new Error("Failed to update booking.");
+          }
+        } catch (updateError) {
+          console.error("Error updating booking time:", updateError);
+          message.error(
+            updateError.response?.data || "Failed to update booking time."
+          );
+          setError(
+            updateError.response?.data || "Failed to update booking time."
+          );
+        }
+      }
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          localStorage.removeItem("user-info");
+          console.log("Token expired. Please log in again.");
+          message.error("Token expired. Please log in again.");
+          navigate("/login");
+        } else {
+          console.error("Error response:", error.response.data);
+          message.error(error.response.data || "An error occurred.");
+          setError(error.response.data || "An error occurred.");
+        }
+      } else {
+        console.error("Error:", error);
+        message.error("An unexpected error occurred.");
+        setError("An unexpected error occurred.");
+      }
+    }
+    setIsLoading(false); // Stop loading
+  };
+
   async function handleBooking() {
     setIsLoading(true);
     const userInfoString = localStorage.getItem("user-info");
@@ -111,7 +231,6 @@ function Cart() {
     for (let item of cart) {
       if (item.selected) {
         if (item.comboDetails && item.period == 1) {
-          // Combo with single booking
           bookingPromises.push({
             cusId: userId,
             bookingSchedule: item.date,
@@ -125,10 +244,9 @@ function Cart() {
             })),
           });
         } else if (item.comboDetails && item.period > 1) {
-          // Combo with periodic booking
           const numberOfMonths = parseInt(item.period, 10);
           for (let i = 0; i < numberOfMonths; i++) {
-            const bookingDate = moment(item.date)
+            const bookingDate = dayjs(item.date)
               .add(i, "months")
               .format("YYYY-MM-DDTHH:mm:ss");
 
@@ -146,10 +264,9 @@ function Cart() {
             });
           }
         } else if (item.period > 1) {
-          // Periodic service
           const numberOfMonths = parseInt(item.period, 10);
           for (let i = 0; i < numberOfMonths; i++) {
-            const bookingDate = moment(item.date)
+            const bookingDate = dayjs(item.date)
               .add(i, "months")
               .format("YYYY-MM-DDTHH:mm:ss");
 
@@ -169,7 +286,6 @@ function Cart() {
             });
           }
         } else {
-          // Single service booking
           bookingPromises.push({
             cusId: userId,
             bookingSchedule: item.date,
@@ -189,12 +305,6 @@ function Cart() {
     }
 
     try {
-      console.log(bookingPromises.length);
-      bookingPromises.forEach((element) => {
-        console.log(element);
-      });
-
-      // Uncomment below to actually make API calls and handle responses
       const responses = await Promise.all(
         bookingPromises.map((requestData) =>
           axios.post(`https://localhost:7150/api/Booking`, requestData, {
@@ -205,14 +315,12 @@ function Cart() {
         )
       );
 
-      // Collect booking codes from successful bookings
       const bookingCodes = responses
         .filter((response) => response.status === 200)
         .map((response) => response.data.bookingId);
 
       console.log("Booking codes:", bookingCodes);
 
-      // Filter out items that have been successfully booked
       const successfullyBookedItems = responses
         .filter((response) => response.status === 200)
         .map((response, index) => cart[index]);
@@ -221,16 +329,14 @@ function Cart() {
         (product) => !successfullyBookedItems.includes(product)
       );
 
-      // Update local storage cart after successful bookings
       localStorage.setItem("cart", JSON.stringify(updatedProducts));
 
       console.log("All bookings were successful.");
       message.success("All bookings were successful!");
 
-      // Redirect to home page after a delay
       setTimeout(() => {
         navigate("/");
-      }, 1000); // Adjust delay as needed
+      }, 1000);
     } catch (error) {
       if (error.response) {
         if (error.response.status === 401) {
@@ -254,6 +360,32 @@ function Cart() {
 
   return (
     <div>
+      <Modal
+        title={"Change time for booking"}
+        open={isOpen}
+        onCancel={handleHideModal}
+        onOk={handleOk}
+      >
+        <Form
+          labelCol={{
+            span: 24,
+          }}
+          form={form}
+          onFinish={handleUpdateTime}
+        >
+          <Form.Item label="New Date">
+            <Space direction="vertical">
+              <DatePicker
+                showTime
+                format="YYYY-MM-DD HH:mm:ss"
+                value={newDate}
+                onChange={(date) => setNewDate(date)}
+              />
+            </Space>
+          </Form.Item>
+          {error && <p className="error-message">{error}</p>}
+        </Form>
+      </Modal>
       <head>
         <meta charset="utf-8" />
         <meta
@@ -641,9 +773,7 @@ function Cart() {
                   {currentStep === 2 && (
                     <div id="checkout-payment" className="content">
                       <div className="row">
-                        {/* Payment left */}
                         <div className="col-xl-8 col-xxl-9 mb-3 mb-xl-0">
-                          {/* Offer alert */}
                           <div className="alert alert-success" role="alert">
                             <div className="d-flex gap-3">
                               <div className="flex-shrink-0">
@@ -669,7 +799,6 @@ function Cart() {
                             ></button>
                           </div>
 
-                          {/* Payment Tabs */}
                           <div className="col-xxl-9 col-lg-8">
                             <ul
                               className="nav nav-pills card-header-pills mb-3"
@@ -738,7 +867,6 @@ function Cart() {
                               className="tab-content px-0"
                               id="paymentTabsContent"
                             >
-                              {/* Credit card */}
                               <div
                                 className={`tab-pane fade ${
                                   activeTab === "pills-cc" ? "show active" : ""
@@ -862,7 +990,6 @@ function Cart() {
                                 </div>
                               </div>
 
-                              {/* COD */}
                               <div
                                 className={`tab-pane fade ${
                                   activeTab === "pills-cod" ? "show active" : ""
@@ -885,7 +1012,6 @@ function Cart() {
                                 </button>
                               </div>
 
-                              {/* Gift card */}
                               <div
                                 className={`tab-pane fade ${
                                   activeTab === "pills-gift-card"
@@ -950,139 +1076,127 @@ function Cart() {
                       >
                         {currentStep === 3 && (
                           <div id="checkout-confirmation" className="content">
-                            <div className="row mb-3">
-                              <div className="col-12 col-lg-8 mx-auto text-center mb-3">
-                                <h4 className="mt-2">Thank You! 😇</h4>
-                                <p>
-                                  Your order{" "}
-                                  <a href="javascript:void(0)">#1536548131</a>{" "}
-                                  has been placed!
-                                </p>
-                                <p>
-                                  We sent an email to{" "}
-                                  <a href="mailto:john.doe@example.com">
-                                    john.doe@example.com
-                                  </a>{" "}
-                                  with your order confirmation and receipt. If
-                                  the email hasnt arrived within two minutes,
-                                  please check your spam folder to see if the
-                                  email was routed there.
-                                </p>
-                                <p>
-                                  <span className="fw-medium">
-                                    <FontAwesomeIcon icon={faClock} /> Time
-                                    placed:&nbsp;
-                                  </span>{" "}
-                                  25/05/2020 13:35pm
-                                </p>
-                              </div>
-                            </div>
+                            <div className="row mb-3"></div>
 
                             <div className="row">
                               <div className="col-xl-9 mb-3 mb-xl-0">
                                 <ul className="list-group">
-                                  <li className="list-group-item p-4">
-                                    <div className="d-flex gap-3">
-                                      <div className="flex-shrink-0">
-                                        <img
-                                          src="src/assets/images/products/1.png"
-                                          alt="google home"
-                                          className="w-px-75"
-                                        />
-                                      </div>
-                                      <div className="flex-grow-1">
-                                        <div className="row">
-                                          <div className="col-md-8">
-                                            <a
-                                              href="javascript:void(0)"
-                                              className="text-body"
-                                            >
-                                              <p>
-                                                Google - Google Home - White
+                                  {products.map((product, index) => (
+                                    <li
+                                      key={index}
+                                      className="list-group-item p-4"
+                                    >
+                                      <div className="d-flex gap-3">
+                                        <div className="flex-shrink-0 d-flex align-items-center">
+                                          <img
+                                            src="src/assets/images/products/1.png"
+                                            alt="google home"
+                                            className="w-px-100"
+                                          />
+                                        </div>
+                                        <div className="flex-grow-1">
+                                          <div className="row">
+                                            <div className="col-md-8">
+                                              <p className="me-3">
+                                                <a
+                                                  href="javascript:void(0)"
+                                                  className="text-body"
+                                                >
+                                                  {product.serviceId
+                                                    ? `Service: ${product.serviceName}`
+                                                    : `Combo: ${product.serviceName}`}
+                                                </a>
                                               </p>
-                                            </a>
-                                            <div className="text-muted mb-1 d-flex flex-wrap">
-                                              <span className="me-1">
-                                                Sold by:
-                                              </span>
-                                              <a
-                                                href="javascript:void(0)"
-                                                className="me-3"
-                                              >
-                                                Apple
-                                              </a>
-                                              <span className="badge bg-label-success">
-                                                In Stock
-                                              </span>
-                                            </div>
-                                          </div>
-                                          <div className="col-md-4">
-                                            <div className="text-md-end">
-                                              <div className="my-2 my-lg-4">
-                                                <span className="text-primary">
-                                                  $299/
+                                              <div className="text-muted mb-2 d-flex flex-wrap">
+                                                <span className="me-1">
+                                                  PetName:
                                                 </span>
-                                                <s className="text-muted">
-                                                  $359
-                                                </s>
+                                                <a
+                                                  href="javascript:void(0)"
+                                                  className="me-3"
+                                                >
+                                                  {product.petName}
+                                                </a>
+                                              </div>
+                                              <section>
+                                                <Form>
+                                                  <Form.Item
+                                                    label="Date"
+                                                    className="w-1/2"
+                                                  >
+                                                    <Space
+                                                      direction="vertical"
+                                                      className="w-full"
+                                                    >
+                                                      <DatePicker
+                                                        showTime
+                                                        format="YYYY-MM-DD HH:mm:ss"
+                                                        value={
+                                                          product.date
+                                                            ? dayjs(
+                                                                product.date,
+                                                                "YYYY-MM-DDTHH:mm:ss"
+                                                              )
+                                                            : null
+                                                        }
+                                                        onChange={(
+                                                          date,
+                                                          dateString
+                                                        ) =>
+                                                          handleDateChange(
+                                                            index,
+                                                            date,
+                                                            dateString
+                                                          )
+                                                        }
+                                                        className="w-full"
+                                                      />
+                                                    </Space>
+                                                  </Form.Item>
+                                                </Form>
+                                              </section>
+                                              <div className="text-muted mb-2 d-flex flex-wrap">
+                                                <span className="me-1">
+                                                  Period:
+                                                </span>
+                                                <a
+                                                  href="javascript:void(0)"
+                                                  className="me-3"
+                                                >
+                                                  {product.period == "1"
+                                                    ? product.period + " time"
+                                                    : product.period +
+                                                      " months"}
+                                                </a>
+                                              </div>
+                                            </div>
+                                            <div className="col-md-4 d-flex flex-column justify-content-between">
+                                              <div className="text-md-end">
+                                                <div className="my-2 my-md-4 mb-md-5">
+                                                  <span className="text-primary">
+                                                    {formatPrice(
+                                                      product.servicePrice
+                                                    )}
+                                                  </span>
+                                                </div>
+                                              </div>
+                                              <div className="text-md-end">
+                                                <Button
+                                                  type="button"
+                                                  onClick={() =>
+                                                    handleShowModal(index)
+                                                  }
+                                                  className="btn btn-primary btn-pinned"
+                                                >
+                                                  Update Time
+                                                </Button>
                                               </div>
                                             </div>
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  </li>
-                                  <li className="list-group-item p-4">
-                                    <div className="d-flex gap-3">
-                                      <div className="flex-shrink-0">
-                                        <img
-                                          src="src/assets/images/products/2.png"
-                                          alt="google home"
-                                          className="w-px-75"
-                                        />
-                                      </div>
-                                      <div className="flex-grow-1">
-                                        <div className="row">
-                                          <div className="col-md-8">
-                                            <a
-                                              href="javascript:void(0)"
-                                              className="text-body"
-                                            >
-                                              <p>
-                                                Apple iPhone 11 (64GB, Black)
-                                              </p>
-                                            </a>
-                                            <div className="text-muted mb-1 d-flex flex-wrap">
-                                              <span className="me-1">
-                                                Sold by:
-                                              </span>
-                                              <a
-                                                href="javascript:void(0)"
-                                                className="me-3"
-                                              >
-                                                Apple
-                                              </a>
-                                              <span className="badge bg-label-success">
-                                                In Stock
-                                              </span>
-                                            </div>
-                                          </div>
-                                          <div className="col-md-4">
-                                            <div className="text-md-end">
-                                              <div className="my-2 my-lg-4">
-                                                <span className="text-primary">
-                                                  $299/
-                                                </span>
-                                                <s className="text-muted">
-                                                  $359
-                                                </s>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </li>
+                                    </li>
+                                  ))}
                                 </ul>
                               </div>
                               <div className="col-xl-3">

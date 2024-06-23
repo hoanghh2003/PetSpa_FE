@@ -42,6 +42,9 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
     fetchPets();
     fetchStaff();
     fetchServices();
+  }, []);
+  useEffect(() => {
+    fetchPets();
   }, [dataSource]);
 
   const handlePrice = (value) => {
