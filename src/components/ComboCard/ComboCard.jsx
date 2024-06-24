@@ -15,6 +15,7 @@ const ComboCard = ({ combo }) => {
   return (
     <div className="col col-lg-3 col-md-6 col-sm-6 cursor-pointer">
       <div
+        onClick={() => handleOpenModal(combo.comboId)}
         className={`${
           isHover ? "bg-purple-600 text-white shadow-xl" : ""
         } p-4 border-2 rounded-lg duration-300 ease-in-out`}
@@ -22,32 +23,32 @@ const ComboCard = ({ combo }) => {
         onMouseLeave={() => setIsHover(false)}
       >
         <h3 className={`${isHover ? "text-white" : ""}`}>{combo.comboType}</h3>
-        <div className="text-xl my-5 w-full bg-purple-600">
-          <span className="value_text">{combo.price}</span>
+        <div
+          className={`${
+            isHover
+              ? "border-purple-600 text-purple-600 bg-white"
+              : "bg-yellow-500 text-white"
+          } text-xl my-5 rounded-lg border-2 py-2 text-center  shadow-xl`}
+        >
+          <span className="value_text">$ {combo.price}</span>
         </div>
-        <ul className="pricing_info_list w-full">
+        <div className="w-full">
           {combo.services.map((service, idx) => (
-            <li key={idx} className="flex w-full items-center gap-x-3 ">
-              <CircleCheck size={16} strokeWidth={1.25} />
+            <div key={idx} className="flex w-full items-center gap-x-3 ">
+              <CircleCheck size={16} />
               <div>
                 {service.included ? (
                   <span>{service.serviceName}</span>
                 ) : (
-                  <del>
+                  <div>
                     <span>{service.serviceName}</span>
-                  </del>
+                  </div>
                 )}
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
-      {/* <button
-        onClick={() => handleOpenModal(combo.comboId)}
-        className="btn border_primary mt-5"
-      >
-        Purchase Now
-      </button> */}
       {isOpen && selectComboId === combo.comboId && (
         <BookingCombo
           isOpen={isOpen}

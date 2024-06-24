@@ -267,7 +267,7 @@ function HomePage() {
                     role="tabpanel"
                   >
                     {/* Combo */}
-                    <div className=" flex items-center gap-x-3 justify-center ">
+                    <div className=" flex items-start gap-x-3 justify-center ">
                       {comboList.map((combo, index) => (
                         <ComboCard combo={combo} key={index} />
                       ))}

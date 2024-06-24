@@ -26846,7 +26846,7 @@ hr {
   line-height: 26px;
 }
 
-.pricing_table_item .pricing_info_list li:not(:last-child) {
+._table_item .pricing_info_list li:not(:last-child) {
   margin-bottom: 12px;
 }
 
