@@ -51,7 +51,7 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
     try {
       const response = await axios.get("https://localhost:7150/api/Combo");
       setcomboList(response.data);
-      console.log(response.data);
+
       const combo = response.data.find((x) => x.comboId == comboId);
       setPriceCombo(combo.price);
       setPriceCurrent(combo.price);
@@ -290,8 +290,9 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
         if (error.response.status === 401) {
           console.log("Please log in again.");
           message.error(error.response.data);
+          localStorage.removeItem("user-info");
           setTimeout(() => {
-            navigate("/");
+            navigate("/login");
           }, 1000);
           setLoading(false);
         } else {

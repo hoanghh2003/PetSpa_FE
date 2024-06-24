@@ -7,9 +7,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Checkbox, message } from "antd";
 import axios from "axios";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import moment from "moment";
+
 function Cart() {
   const [currentStep, setCurrentStep] = useState(1);
   const [products, setProducts] = useState([]);
@@ -30,10 +31,14 @@ function Cart() {
     setActiveTab(tabId);
   };
 
-  const handleCheckboxChange = (productId, petId) => {
+  const handleCheckboxChange = (productId, petId, date) => {
     setProducts((prevStoredProducts) => {
       return prevStoredProducts.map((product) => {
-        if (product.serviceId === productId && product.petId === petId) {
+        if (
+          product.serviceId === productId &&
+          product.petId === petId &&
+          product.date == date
+        ) {
           return { ...product, selected: !product.selected };
         }
         return product;
@@ -111,7 +116,6 @@ function Cart() {
     for (let item of cart) {
       if (item.selected) {
         if (item.comboDetails && item.period == 1) {
-          // Combo with single booking
           bookingPromises.push({
             cusId: userId,
             bookingSchedule: item.date,
@@ -125,10 +129,9 @@ function Cart() {
             })),
           });
         } else if (item.comboDetails && item.period > 1) {
-          // Combo with periodic booking
           const numberOfMonths = parseInt(item.period, 10);
           for (let i = 0; i < numberOfMonths; i++) {
-            const bookingDate = moment(item.date)
+            const bookingDate = dayjs(item.date)
               .add(i, "months")
               .format("YYYY-MM-DDTHH:mm:ss");
 
@@ -146,10 +149,9 @@ function Cart() {
             });
           }
         } else if (item.period > 1) {
-          // Periodic service
           const numberOfMonths = parseInt(item.period, 10);
           for (let i = 0; i < numberOfMonths; i++) {
-            const bookingDate = moment(item.date)
+            const bookingDate = dayjs(item.date)
               .add(i, "months")
               .format("YYYY-MM-DDTHH:mm:ss");
 
@@ -169,7 +171,6 @@ function Cart() {
             });
           }
         } else {
-          // Single service booking
           bookingPromises.push({
             cusId: userId,
             bookingSchedule: item.date,
@@ -187,14 +188,9 @@ function Cart() {
         }
       }
     }
+    console.log(bookingPromises[0]);
 
     try {
-      console.log(bookingPromises.length);
-      bookingPromises.forEach((element) => {
-        console.log(element);
-      });
-
-      // Uncomment below to actually make API calls and handle responses
       const responses = await Promise.all(
         bookingPromises.map((requestData) =>
           axios.post(`https://localhost:7150/api/Booking`, requestData, {
@@ -204,33 +200,63 @@ function Cart() {
           })
         )
       );
+      console.log(responses[0].data.data.bookingId);
 
-      // Collect booking codes from successful bookings
+      // Get booking IDs from successful bookings
       const bookingCodes = responses
-        .filter((response) => response.status === 200)
-        .map((response) => response.data.bookingId);
+        .filter((response) => response)
+        .map((response) => response.data.data.bookingId);
 
       console.log("Booking codes:", bookingCodes);
 
-      // Filter out items that have been successfully booked
-      const successfullyBookedItems = responses
-        .filter((response) => response.status === 200)
-        .map((response, index) => cart[index]);
+      // Handle payment if there are booking codes
+      if (bookingCodes.length > 0) {
+        const paymentRequest = {
+          bookingIds: bookingCodes,
+          orderType: "string", // Adjust if necessary
+          amount: calculateSubtotal(), // Adjust if necessary
+          orderDescription: "string", // Adjust if necessary
+          name: "string",
+          returnUrl: "http://localhost:5173/Cart", // Adjust if necessary
+        };
 
-      const updatedProducts = products.filter(
-        (product) => !successfullyBookedItems.includes(product)
-      );
+        try {
+          const paymentResponse = await axios.post(
+            `https://localhost:7150/api/Payments/create-payment`,
+            paymentRequest,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
-      // Update local storage cart after successful bookings
-      localStorage.setItem("cart", JSON.stringify(updatedProducts));
+          if (
+            paymentResponse.status === 200 &&
+            paymentResponse.data.paymentUrl
+          ) {
+            // Save successfully booked items to local storage
+            const successfullyBookedItems = responses
+              .filter((response) => response)
+              .map((response, index) => cart[index]);
 
-      console.log("All bookings were successful.");
-      message.success("All bookings were successful!");
+            localStorage.setItem(
+              "successfullyBookedItems",
+              JSON.stringify(successfullyBookedItems)
+            );
 
-      // Redirect to home page after a delay
-      setTimeout(() => {
-        navigate("/");
-      }, 1000); // Adjust delay as needed
+            // Redirect to payment URL
+            window.location.href = paymentResponse.data.paymentUrl;
+          } else {
+            message.error("Failed to create payment link.");
+          }
+        } catch (error) {
+          console.error("Payment error:", error);
+          message.error("An error occurred while creating the payment link.");
+        }
+      } else {
+        message.error("Booking failed.");
+      }
     } catch (error) {
       if (error.response) {
         if (error.response.status === 401) {
@@ -251,6 +277,31 @@ function Cart() {
 
     setIsLoading(false);
   }
+
+  // This function can be called after successful payment to filter products and update the cart
+  function filterSuccessfullyBookedItems() {
+    const successfullyBookedItems = JSON.parse(
+      localStorage.getItem("successfullyBookedItems") || "[]"
+    );
+    const updatedProducts = products.filter(
+      (product) =>
+        !successfullyBookedItems.some(
+          (bookedItem) =>
+            bookedItem.serviceId === product.serviceId &&
+            bookedItem.petId === product.petId
+        )
+    );
+
+    // Update your products state here if necessary
+    // setProducts(updatedProducts);
+
+    // Update the cart in local storage
+    localStorage.setItem("cart", JSON.stringify(updatedProducts));
+  }
+
+  // Lắng nghe sự kiện thanh toán thành công từ URL callback
+
+  // Lắng nghe sự kiện thanh toán thành công từ URL callbac
 
   return (
     <div>
@@ -468,9 +519,9 @@ function Cart() {
                                             href="javascript:void(0)"
                                             className="text-body"
                                           >
-                                            {product.servieId
-                                              ? `Service: ${product.serviceName}`
-                                              : `Combo: ${product.serviceName}`}
+                                            {product.comboDetails
+                                              ? `Combo: ${product.serviceName}`
+                                              : `Service: ${product.serviceName}`}
                                           </a>
                                         </p>
                                         <div className="text-muted mb-2 d-flex flex-wrap">
@@ -542,7 +593,8 @@ function Cart() {
                                             onChange={() =>
                                               handleCheckboxChange(
                                                 product.serviceId,
-                                                product.petId
+                                                product.petId,
+                                                product.date
                                               )
                                             }
                                           ></Checkbox>
