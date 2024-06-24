@@ -125,6 +125,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
 
           if (response.status === 401) {
             localStorage.removeItem("user-info");
+            message.warning("Please login in.");
             navigate("/login");
             return;
           }
@@ -287,29 +288,41 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
         period: period,
         staffId: selectStaffId ? selectStaffId : "",
       };
-      setCart((prevCart) => [...prevCart, newItem]);
-      message.success("Service booked successfully");
-      // Save cart to localStorage
-      localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
-      setSelectedPetId(null);
-      setDate(null);
-      setSelectStaffId(null);
-      setSelectedServiceId(null);
-      form.resetFields();
+
+      // Proceed with payment process
+      const paymentResponse = await processPayment(newItem);
+
+      if (paymentResponse.success) {
+        setCart((prevCart) => [...prevCart, newItem]);
+        message.success("Service booked and payment successful");
+        // Save cart to localStorage
+        localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
+        setSelectedPetId(null);
+        setDate(null);
+        setSelectStaffId(null);
+        setSelectedServiceId(null);
+        form.resetFields();
+        handleHideModal();
+      } else {
+        message.error("Payment failed. Please try again.");
+      }
+
       setLoading(false); // Reset Ant Design form fields
-      handleHideModal();
     } catch (error) {
       if (error.response) {
+        console.log(error.response.data);
         if (error.response.status === 401) {
           console.log("Token expired. Please log in again.");
-          message.error(error.response.data);
+          message.warning("Please log in again.");
+          localStorage.removeItem("user-info");
           setTimeout(() => {
-            navigate("/");
+            navigate("/login");
           }, 1000);
+
           setLoading(false);
         } else {
           console.error("Error response:", error.response.data);
-          message.error(error.response.data || "An error occurred.");
+          message.error(error.response.data);
           setLoading(false);
           return;
         }
@@ -320,6 +333,16 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
         return;
       }
     }
+  };
+
+  // Mock function for processing payment
+  const processPayment = async (item) => {
+    // Implement your payment processing logic here
+    // For example, call your payment API and return the response
+    return {
+      success: true, // Change this based on actual payment response
+      data: item,
+    };
   };
 
   return (

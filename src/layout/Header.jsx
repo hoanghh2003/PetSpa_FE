@@ -1,13 +1,25 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
-import { faPaw } from "@fortawesome/free-solid-svg-icons";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBars,
+  faCircleUser,
+  faPaw,
+  faCartShopping,
+  faArrowRightToBracket,
+  faArrowRightFromBracket,
+} from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Header = () => {
+  const [checkLogin, setCheckLogin] = useState(false);
+
+  useEffect(() => {
+    const user = localStorage.getItem("user-info");
+    if (user != null) {
+      setCheckLogin(true);
+    }
+  }, []);
+
   return (
     <section className="w-full flex justify-between p-5 border-b-2 lg:px-10 lg:py-5">
       <header className="header_section header_boxed">
@@ -29,7 +41,10 @@ const Header = () => {
                   <li>
                     <Link to="/HomePage">Home</Link>
                   </li>
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature/RemoveCart
                   <li className="dropdown">
                     <a
                       className="nav-link"
@@ -119,24 +134,28 @@ const Header = () => {
                         </h3>
                       </div>
                     </li>
-                    <li>
-                      <a className="item_image" href="account"></a>
-                      <div className="item_content">
-                        <h3 className="item_title ">
-                          <FontAwesomeIcon icon={faArrowRightToBracket} />{" "}
-                          <Link to="/Login">Log in</Link>
-                        </h3>
-                      </div>
-                    </li>
-                    <li>
-                      <a className="item_image" href="account"></a>
-                      <div className="item_content">
-                        <h3 className="item_title ">
-                          <FontAwesomeIcon icon={faArrowRightFromBracket} />{" "}
-                          <Link to="/Logout">Log out</Link>
-                        </h3>
-                      </div>
-                    </li>
+                    {!checkLogin && (
+                      <li>
+                        <a className="item_image" href="account"></a>
+                        <div className="item_content">
+                          <h3 className="item_title">
+                            <FontAwesomeIcon icon={faArrowRightToBracket} />{" "}
+                            <Link to="/Login">Log in</Link>
+                          </h3>
+                        </div>
+                      </li>
+                    )}
+                    {checkLogin && (
+                      <li>
+                        <a className="item_image" href="account"></a>
+                        <div className="item_content">
+                          <h3 className="item_title ">
+                            <FontAwesomeIcon icon={faArrowRightFromBracket} />{" "}
+                            <Link to="/Logout">Log out</Link>
+                          </h3>
+                        </div>
+                      </li>
+                    )}
                   </ul>
                 </div>
               </li>

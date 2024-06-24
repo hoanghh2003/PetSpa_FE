@@ -41,7 +41,7 @@ import { useNavigate } from "react-router-dom";
 import Search from "antd/es/input/Search.js";
 // import { Option } from "antd/es/mentions/index.js";
 // import { useForm } from "antd/es/form/Form.js";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import BookingCard from "../BookingCard.jsx";
 
 function Service() {
@@ -135,6 +135,7 @@ function Service() {
           if (response.status === 401) {
             // toast.error("Token hết hạn. Vui lòng đăng nhập lại.");
             localStorage.removeItem("user-info");
+            message.warning("Please log in.");
             navigate("/login");
             return;
           }
@@ -146,16 +147,18 @@ function Service() {
         } catch (error) {
           if (error.response && error.response.status === 401) {
             localStorage.removeItem("user-info");
-
+            message.warning("Please log in.");
             navigate("/login");
           } else {
             console.log();
           }
         }
       } else {
+        message.warning("Please log in.");
         navigate("/login");
       }
     } else {
+      message.warning("Please log in.");
       navigate("/login");
     }
   }
@@ -294,7 +297,10 @@ function Service() {
                         <div className="item_price">
                           <span>{service.price}</span>
                         </div>
-                        <Link className="btn_unfill" to={`/service/${service.serviceId}`}>
+                        <Link
+                          className="btn_unfill"
+                          to={`/service/${service.serviceId}`}
+                        >
                           <span>View More</span>{" "}
                           <FontAwesomeIcon icon={faArrowRight} />
                         </Link>
