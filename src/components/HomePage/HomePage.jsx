@@ -24,13 +24,13 @@ import "../../assets/js/vanilla-calendar.min.js";
 import "../../assets/js/countdown.js";
 import "../../assets/js/main.js";
 
-
 import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { message } from "antd";
 import axios from "axios";
 import BookingCombo from "../BookingCombo.jsx";
+import ComboCard from "../ComboCard/ComboCard.jsx";
 
 function HomePage() {
   const [comboList, setComboList] = useState([]);
@@ -51,32 +51,12 @@ function HomePage() {
   const [selectComboId, setSelectComboId] = useState();
   const handleOpenModal = (comboId) => {
     setIsOpen(true);
-    console.log(comboId);
     setSelectComboId(comboId);
-    console.log(selectComboId);
   };
   const handleHideModal = () => setIsOpen(false);
-  
 
   return (
     <>
-      {/* Hello world */}
-      <meta charSet="utf-8" />
-      <meta
-        name="viewport"
-        content="width=device-width,initial-scale=1,shrink-to-fit=no"
-      />
-      <meta httpEquiv="x-ua-compatible" content="ie=edge" />
-      <title>Home V1 - Petpia – Pet Care Service Template</title>
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      ></link>
-      <link
-        rel="shortcut icon"
-        href="src/assets/images/logo/favourite_icon.png"
-      />
-      <link rel="stylesheet" href="src/assets/css/all.css" />
       <div className="body_wrap">
         <div className="backtotop">
           <a href="#" className="scroll">
@@ -262,9 +242,6 @@ function HomePage() {
             </div>
           </section>
 
-
-
-
           <section className="pricing_section bg_gray section_space_lg decoration_wrap">
             <div className="container">
               <div className="section_title text-center">
@@ -289,52 +266,10 @@ function HomePage() {
                     id="tab_small_dog"
                     role="tabpanel"
                   >
-                    <div className="row text-center flex justify-center">
-                      {comboList.map((combo) => (
-                        <div
-                          key={combo.comboId}
-                          className="col col-lg-3 col-md-6 col-sm-6"
-                        >
-                          <div className="pricing_table_item">
-                            <h3 className="pricing_heading">
-                              {combo.comboType}
-                            </h3>
-                            <div className="pricing_value">
-                              <span className="value_text">{combo.price}</span>
-                            </div>
-                            <ul className="pricing_info_list unorder_list_block">
-                              {combo.services.map((service, idx) => (
-                                <li key={idx}>
-                                  <i
-                                    className={`fas fa-check-circle ${
-                                      service.included ? "" : "del"
-                                    }`}
-                                  />
-                                  {service.included ? (
-                                    <span>{service.serviceName}</span>
-                                  ) : (
-                                    <del>
-                                      <span>{service.serviceName}</span>
-                                    </del>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                          <button
-                            onClick={() => handleOpenModal(combo.comboId)}
-                            className="btn border_primary"
-                          >
-                            Purchase Now
-                          </button>
-                          {isOpen && selectComboId === combo.comboId && (
-                            <BookingCombo
-                              isOpen={isOpen}
-                              handleHideModal={handleHideModal}
-                              comboId={selectComboId}
-                            />
-                          )}
-                        </div>
+                    {/* Combo */}
+                    <div className=" flex items-center gap-x-3 justify-center ">
+                      {comboList.map((combo, index) => (
+                        <ComboCard combo={combo} key={index} />
                       ))}
                     </div>
                   </div>
