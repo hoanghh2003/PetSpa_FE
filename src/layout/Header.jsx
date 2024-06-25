@@ -13,11 +13,26 @@ import { useEffect, useState } from "react";
 const Header = () => {
   const [checkLogin, setCheckLogin] = useState(false);
 
-  useEffect(() => {
+  const checkUserLogin = () => {
     const user = localStorage.getItem("user-info");
-    if (user != null) {
-      setCheckLogin(true);
-    }
+    setCheckLogin(user != null);
+  };
+
+  useEffect(() => {
+    checkUserLogin(); // Initial check when component mounts
+
+    const handleStorageChange = () => {
+      checkUserLogin(); // Check login status on localStorage change
+    };
+
+    const intervalId = setInterval(checkUserLogin, 0); // Periodic check every second
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(intervalId); // Clear the interval when component unmounts
+    };
   }, []);
 
   return (
@@ -41,10 +56,7 @@ const Header = () => {
                   <li>
                     <Link to="/HomePage">Home</Link>
                   </li>
-<<<<<<< HEAD
 
-=======
->>>>>>> feature/RemoveCart
                   <li className="dropdown">
                     <a
                       className="nav-link"
@@ -107,8 +119,9 @@ const Header = () => {
                 </button>
                 <div className="dropdown-menu" aria-labelledby="cart_dropdown">
                   <ul className="cart_items_list unorder_list_block">
+                  {checkLogin && (
                     <li>
-                      <a className="item_image" href="account"></a>
+                      <Link className="item_image" to="/account"></Link>
                       <div className="item_content">
                         <h3 className="item_title ">
                           <FontAwesomeIcon icon={faCircleUser} />{" "}
@@ -116,8 +129,10 @@ const Header = () => {
                         </h3>
                       </div>
                     </li>
+                    )}
+                    {checkLogin && (
                     <li>
-                      <a className="item_image" href="account"></a>
+                      <Link className="item_image" to="/account"></Link>
                       <div className="item_content">
                         <h3 className="item_title ">
                           <FontAwesomeIcon icon={faPaw} />{" "}
@@ -125,8 +140,10 @@ const Header = () => {
                         </h3>
                       </div>
                     </li>
+                    )}
+                    {checkLogin && (
                     <li>
-                      <a className="item_image" href="account"></a>
+                      <Link className="item_image" to="/account"></Link>
                       <div className="item_content">
                         <h3 className="item_title ">
                           <FontAwesomeIcon icon={faCartShopping} />{" "}
@@ -134,9 +151,10 @@ const Header = () => {
                         </h3>
                       </div>
                     </li>
+                    )}
                     {!checkLogin && (
                       <li>
-                        <a className="item_image" href="account"></a>
+                        <Link className="item_image" to="/account"></Link>
                         <div className="item_content">
                           <h3 className="item_title">
                             <FontAwesomeIcon icon={faArrowRightToBracket} />{" "}
@@ -147,7 +165,7 @@ const Header = () => {
                     )}
                     {checkLogin && (
                       <li>
-                        <a className="item_image" href="account"></a>
+                        <Link className="item_image" to="/account"></Link>
                         <div className="item_content">
                           <h3 className="item_title ">
                             <FontAwesomeIcon icon={faArrowRightFromBracket} />{" "}
