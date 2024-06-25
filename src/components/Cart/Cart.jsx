@@ -231,19 +231,8 @@ function Cart() {
             }
           );
 
-          if (
-            paymentResponse.status === 200 &&
-            paymentResponse.data.paymentUrl
-          ) {
-            // Save successfully booked items to local storage
-            const successfullyBookedItems = responses
-              .filter((response) => response)
-              .map((response, index) => cart[index]);
-
-            localStorage.setItem(
-              "successfullyBookedItems",
-              JSON.stringify(successfullyBookedItems)
-            );
+          if (paymentResponse.status === 200 && paymentResponse.data) {
+            // Payment successful, remove items from cart
 
             // Redirect to payment URL
             window.location.href = paymentResponse.data.paymentUrl;
@@ -277,6 +266,21 @@ function Cart() {
 
     setIsLoading(false);
   }
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const responseCode = urlParams.get("vnp_ResponseCode");
+
+    if (responseCode === "00") {
+      // Payment successful
+      const updatedProducts = products.filter((item) => !item.selected);
+      setProducts(updatedProducts);
+      localStorage.setItem("cart", JSON.stringify(updatedProducts));
+      message.success("Payment successful and items removed from cart.");
+    } else if (responseCode === "24") {
+      // Payment failed
+      message.error("Payment failed.");
+    }
+  }, []);
 
   // This function can be called after successful payment to filter products and update the cart
   function filterSuccessfullyBookedItems() {
