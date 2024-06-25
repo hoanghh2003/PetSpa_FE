@@ -41,10 +41,7 @@ const Header = () => {
                   <li>
                     <Link to="/HomePage">Home</Link>
                   </li>
-<<<<<<< HEAD
 
-=======
->>>>>>> feature/RemoveCart
                   <li className="dropdown">
                     <a
                       className="nav-link"

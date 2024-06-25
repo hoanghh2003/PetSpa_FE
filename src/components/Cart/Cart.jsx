@@ -18,14 +18,9 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-<<<<<<< HEAD
-import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useForm } from "antd/es/form/Form";
 dayjs.extend(customParseFormat);
-
-=======
->>>>>>> feature/RemoveCart
 function Cart() {
   const [currentStep, setCurrentStep] = useState(1);
   const [products, setProducts] = useState([]);
@@ -46,7 +41,6 @@ function Cart() {
     setActiveTab(tabId);
   };
 
-<<<<<<< HEAD
   const handleDateChange = (index, date) => {
     const newDate = dayjs(date).format("YYYY-MM-DDTHH:mm:ss");
     setProducts((prevProducts) =>
@@ -56,10 +50,7 @@ function Cart() {
     );
   };
 
-  const handleCheckboxChange = (productId, petId) => {
-=======
   const handleCheckboxChange = (productId, petId, date) => {
->>>>>>> feature/RemoveCart
     setProducts((prevStoredProducts) => {
       return prevStoredProducts.map((product) => {
         if (
@@ -73,19 +64,6 @@ function Cart() {
       });
     });
   };
-
-  useEffect(() => {
-    setIsLoading(false);
-    const storedProducts = getFromLocalStorage();
-    if (storedProducts) {
-      setProducts(
-        storedProducts.map((product) => ({
-          ...product,
-          selected: true,
-        }))
-      );
-    }
-  }, []);
 
   function getFromLocalStorage() {
     const jsonData = localStorage.getItem("cart");
@@ -315,7 +293,6 @@ function Cart() {
         }
       }
     }
-    console.log(bookingPromises[0]);
 
     try {
       const responses = await Promise.all(
@@ -327,23 +304,12 @@ function Cart() {
           })
         )
       );
-      console.log(responses[0].data.data.bookingId);
 
-<<<<<<< HEAD
-=======
       // Get booking IDs from successful bookings
->>>>>>> feature/RemoveCart
       const bookingCodes = responses
         .filter((response) => response)
         .map((response) => response.data.data.bookingId);
 
-      console.log("Booking codes:", bookingCodes);
-
-<<<<<<< HEAD
-      const successfullyBookedItems = responses
-        .filter((response) => response.status === 200)
-        .map((response, index) => cart[index]);
-=======
       // Handle payment if there are booking codes
       if (bookingCodes.length > 0) {
         const paymentRequest = {
@@ -354,7 +320,6 @@ function Cart() {
           name: "string",
           returnUrl: "http://localhost:5173/Cart", // Adjust if necessary
         };
->>>>>>> feature/RemoveCart
 
         try {
           const paymentResponse = await axios.post(
@@ -367,29 +332,10 @@ function Cart() {
             }
           );
 
-<<<<<<< HEAD
-      localStorage.setItem("cart", JSON.stringify(updatedProducts));
-=======
-          if (
-            paymentResponse.status === 200 &&
-            paymentResponse.data.paymentUrl
-          ) {
-            // Save successfully booked items to local storage
-            const successfullyBookedItems = responses
-              .filter((response) => response)
-              .map((response, index) => cart[index]);
->>>>>>> feature/RemoveCart
+          if (paymentResponse.status === 200 && paymentResponse.data) {
+            // Store the selected products in localStorage to refer later after redirection
+            localStorage.setItem("selectedProducts", JSON.stringify(cart));
 
-            localStorage.setItem(
-              "successfullyBookedItems",
-              JSON.stringify(successfullyBookedItems)
-            );
-
-<<<<<<< HEAD
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
-=======
             // Redirect to payment URL
             window.location.href = paymentResponse.data.paymentUrl;
           } else {
@@ -402,7 +348,6 @@ function Cart() {
       } else {
         message.error("Booking failed.");
       }
->>>>>>> feature/RemoveCart
     } catch (error) {
       if (error.response) {
         if (error.response.status === 401) {
@@ -425,25 +370,50 @@ function Cart() {
   }
 
   // This function can be called after successful payment to filter products and update the cart
-  function filterSuccessfullyBookedItems() {
-    const successfullyBookedItems = JSON.parse(
-      localStorage.getItem("successfullyBookedItems") || "[]"
-    );
-    const updatedProducts = products.filter(
-      (product) =>
-        !successfullyBookedItems.some(
-          (bookedItem) =>
-            bookedItem.serviceId === product.serviceId &&
-            bookedItem.petId === product.petId
-        )
-    );
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const responseCode = urlParams.get("vnp_ResponseCode");
 
-    // Update your products state here if necessary
-    // setProducts(updatedProducts);
-
-    // Update the cart in local storage
-    localStorage.setItem("cart", JSON.stringify(updatedProducts));
-  }
+    if (responseCode != null) {
+      if (responseCode === "00") {
+        // Payment successful
+        const selectedProducts =
+          JSON.parse(localStorage.getItem("selectedProducts")) || [];
+        const products = JSON.parse(localStorage.getItem("cart")) || [];
+        const updatedProducts = products.filter(
+          (product) =>
+            !selectedProducts.some(
+              (selected) =>
+                selected.serviceId === product.serviceId &&
+                selected.petId === product.petId &&
+                selected.date === product.date
+            )
+        );
+        setProducts(updatedProducts);
+        localStorage.setItem("cart", JSON.stringify(updatedProducts));
+        localStorage.removeItem("selectedProducts");
+        navigate("/Cart");
+        message.success("Payment successful and items removed from cart.");
+        // Navigate back to the cart page
+      } else if (responseCode === "24") {
+        // Payment failed
+        message.error("Payment failed.");
+        // Navigate back to the cart page
+        navigate("/Cart");
+      }
+    } else {
+      setIsLoading(false);
+      const storedProducts = getFromLocalStorage();
+      if (storedProducts) {
+        setProducts(
+          storedProducts.map((product) => ({
+            ...product,
+            selected: true,
+          }))
+        );
+      }
+    }
+  }, []);
 
   // Lắng nghe sự kiện thanh toán thành công từ URL callback
 
