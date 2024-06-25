@@ -111,34 +111,33 @@ function Petmanagement() {
           }
         );
 
-          if (response.status === 401) {
-            // Token hết hạn, thông báo và chờ 2 giây trước khi điều hướng
-            message.error("Token hết hạn. Vui lòng đăng nhập lại.");
-            localStorage.removeItem("user-info");
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            navigate("/login");
-            return;
-          }
+        if (response.status === 401) {
+          // Token hết hạn, thông báo và chờ 2 giây trước khi điều hướng
+          message.error("Token hết hạn. Vui lòng đăng nhập lại.");
+          localStorage.removeItem("user-info");
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          navigate("/login");
+          return;
+        }
 
         const result = response.data;
         localStorage.setItem("pets", JSON.stringify(result));
 
-          setDataSource(result.data.pets.filter((x) => x.status !== false));
-        } catch (error) {
-          if (error.response && error.response.status === 401) {
-            localStorage.removeItem("user-info");
-            message.error("Please, Login in again");
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            navigate("/login");
-          } else {
-            message.error("Có lỗi xảy ra. Vui lòng thử lại.");
-          }
+        setDataSource(result.data.pets.filter((x) => x.status !== false));
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("user-info");
+          message.error("Please, Login in again");
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          navigate("/login");
+        } else {
+          message.error("Có lỗi xảy ra. Vui lòng thử lại.");
         }
-      } else {
-        navigate("/");
       }
+    } else {
+      navigate("/");
+    }
   }
-
 
   function handleShowModal() {
     setIsOpen(true);
@@ -273,7 +272,11 @@ function Petmanagement() {
           <Button type="link" onClick={() => handleUpdate(record.petId)}>
             Update
           </Button>
-          <Button type="link" danger onClick={() => handleDeleteMovie(record.petId)}>
+          <Button
+            type="link"
+            danger
+            onClick={() => handleDeleteMovie(record.petId)}
+          >
             Delete
           </Button>
         </Space>
@@ -283,7 +286,11 @@ function Petmanagement() {
 
   return (
     <div className="pet-management-container">
-      <Button type="primary" onClick={handleShowModal} className="add-pet-button">
+      <Button
+        type="primary"
+        onClick={handleShowModal}
+        className="add-pet-button"
+      >
         Add new pet
       </Button>
       <Table columns={columns} dataSource={dataSource} rowKey="petId" />
@@ -308,10 +315,24 @@ function Petmanagement() {
           >
             <Input />
           </Form.Item>
-          <Form.Item label="Height" name="height">
+          <Form.Item
+            label="Height"
+            name="height"
+            rules={[
+              { required: true, message: "Please input the pet's height!" },
+              { pattern: /^\d*\.?\d*$/, message: "Height must be a number!" },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Weight" name="weight">
+          <Form.Item
+            label="Weight"
+            name="weight"
+            rules={[
+              { required: true, message: "Please input the pet's weight!" },
+              { pattern: /^\d*\.?\d*$/, message: "Weight must be a number!" },
+            ]}
+          >
             <Input />
           </Form.Item>
           <Form.Item
