@@ -7,9 +7,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Button,
   Checkbox,
+  Col,
   DatePicker,
   Form,
   Modal,
+  Row,
+  Select,
   Space,
   message,
 } from "antd";
@@ -20,6 +23,8 @@ import { useNavigate } from "react-router-dom";
 
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useForm } from "antd/es/form/Form";
+import moment from "moment";
+import { Option } from "antd/es/mentions";
 dayjs.extend(customParseFormat);
 
 function Cart() {
@@ -34,13 +39,23 @@ function Cart() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [newDate, setNewDate] = useState(null);
   const [dataSource, setDataSource] = useState([]);
-
+  const [staffList, setStaffList] = useState([]);
+  const [selectStaffId, setSelectStaffId] = useState([]);
+  const [selectedStaffId, setSelectedStaffId] = useState([]);
   const handleNext = () => {
     setCurrentStep(currentStep + 1);
   };
 
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
+  };
+  const fetchStaff = async () => {
+    try {
+      const response = await axios.get("https://localhost:7150/api/Staff");
+      setStaffList(response.data.data);
+    } catch (error) {
+      message.error("Failed to fetch staff members");
+    }
   };
 
   // const handleDateChange = (index, date) => {
@@ -86,8 +101,18 @@ function Cart() {
   };
 
   const handleShowModal = (index) => {
-    setSelectedProduct(dataSource[index]);
-    setNewDate(dayjs(dataSource[index].bookingSchedule));
+    const selectedProduct = dataSource[index];
+    setSelectedProduct(selectedProduct);
+    setNewDate(moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"));
+
+    if (selectedProduct.staffId != null) {
+      setSelectedStaffId(selectedProduct.staffId);
+      form.setFieldsValue({ staff: selectedProduct.staffName });
+      console.log(selectedStaffId);
+    } else {
+      form.resetFields(["staff"]);
+    }
+
     setIsOpen(true);
   };
 
@@ -113,8 +138,8 @@ function Cart() {
         "YYYY-MM-DDTHH:mm:ss"
       )}&serviceCode=${selectedProduct.serviceId}`;
 
-      if (selectedProduct.staffId) {
-        url += `&staffId=${selectedProduct.staffId}`;
+      if (selectStaffId.staffId) {
+        url += `&staffId=${selectStaffId.staffId}`;
       }
 
       const response = await axios.get(url, {
@@ -468,7 +493,18 @@ function Cart() {
           );
 
           if (paymentResponse.status === 200 && paymentResponse.data) {
-            localStorage.setItem("selectedProducts", JSON.stringify(cart));
+            let existingBookings = localStorage.getItem("bookings");
+            let bookingsData = existingBookings
+              ? JSON.parse(existingBookings)
+              : [];
+
+            const newBookings = bookingCodes.map((code) => ({
+              code,
+              expiry: new Date().getTime() + 24 * 60 * 60 * 1000, // Current time + 24 hours
+            }));
+
+            bookingsData = [...bookingsData, ...newBookings];
+            localStorage.setItem("bookings", JSON.stringify(bookingsData));
             window.location.href = paymentResponse.data.paymentUrl;
           } else {
             message.error("Failed to create payment link.");
@@ -502,6 +538,7 @@ function Cart() {
   }
 
   useEffect(() => {
+    fetchStaff();
     fetchBookings();
     const urlParams = new URLSearchParams(window.location.search);
     const responseCode = urlParams.get("vnp_ResponseCode");
@@ -523,7 +560,7 @@ function Cart() {
         );
         setProducts(updatedProducts);
         localStorage.setItem("cart", JSON.stringify(updatedProducts));
-        localStorage.removeItem("selectedProducts");
+        localStorage.setItem("bookings", JSON.stringify(updatedProducts));
         navigate("/Cart");
         message.success("Payment successful and items removed from cart.");
       } else if (responseCode === "24") {
@@ -547,7 +584,17 @@ function Cart() {
   return (
     <div>
       <Modal
-        title={"Change time for booking"}
+        title={
+          <div
+            style={{
+              textAlign: "center",
+              fontSize: "24px",
+              fontWeight: "bold",
+            }}
+          >
+            Change time for booking
+          </div>
+        }
         open={isOpen}
         onCancel={handleHideModal}
         onOk={handleOk}
@@ -559,19 +606,43 @@ function Cart() {
           form={form}
           onFinish={handleUpdateTime}
         >
-          <Form.Item label="New Date">
-            <Space direction="vertical">
-              <DatePicker
-                showTime
-                format="YYYY-MM-DD HH:mm:ss"
-                value={newDate}
-                onChange={(date) => setNewDate(date)}
-              />
-            </Space>
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="New Date">
+                <Space direction="vertical">
+                  <DatePicker
+                    showTime
+                    format="YYYY-MM-DD HH:mm:ss"
+                    value={newDate}
+                    onChange={(date) => setNewDate(date)}
+                    className="w-full"
+                  />
+                </Space>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Select Staff" name="staff">
+                <Select
+                  showSearch
+                  placeholder="Select a staff"
+                  optionFilterProp="children"
+                  onChange={(value) => setSelectStaffId(value)}
+                  className="w-full"
+                >
+                  {Array.isArray(staffList) &&
+                    staffList.map((staff) => (
+                      <Option key={staff.staffId} value={staff.staffId}>
+                        {staff.fullName}
+                      </Option>
+                    ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
           {error && <p className="error-message">{error}</p>}
         </Form>
       </Modal>
+
       <head>
         <meta charset="utf-8" />
         <meta
