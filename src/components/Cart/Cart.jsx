@@ -18,7 +18,6 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useForm } from "antd/es/form/Form";
 dayjs.extend(customParseFormat);
@@ -34,6 +33,7 @@ function Cart() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [newDate, setNewDate] = useState(null);
+  const [dataSource, setDataSource] = useState([]);
 
   const handleNext = () => {
     setCurrentStep(currentStep + 1);
@@ -43,14 +43,14 @@ function Cart() {
     setActiveTab(tabId);
   };
 
-  const handleDateChange = (index, date) => {
-    const newDate = dayjs(date).format("YYYY-MM-DDTHH:mm:ss");
-    setProducts((prevProducts) =>
-      prevProducts.map((product, i) =>
-        i === index ? { ...product, date: newDate } : product
-      )
-    );
-  };
+  // const handleDateChange = (index, date) => {
+  //   const newDate = dayjs(date).format("YYYY-MM-DDTHH:mm:ss");
+  //   setProducts((prevProducts) =>
+  //     prevProducts.map((product, i) =>
+  //       i === index ? { ...product, date: newDate } : product
+  //     )
+  //   );
+  // };
 
   const handleCheckboxChange = (productId, petId, date) => {
     setProducts((prevStoredProducts) => {
@@ -58,7 +58,7 @@ function Cart() {
         if (
           product.serviceId === productId &&
           product.petId === petId &&
-          product.date == date
+          product.date === date
         ) {
           return { ...product, selected: !product.selected };
         }
@@ -66,19 +66,6 @@ function Cart() {
       });
     });
   };
-
-  useEffect(() => {
-    setIsLoading(false);
-    const storedProducts = getFromLocalStorage();
-    if (storedProducts) {
-      setProducts(
-        storedProducts.map((product) => ({
-          ...product,
-          selected: true,
-        }))
-      );
-    }
-  }, []);
 
   function getFromLocalStorage() {
     const jsonData = localStorage.getItem("cart");
@@ -99,8 +86,8 @@ function Cart() {
   };
 
   const handleShowModal = (index) => {
-    setSelectedProduct(products[index]);
-    setNewDate(dayjs(products[index].date, "YYYY-MM-DDTHH:mm:ss"));
+    setSelectedProduct(dataSource[index]);
+    setNewDate(dayjs(dataSource[index].bookingSchedule));
     setIsOpen(true);
   };
 
@@ -119,10 +106,9 @@ function Cart() {
     const userInfo = JSON.parse(userInfoString);
     const token = userInfo?.data?.token;
     setError("");
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
 
     try {
-      // Sending GET request to check availability
       let url = `https://localhost:7150/api/Booking/available?startTime=${newDate.format(
         "YYYY-MM-DDTHH:mm:ss"
       )}&serviceCode=${selectedProduct.serviceId}`;
@@ -141,12 +127,12 @@ function Cart() {
         console.log("Token expired. Please log in again.");
         setError("Token expired. Please log in again.");
         localStorage.removeItem("user-info");
-        setIsLoading(false); // Stop loading
+        setIsLoading(false);
         return;
       }
 
       if (response.status === 200) {
-        const bookingId = response.data.bookingId; // Assuming bookingId is returned in response
+        const bookingId = response.data.bookingId;
 
         try {
           const updateResponse = await axios.put(
@@ -194,8 +180,144 @@ function Cart() {
         setError("An unexpected error occurred.");
       }
     }
-    setIsLoading(false); // Stop loading
+    setIsLoading(false);
   };
+
+  async function fetchComboType(comboId) {
+    try {
+      const response = await axios.get(
+        `https://localhost:7150/api/Combo/${comboId}`
+      );
+      return response.data.data.comboType;
+    } catch (error) {
+      console.error(`Error fetching combo type for comboId ${comboId}:`, error);
+      return null;
+    }
+  }
+
+  async function fetchStaffName(staffId) {
+    try {
+      const response = await axios.get(
+        `https://localhost:7150/api/Staff/${staffId}`
+      );
+      return response.data.data.fullName;
+    } catch (error) {
+      console.error(`Error fetching staff name for staffId ${staffId}:`, error);
+      return null;
+    }
+  }
+
+  async function fetchPetName(petId) {
+    try {
+      const petsString = localStorage.getItem("pets");
+      if (!petsString) {
+        console.error("No pets data found in localStorage");
+        return null;
+      }
+
+      const pets = JSON.parse(petsString);
+      const pet = pets.data.pets.find((pet) => pet.petId === petId);
+
+      return pet ? pet.petName : null;
+    } catch (error) {
+      console.error(`Error fetching pet name for petId ${petId}:`, error);
+      return null;
+    }
+  }
+
+  async function fetchBookings() {
+    const userInfoString = localStorage.getItem("user-info");
+    const userInfo = JSON.parse(userInfoString);
+
+    if (userInfo != null) {
+      try {
+        const response = await axios.get(
+          `https://localhost:7150/api/Customer/${userInfo.data.user.id}/bookings`,
+          {
+            headers: {
+              Authorization: `Bearer ${userInfo.data.token}`,
+            },
+          }
+        );
+
+        if (response.status === 401) {
+          message.error("Token has expired. Please log in again.");
+          localStorage.removeItem("user-info");
+          navigate("/login");
+          return;
+        }
+
+        const result = response.data;
+        const bookings = result.data.bookings;
+
+        const extractedDataPromises = bookings.map(async (booking) => {
+          const bookingDetailsPromises = booking.bookingDetails.map(
+            async (detail) => {
+              const petName = await fetchPetName(detail.petId);
+              const staffName = detail.staffId
+                ? await fetchStaffName(detail.staffId)
+                : null;
+
+              if (
+                booking.bookingDetails.length >= 2 &&
+                detail.service.comboId
+              ) {
+                const comboType = await fetchComboType(detail.service.comboId);
+                return {
+                  petId: detail.petId,
+                  petName: petName,
+                  scheduleDate: booking.bookingSchedule,
+                  comboId: detail.service.comboId,
+                  comboType: comboType,
+                  serviceName: null,
+                  serviceId: null,
+                  staffId: detail.staffId,
+                  staffName: staffName,
+                  servicePrice: detail.service.price,
+                  checkAccept: booking.checkAccept,
+                };
+              } else {
+                return {
+                  petId: detail.petId,
+                  petName: petName,
+                  scheduleDate: booking.bookingSchedule,
+                  comboId: null,
+                  comboType: null,
+                  serviceName: detail.service.serviceName,
+                  serviceId: detail.service.serviceId,
+                  staffId: detail.staffId,
+                  staffName: staffName,
+                  servicePrice: detail.service.price,
+                  checkAccept: booking.checkAccept,
+                };
+              }
+            }
+          );
+          return Promise.all(bookingDetailsPromises);
+        });
+
+        const extractedData = (await Promise.all(extractedDataPromises)).flat();
+
+        console.log(extractedData); // Output the extracted data
+        setDataSource(extractedData);
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("user-info");
+          message.error("Token has expired. Please log in again.");
+          navigate("/login");
+        } else {
+          console.error("API error:", error);
+          setError("API error");
+        }
+      }
+    } else {
+      setError("You must be logged in");
+      navigate("/login");
+    }
+
+    handleHideModal();
+    form.resetFields();
+  }
 
   async function handleBooking() {
     setIsLoading(true);
@@ -245,7 +367,7 @@ function Cart() {
               comboId: detail.comboId,
               staffId: detail.staffId || null,
               status: true,
-              comboType: item.comboName,
+              comboType: "string",
             })),
           });
         } else if (item.comboDetails && item.period > 1) {
@@ -264,7 +386,7 @@ function Cart() {
                 comboId: detail.comboId,
                 staffId: detail.staffId || null,
                 status: true,
-                comboType: item.comboName,
+                comboType: "string",
               })),
             });
           }
@@ -308,7 +430,6 @@ function Cart() {
         }
       }
     }
-    console.log(bookingPromises[0]);
 
     try {
       const responses = await Promise.all(
@@ -320,27 +441,19 @@ function Cart() {
           })
         )
       );
-      console.log(responses[0].data.data.bookingId);
 
-      // Get booking IDs from successful bookings
       const bookingCodes = responses
         .filter((response) => response)
         .map((response) => response.data.data.bookingId);
 
-      console.log("Booking codes:", bookingCodes);
-
-      const successfullyBookedItems = responses
-        .filter((response) => response.status === 200)
-        .map((response, index) => cart[index]);
-      // Handle payment if there are booking codes
       if (bookingCodes.length > 0) {
         const paymentRequest = {
           bookingIds: bookingCodes,
-          orderType: "string", // Adjust if necessary
-          amount: calculateSubtotal(), // Adjust if necessary
-          orderDescription: "string", // Adjust if necessary
+          orderType: "string",
+          amount: calculateSubtotal(),
+          orderDescription: "string",
           name: "string",
-          returnUrl: "http://localhost:5173/Cart", // Adjust if necessary
+          returnUrl: "http://localhost:5173/Cart",
         };
 
         try {
@@ -354,25 +467,8 @@ function Cart() {
             }
           );
 
-      localStorage.setItem("cart", JSON.stringify(updatedProducts));
-          if (
-            paymentResponse.status === 200 &&
-            paymentResponse.data.paymentUrl
-          ) {
-            // Save successfully booked items to local storage
-            const successfullyBookedItems = responses
-              .filter((response) => response)
-              .map((response, index) => cart[index]);
-
-            localStorage.setItem(
-              "successfullyBookedItems",
-              JSON.stringify(successfullyBookedItems)
-            );
-
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
-            // Redirect to payment URL
+          if (paymentResponse.status === 200 && paymentResponse.data) {
+            localStorage.setItem("selectedProducts", JSON.stringify(cart));
             window.location.href = paymentResponse.data.paymentUrl;
           } else {
             message.error("Failed to create payment link.");
@@ -405,30 +501,48 @@ function Cart() {
     setIsLoading(false);
   }
 
-  // This function can be called after successful payment to filter products and update the cart
-  // function filterSuccessfullyBookedItems() {
-  //   const successfullyBookedItems = JSON.parse(
-  //     localStorage.getItem("successfullyBookedItems") || "[]"
-  //   );
-  //   const updatedProducts = products.filter(
-  //     (product) =>
-  //       !successfullyBookedItems.some(
-  //         (bookedItem) =>
-  //           bookedItem.serviceId === product.serviceId &&
-  //           bookedItem.petId === product.petId
-  //       )
-  //   );
+  useEffect(() => {
+    fetchBookings();
+    const urlParams = new URLSearchParams(window.location.search);
+    const responseCode = urlParams.get("vnp_ResponseCode");
 
-    // Update your products state here if necessary
-    // setProducts(updatedProducts);
-
-    // Update the cart in local storage
-  //   localStorage.setItem("cart", JSON.stringify(updatedProducts));
-  // }
-
-  // Lắng nghe sự kiện thanh toán thành công từ URL callback
-
-  // Lắng nghe sự kiện thanh toán thành công từ URL callbac
+    if (responseCode != null) {
+      if (responseCode === "00") {
+        const selectedProducts =
+          JSON.parse(localStorage.getItem("selectedProducts")) || [];
+        const products = JSON.parse(localStorage.getItem("cart")) || [];
+        const updatedProducts = products.filter(
+          (product) =>
+            !selectedProducts.some(
+              (selected) =>
+                selected.serviceName === product.serviceName &&
+                selected.petId === product.petId &&
+                selected.date === product.date &&
+                selected.staffId === product.staffId
+            )
+        );
+        setProducts(updatedProducts);
+        localStorage.setItem("cart", JSON.stringify(updatedProducts));
+        localStorage.removeItem("selectedProducts");
+        navigate("/Cart");
+        message.success("Payment successful and items removed from cart.");
+      } else if (responseCode === "24") {
+        message.error("Payment failed.");
+        navigate("/Cart");
+      }
+    } else {
+      setIsLoading(false);
+      const storedProducts = getFromLocalStorage();
+      if (storedProducts) {
+        setProducts(
+          storedProducts.map((product) => ({
+            ...product,
+            selected: true,
+          }))
+        );
+      }
+    }
+  }, []);
 
   return (
     <div>
@@ -1154,7 +1268,7 @@ function Cart() {
                             <div className="row">
                               <div className="col-xl-9 mb-3 mb-xl-0">
                                 <ul className="list-group">
-                                  {products.map((product, index) => (
+                                  {dataSource.map((product, index) => (
                                     <li
                                       key={index}
                                       className="list-group-item p-4"
@@ -1175,9 +1289,9 @@ function Cart() {
                                                   href="javascript:void(0)"
                                                   className="text-body"
                                                 >
-                                                  {product.serviceId
-                                                    ? `Service: ${product.serviceName}`
-                                                    : `Combo: ${product.serviceName}`}
+                                                  {product.comboId
+                                                    ? `Combo: ${product.comboType}`
+                                                    : `Service: ${product.serviceName}`}
                                                 </a>
                                               </p>
                                               <div className="text-muted mb-2 d-flex flex-wrap">
@@ -1201,45 +1315,44 @@ function Cart() {
                                                       direction="vertical"
                                                       className="w-full"
                                                     >
-                                                      <DatePicker
-                                                        showTime
-                                                        format="YYYY-MM-DD HH:mm:ss"
-                                                        value={
-                                                          product.date
-                                                            ? dayjs(
-                                                                product.date,
-                                                                "YYYY-MM-DDTHH:mm:ss"
-                                                              )
-                                                            : null
-                                                        }
-                                                        onChange={(
-                                                          date,
-                                                          dateString
-                                                        ) =>
-                                                          handleDateChange(
-                                                            index,
-                                                            date,
-                                                            dateString
-                                                          )
-                                                        }
-                                                        className="w-full"
-                                                      />
+                                                      <div className="w-full">
+                                                        {product.scheduleDate
+                                                          ? dayjs(
+                                                              product.scheduleDate
+                                                            ).format(
+                                                              "YYYY-MM-DD HH:mm:ss"
+                                                            )
+                                                          : "N/A"}
+                                                      </div>
                                                     </Space>
                                                   </Form.Item>
                                                 </Form>
                                               </section>
+                                              {product.staffId && (
+                                                <div className="text-muted mb-2 d-flex flex-wrap">
+                                                  <span className="me-1">
+                                                    Staff:
+                                                  </span>
+                                                  <a
+                                                    href="javascript:void(0)"
+                                                    className="me-3"
+                                                  >
+                                                    {product.staffName ||
+                                                      product.staffId}
+                                                  </a>
+                                                </div>
+                                              )}
                                               <div className="text-muted mb-2 d-flex flex-wrap">
                                                 <span className="me-1">
-                                                  Period:
+                                                  Status:
                                                 </span>
                                                 <a
                                                   href="javascript:void(0)"
                                                   className="me-3"
                                                 >
-                                                  {product.period == "1"
-                                                    ? product.period + " time"
-                                                    : product.period +
-                                                      " months"}
+                                                  {product.checkAccept
+                                                    ? "Accepted"
+                                                    : "Waiting"}
                                                 </a>
                                               </div>
                                             </div>

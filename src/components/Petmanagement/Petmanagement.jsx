@@ -322,7 +322,7 @@ if (response.status === 200 || response.status === 201) {
             label="Name"
             name="name"
             rules={[
-{ required: true, message: "Please input the pet name!" },
+              { required: true, message: "Please input the pet name!" },
               {
                 pattern: regex30KyTu,
                 message: "Name must be between 1 and 30 characters!",

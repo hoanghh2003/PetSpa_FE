@@ -62,8 +62,11 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
 
   useEffect(() => {
     fetchCombo();
-    fetchMovies();
     fetchStaff();
+    fetchMovies();
+  }, []);
+  useEffect(() => {
+    fetchMovies();
   }, [dataSource]);
   const [priceCurrent, setPriceCurrent] = useState();
   const [period, setPeriod] = useState(1);

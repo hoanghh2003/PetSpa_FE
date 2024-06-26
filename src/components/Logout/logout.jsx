@@ -13,9 +13,7 @@ const Logout = () => {
     <div className="flex items-center justify-center h-screen">
       <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
         <h2 className="text-3xl font-semibold mb-6 text-center">Logout</h2>
-        <p className="mb-4 text-center">
-          Are you sure you want to logout?
-        </p>
+        <p className="mb-4 text-center">Are you sure you want to logout?</p>
         <div className="flex justify-center">
           <button
             onClick={handleLogout}
