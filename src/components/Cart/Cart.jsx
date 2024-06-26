@@ -1028,8 +1028,8 @@ function Cart() {
                       >
                         {currentStep === 2 && (
                           <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-                          <h1>Thank You! 😇</h1>
-                          <p>Your order has been placed!</p>
+                          <h1 style={{textAlign: "center"}}>Thank You! 😇</h1>
+                          <h2 style={{textAlign: "center"}}>Your appointment has been placed!</h2>
                           
                           <p>Time placed: </p>
                           
