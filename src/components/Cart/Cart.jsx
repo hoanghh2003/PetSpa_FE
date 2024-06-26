@@ -253,25 +253,44 @@ function Cart() {
         const extractedDataPromises = bookings.map(async (booking) => {
           const bookingDetailsPromises = booking.bookingDetails.map(
             async (detail) => {
-              const comboType = detail.service.comboId
-                ? await fetchComboType(detail.service.comboId)
-                : null;
+              const petName = await fetchPetName(detail.petId);
               const staffName = detail.staffId
                 ? await fetchStaffName(detail.staffId)
                 : null;
-              const petName = await fetchPetName(detail.petId);
 
-              return {
-                petId: detail.petId,
-                petName: petName,
-                scheduleDate: booking.bookingSchedule,
-                comboId: detail.service.comboId,
-                comboType: comboType,
-                serviceName: detail.service.serviceName,
-                staffId: detail.staffId,
-                staffName: staffName,
-                servicePrice: detail.service.price,
-              };
+              if (
+                booking.bookingDetails.length >= 2 &&
+                detail.service.comboId
+              ) {
+                const comboType = await fetchComboType(detail.service.comboId);
+                return {
+                  petId: detail.petId,
+                  petName: petName,
+                  scheduleDate: booking.bookingSchedule,
+                  comboId: detail.service.comboId,
+                  comboType: comboType,
+                  serviceName: null,
+                  serviceId: null,
+                  staffId: detail.staffId,
+                  staffName: staffName,
+                  servicePrice: detail.service.price,
+                  checkAccept: booking.checkAccept,
+                };
+              } else {
+                return {
+                  petId: detail.petId,
+                  petName: petName,
+                  scheduleDate: booking.bookingSchedule,
+                  comboId: null,
+                  comboType: null,
+                  serviceName: detail.service.serviceName,
+                  serviceId: detail.service.serviceId,
+                  staffId: detail.staffId,
+                  staffName: staffName,
+                  servicePrice: detail.service.price,
+                  checkAccept: booking.checkAccept,
+                };
+              }
             }
           );
           return Promise.all(bookingDetailsPromises);
@@ -1309,27 +1328,31 @@ function Cart() {
                                                   </Form.Item>
                                                 </Form>
                                               </section>
+                                              {product.staffId && (
+                                                <div className="text-muted mb-2 d-flex flex-wrap">
+                                                  <span className="me-1">
+                                                    Staff:
+                                                  </span>
+                                                  <a
+                                                    href="javascript:void(0)"
+                                                    className="me-3"
+                                                  >
+                                                    {product.staffName ||
+                                                      product.staffId}
+                                                  </a>
+                                                </div>
+                                              )}
                                               <div className="text-muted mb-2 d-flex flex-wrap">
                                                 <span className="me-1">
-                                                  Staff:
+                                                  Status:
                                                 </span>
                                                 <a
                                                   href="javascript:void(0)"
                                                   className="me-3"
                                                 >
-                                                  {product.staffName ||
-                                                    product.staffId}
-                                                </a>
-                                              </div>
-                                              <div className="text-muted mb-2 d-flex flex-wrap">
-                                                <span className="me-1">
-                                                  Verified:
-                                                </span>
-                                                <a
-                                                  href="javascript:void(0)"
-                                                  className="me-3"
-                                                >
-                                                  {/* Add verified status if available */}
+                                                  {product.checkAccept
+                                                    ? "Accepted"
+                                                    : "Waiting"}
                                                 </a>
                                               </div>
                                             </div>
