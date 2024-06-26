@@ -123,6 +123,33 @@ function Cart() {
     form.submit();
   };
 
+  const handleShowModal = (index) => {
+    const selectedProduct = dataSource[index];
+    setSelectedProduct(selectedProduct);
+    setNewDate(moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"));
+
+    // Check if bookingId is valid
+    const checkBookings =
+      JSON.parse(localStorage.getItem("checkBookings")) || [];
+    const currentBooking = checkBookings.find(
+      (booking) => booking.code === selectedProduct.bookingId
+    );
+
+    if (currentBooking && currentBooking.expiry > new Date().getTime()) {
+      if (selectedProduct.staffId != null) {
+        setSelectedStaffId(selectedProduct.staffId);
+        form.setFieldsValue({ staff: selectedProduct.staffName });
+        console.log(selectedStaffId);
+      } else {
+        form.resetFields(["staff"]);
+      }
+
+      setIsOpen(true);
+    } else {
+      message.error("Booking ID has expired or is invalid.");
+    }
+  };
+
   const handleUpdateTime = async () => {
     const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
@@ -135,8 +162,8 @@ function Cart() {
         "YYYY-MM-DDTHH:mm:ss"
       )}&serviceCode=${selectedProduct.serviceId}`;
 
-      if (selectStaffId.staffId) {
-        url += `&staffId=${selectStaffId.staffId}`;
+      if (selectedStaffId) {
+        url += `&staffId=${selectedStaffId}`;
       }
 
       const response = await axios.get(url, {
@@ -158,12 +185,8 @@ function Cart() {
 
         try {
           const updateResponse = await axios.put(
-            `https://localhost:7150/api/Booking/update-time-booking`,
-            {
-              bookingId,
-              newDateTime: newDate.format("YYYY-MM-DDTHH:mm:ss"),
-              staffId: selectStaffId.staffId || null,
-            },
+            `https://localhost:7150/api/Booking/${bookingId}`,
+            { newDateTime: newDate.format("YYYY-MM-DDTHH:mm:ss") },
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -500,7 +523,18 @@ function Cart() {
           );
 
           if (paymentResponse.status === 200 && paymentResponse.data) {
-            localStorage.setItem("selectedProducts", JSON.stringify(cart));
+            const existingBookings =
+              JSON.parse(localStorage.getItem("checkBookings")) || [];
+            const newBookings = bookingCodes.map((code) => ({
+              code,
+              expiry: new Date().getTime() + 24 * 60 * 60 * 1000, // Current time + 24 hours
+            }));
+            const updatedBookings = [...existingBookings, ...newBookings];
+            localStorage.setItem(
+              "checkBookings",
+              JSON.stringify(updatedBookings)
+            );
+
             window.location.href = paymentResponse.data.paymentUrl;
           } else {
             message.error("Failed to create payment link.");
@@ -566,30 +600,16 @@ function Cart() {
         );
         setProducts(updatedProducts);
         localStorage.setItem("cart", JSON.stringify(updatedProducts));
-        setCurrentStep(2);
-        // navigate("/Cart");
+        let existingBookings = localStorage.getItem("bookings") || [];
+        let checkbookings = localStorage.getItem("checkBookings") || [];
+        const bookingsData = [...existingBookings, ...checkbookings];
+        localStorage.setItem("bookings", JSON.stringify(bookingsData));
+        navigate("/Cart");
         message.success("Payment successful and items removed from cart.");
-      } else if (responseCode !== "00" && vnpTxnRef) {
-        const products = JSON.parse(localStorage.getItem("cart")) || [];
-        setProducts(products);
-        localStorage.removeItem("selectedProducts");
-
-        axios
-          .delete(
-            `https://localhost:7150/api/Payments?transactionId=${vnpTxnRef}`
-          )
-          .then((response) => {
-            console.log("Payment failure data:", response.data);
-            message.error("Payment failed. Please try again.");
-            navigate("/Cart");
-          })
-          .catch((error) => {
-            console.error("Error fetching payment failure data:", error);
-            message.error(
-              "Payment failed and we encountered an error while fetching the failure details."
-            );
-            navigate("/Cart");
-          });
+      } else if (responseCode === "24") {
+        localStorage.removeItemItem("checkBookings");
+        message.error("Payment failed.");
+        navigate("/Cart");
       }
     } else {
       setIsLoading(false);
