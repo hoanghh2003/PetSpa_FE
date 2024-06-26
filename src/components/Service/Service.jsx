@@ -2,9 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
   faArrowUp,
-  faCheckCircle,
-  faClock,
-  faPaw,
 } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
@@ -272,207 +269,60 @@ function Service() {
                 )}
               </div>
               <div className="row justify-content-center">
-                {Array.isArray(services) &&
-                  services.map((service) => (
-                    <div key={service.serviceId} className="col col-lg-4">
-                      <div
-                        className="service_item"
-                        style={{
-                          backgroundImage:
-                            'url("src/assets/images/shape/shape_path_1.svg")',
-                        }}
-                      >
-                        <div className="title_wrap">
-                          <div className="item_icon">
-                            <img
-                              src="src/assets/images/icon/icon_pet_walking.svg"
-                              alt=""
-                            />
-                          </div>
-                          <h3 className="item_title mb-0">
-                            {service.serviceName}
-                          </h3>
-                        </div>
-                        <p>{service.serviceDescription}</p>
-                        <div className="item_price">
-                          <span>{service.price}</span>
-                        </div>
-                        <Link
-                          className="btn_unfill"
-                          to={`/service/${service.serviceId}`}
-                        >
-                          <span>View More</span>{" "}
-                          <FontAwesomeIcon icon={faArrowRight} />
-                        </Link>
-                        <Button
-                          onClick={() => handleBookNow(service.serviceId)}
-                          className="group w-32 h-10 m-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-full shadow-lg hover:from-purple-600 hover:to-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
-                        >
-                          <span className="block group-hover:text-black transition duration-300 ease-in-out">
-                            Book now
-                          </span>
-                        </Button>
-                        {isOpen && selectedServiceId === service.serviceId && (
-                          <BookingCard
-                            isOpen={isOpen}
-                            handleHideModal={handleHideModal}
-                            serviceId={service.serviceId}
-                          />
-                        )}
-                        <div className="decoration_image">
-                          <img
-                            src="src/assets/images/shape/shape_paws.svg"
-                            alt="Pet Paws"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                {/*<div className="col col-lg-4">
-                  <div
-                    className="service_item"
-                    style={{
-                      backgroundImage:
-                        'url("src/assets/images/shape/shape_path_1.svg")',
-                    }}
-                  >
-                    <div className="title_wrap">
-                      <div className="item_icon">
-                        <img
-                          src="src/assets/images/icon/icon_pet_training.svg"
-                          alt="Pet Training"
-                        />
-                      </div>
-                      <h3 className="item_title mb-0">Pet Training</h3>
-                    </div>
-                    <p>
-                      Aliquam ut porttitor leo a diam sollicitudin tempor sit
-                      amet est placerat
-                    </p>
-                    <div className="item_price">
-                      <span>From $27 / hour</span>
-                    </div>
-                    <Link className="btn_unfill" to="/service_details">
-                      <span>Get Service</span>{" "}
-                      <FontAwesomeIcon icon={faArrowRight} />
-                    </Link>
-                    <div className="decoration_image">
-                      <img
-                        src="src/assets/images/shape/shape_paws.svg"
-                        alt="Pet Paws"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="col col-lg-4">
-                  <div
-                    className="service_item"
-                    style={{
-                      backgroundImage:
-                        'url("src/assets/images/shape/shape_path_1.svg")',
-                    }}
-                  >
-                    <div className="title_wrap">
-                      <div className="item_icon">
-                        <img
-                          src="src/assets/images/icon/icon_pet_taxi.svg"
-                          alt="Pet Taxi"
-                        />
-                      </div>
-                      <h3 className="item_title mb-0">Pet Taxi</h3>
-                    </div>
-                    <p>
-                      Maecenas ultricies mi eget mauris pharetra et ultrices
-                      consectetur adipiscing elit
-                    </p>
-                    <div className="item_price">
-                      <span>From $22 / trip</span>
-                    </div>
-                    <Link className="btn_unfill" to="/service_details">
-                      <span>Get Service</span>{" "}
-                      <FontAwesomeIcon icon={faArrowRight} />
-                    </Link>
-                    <div className="decoration_image">
-                      <img
-                        src="src/assets/images/shape/shape_paws.svg"
-                        alt="Pet Paws"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="col col-lg-4">
-                  <div
-                    className="service_item"
-                    style={{
-                      backgroundImage:
-                        'url("src/assets/images/shape/shape_path_1.svg")',
-                    }}
-                  >
-                    <div className="title_wrap">
-                      <div className="item_icon">
-                        <img
-                          src="src/assets/images/icon/icon_pet_health.svg"
-                          alt="Pet Health & Wellness"
-                        />
-                      </div>
-                      <h3 className="item_title mb-0">Health &amp; Wellness</h3>
-                    </div>
-                    <p>
-                      Amet porttitor eget dolor morbi non arcu risus quis varius
-                      blandit aliquam etiam
-                    </p>
-                    <div className="item_price">
-                      <span>From $39/ visit</span>
-                    </div>
-                    <Link className="btn_unfill" to="/service_details">
-                      <span>Get Service</span>{" "}
-                      <FontAwesomeIcon icon={faArrowRight} />
-                    </Link>
-                    <div className="decoration_image">
-                      <img
-                        src="src/assets/images/shape/shape_paws.svg"
-                        alt="Pet Paws"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="col col-lg-4">
-                  <div
-                    className="service_item"
-                    style={{
-                      backgroundImage:
-                        'url("src/assets/images/shape/shape_path_1.svg")',
-                    }}
-                  >
-                    <div className="title_wrap">
-                      <div className="item_icon">
-                        <img
-                          src="src/assets/images/icon/icon_pet_hotel.svg"
-                          alt="Pet Hotel"
-                        />
-                      </div>
-                      <h3 className="item_title mb-0">Pet Hotel</h3>
-                    </div>
-                    <p>
-                      Turpis massa sed elementum tempus egestas sed sed risus
-                      aliquam urna cursus eget n
-                    </p>
-                    <div className="item_price">
-                      <span>From $15 / night</span>
-                    </div>
-                    <Link className="btn_unfill" to="/service_details">
-                      <span>Get Service</span>{" "}
-                      <FontAwesomeIcon icon={faArrowRight} />
-                    </Link>
-                    <div className="decoration_image">
-                      <img
-                        src="src/assets/images/shape/shape_paws.svg"
-                        alt="Pet Paws"
-                      />
-                    </div>
-                  </div>
-                </div> */}
+  {Array.isArray(services) &&
+    services.map((service) => {
+      const formattedPrice = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+      }).format(service.price);
+      const backgroundImage = service.serviceImage
+        ? `url(${service.serviceImage})`
+        : 'url("src/assets/images/shape/shape_path_1.svg")';
+      return (
+        <div key={service.serviceId} className="col col-lg-4">
+          <div
+            className="service_item"
+            style={{
+              backgroundImage: backgroundImage,
+            }}
+          >
+            <div className="title_wrap">
+              <div className="item_icon">
+                <img src="src/assets/images/icon/icon_pet_walking.svg" alt="" />
               </div>
+              <h3 className="item_title mb-0">{service.serviceName}</h3>
+            </div>
+            <p>{service.serviceDescription}</p>
+            <div className="item_price">
+              <span>{formattedPrice}</span>
+            </div>
+            <Link className="btn_unfill" to={`/service/${service.serviceId}`}>
+              <span>View More</span>{" "}
+              <FontAwesomeIcon icon={faArrowRight} />
+            </Link>
+            <Button
+              onClick={() => handleBookNow(service.serviceId)}
+              className="group w-32 h-10 m-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-full shadow-lg hover:from-purple-600 hover:to-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
+            >
+              <span className="block group-hover:text-black transition duration-300 ease-in-out">
+                Book now
+              </span>
+            </Button>
+            {isOpen && selectedServiceId === service.serviceId && (
+              <BookingCard
+                isOpen={isOpen}
+                handleHideModal={handleHideModal}
+                serviceId={service.serviceId}
+              />
+            )}
+            <div className="decoration_image">
+              <img src="src/assets/images/shape/shape_paws.svg" alt="Pet Paws" />
+            </div>
+          </div>
+        </div>
+      );
+    })}
+</div>
             </div>
           </section>
           <section

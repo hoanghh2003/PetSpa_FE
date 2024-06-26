@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Alert } from "antd";
+import { Card, Alert, Checkbox } from 'antd';
 import {
   Form,
   Input,
@@ -25,6 +25,8 @@ function Account() {
   const [accountActivationChecked, setAccountActivationChecked] =
     useState(false);
   const [fullName, setFullName] = useState();
+  const [Role, setRole] = useState();
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       const userInfoString = localStorage.getItem("user-info");
@@ -55,7 +57,10 @@ function Account() {
         if (response.status === 200) {
           const userData = response.data;
           const fullName = userData.data.fullName;
+          const user = JSON.parse(localStorage.getItem("user-info"));
+          const Role = user.data.user.role;
           setFullName(fullName);
+          setRole(Role);
           // Tách fullName thành firstName và lastName
           const nameParts = fullName.split(" ");
           const firstName = nameParts[0];
@@ -260,7 +265,7 @@ function Account() {
               >
                 <ul className="navbar-nav flex-row align-items-center ms-auto">
                   <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                    <a
+                    {/* <a
                       className="nav-link dropdown-toggle hide-arrow"
                       href="javascript:void(0);"
                       data-bs-toggle="dropdown"
@@ -268,61 +273,32 @@ function Account() {
                       <div className="avatar avatar-online">
                         <img
                           src="src/assets/images/avatars/1.png"
-                          alt
+                          alt="User avatar"
                           className="h-auto rounded-circle"
                         />
                       </div>
-                    </a>
-                    <ul className="dropdown-menu dropdown-menu-end">
+                    </a> */}
                       <li>
-                        <Link className="dropdown-item" to="/Account">
                           <div className="d-flex">
                             <div className="flex-shrink-0 me-3">
                               <div className="avatar avatar-online">
                                 <img
                                   src="src/assets/images/avatars/1.png"
-                                  alt
+                                  alt="User avatar"
                                   className="h-auto rounded-circle"
                                 />
                               </div>
                             </div>
                             <div className="flex-grow-1">
                               <span className="fw-medium d-block">
-                                  {fullName}
+                                {fullName}
                               </span>
-                              <small className="text-muted">Admin</small>
+                              <small className="text-muted">{Role}</small>
                             </div>
                           </div>
-                        </Link>
                       </li>
-                      <li>
-                        <div className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <Link className="dropdown-item" to="/pet">
-                          <i className="ti ti-user-check me-2 ti-sm" />
-                          <span className="align-middle">My Pet</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="dropdown-item" to="/Cart">
-                          <i className="ti ti-settings me-2 ti-sm" />
-                          <span className="align-middle">Cart</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="dropdown-item"
-                          to="/logout"
-                          target="_blank"
-                        >
-                          <i className="ti ti-logout me-2 ti-sm" />
-                          <span className="align-middle">Log Out</span>
-                        </Link>
-                      </li>
-                    </ul>
+
                   </li>
-                  {/*/ User */}
                 </ul>
               </div>
               {/* Search Small Screens */}
@@ -389,7 +365,7 @@ function Account() {
                                     },
                                   ]}
                                 >
-                                  <Input placeholder="202 555 0111" />
+                                  <Input />
                                 </Form.Item>
                               </Col>
                               <Col span={12}>
@@ -403,7 +379,7 @@ function Account() {
                                     },
                                   ]}
                                 >
-                                  <Input placeholder="202 555 0111" />
+                                  <Input />
                                 </Form.Item>
                               </Col>
                               <Col span={12}>
@@ -418,7 +394,7 @@ function Account() {
                                     },
                                   ]}
                                 >
-                                  <Input placeholder="202 555 0111" />
+                                  <Input />
                                 </Form.Item>
                               </Col>
                               <Col span={12}>
@@ -468,61 +444,51 @@ function Account() {
                       </div>
                       {/* /Account */}
                     </div>
-                    <div className="card">
-                      <h5 className="card-header">Delete Account</h5>
-                      <div className="card-body">
-                        <div className="mb-3 col-12 mb-0">
-                          <Alert
-                            message="Are you sure you want to delete your account?"
-                            description="Once you delete your account, there is no going back. Please be certain."
-                            type="warning"
-                            showIcon
-                          />
-                        </div>
-                        <Form
-                          id="formAccountDeactivation"
-                          onFinish={handleDeactivateAccount}
-                        >
-                          <Form.Item>
-                            <div className="form-check mb-4">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                name="accountActivation"
-                                id="accountActivation"
-                                checked={accountActivationChecked}
-                                onChange={(e) =>
-                                  setAccountActivationChecked(e.target.checked)
-                                }
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="accountActivation"
-                              >
-                                I confirm my account deactivation
-                              </label>
-                            </div>
-                          </Form.Item>
-                          <Form.Item>
-                            <Button
-                              type="danger"
-                              htmlType="submit"
-                              className="btn btn-danger deactivate-account"
-                              disabled={!accountActivationChecked}
-                            >
-                              Deactivate Account
-                            </Button>
-                          </Form.Item>
-                        </Form>
-                        {accountDeactivated && (
-                          <Alert
-                            message="Account deactivated successfully!"
-                            type="success"
-                            showIcon
-                          />
-                        )}
-                      </div>
-                    </div>
+                    <Card className="delete-account-card">
+      <h5 className="card-header">Delete Account</h5>
+      <div className="card-body">
+        <div className="alert-container mb-3 col-12 mb-0">
+          <Alert
+            message="Are you sure you want to delete your account?"
+            description="Once you delete your account, there is no going back. Please be certain."
+            type="warning"
+            showIcon
+          />
+        </div>
+        <Form
+          id="formAccountDeactivation"
+          onFinish={handleDeactivateAccount}
+        >
+          <Form.Item>
+            <Checkbox
+              className="confirmation-checkbox"
+              checked={accountActivationChecked}
+              onChange={(e) => setAccountActivationChecked(e.target.checked)}
+            >
+              I confirm my account deactivation
+            </Checkbox>
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              danger
+              htmlType="submit"
+              className="deactivate-account-btn"
+              disabled={!accountActivationChecked}
+            >
+              Deactivate Account
+            </Button>
+          </Form.Item>
+        </Form>
+        {accountDeactivated && (
+          <Alert
+            message="Account deactivated successfully!"
+            type="success"
+            showIcon
+          />
+        )}
+      </div>
+    </Card>
                   </div>
                 </div>
               </div>
@@ -545,3 +511,30 @@ function Account() {
   );
 }
 export default Account;
+
+const cardStyles = {
+  deleteAccountCard: {
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#ffffff',
+  },
+  cardHeader: {
+    fontSize: '1.25rem',
+    fontWeight: 'bold',
+    padding: '16px',
+    borderBottom: '1px solid #f0f0f0',
+  },
+  cardBody: {
+    padding: '16px',
+  },
+  alertContainer: {
+    marginBottom: '16px',
+  },
+  confirmationCheckbox: {
+    display: 'block',
+    marginBottom: '16px',
+  },
+  deactivateAccountBtn: {
+    width: '100%',
+  },
+};

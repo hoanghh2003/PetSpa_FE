@@ -42,7 +42,11 @@ function AccountSetting() {
         if (response.status === 200) {
           const userData = response.data;
           const fullName = userData.data.fullName;
-          const Role = userData.data.user.role;
+          const user = JSON.parse(localStorage.getItem("user-info"));
+     
+
+          const Role = user.data.user.role;
+ 
           setFullName(fullName);
           setRole(Role);
           // Tách fullName thành firstName và lastName
@@ -157,7 +161,7 @@ function AccountSetting() {
               >
                 <ul className="navbar-nav flex-row align-items-center ms-auto">
                   <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                    <a
+                    {/* <a
                       className="nav-link dropdown-toggle hide-arrow"
                       href="javascript:void(0);"
                       data-bs-toggle="dropdown"
@@ -169,10 +173,9 @@ function AccountSetting() {
                           className="h-auto rounded-circle"
                         />
                       </div>
-                    </a>
-                    <ul className="dropdown-menu dropdown-menu-end">
+                    </a> */}
                       <li>
-                        <Link className="dropdown-item" to="/account">
+
                           <div className="d-flex">
                             <div className="flex-shrink-0 me-3">
                               <div className="avatar avatar-online">
@@ -187,37 +190,11 @@ function AccountSetting() {
                               <span className="fw-medium d-block">
                                 {fullName}
                               </span>
-                              <small className="text-muted">{{Role}}</small>
+                              <small className="text-muted">{Role}</small>
                             </div>
                           </div>
-                        </Link>
                       </li>
-                      <li>
-                        <div className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <Link className="dropdown-item" to="/Pet">
-                          <i className="ti ti-user-check me-2 ti-sm" />
-                          <span className="align-middle">My Pet</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="dropdown-item" to="/Cart">
-                          <i className="ti ti-settings me-2 ti-sm" />
-                          <span className="align-middle">Cart</span>
-                        </Link>
-                      </li>
-                      <li>
-                        <a
-                          className="dropdown-item"
-                          href="auth-login-cover.html"
-                          target="_blank"
-                        >
-                          <i className="ti ti-logout me-2 ti-sm" />
-                          <span className="align-middle">Log Out</span>
-                        </a>
-                      </li>
-                    </ul>
+
                   </li>
                 </ul>
               </div>
