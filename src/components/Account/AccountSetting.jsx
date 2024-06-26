@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import { Form, Input, Button, Row, Col, Card, Typography, message } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
@@ -9,7 +10,60 @@ const { Title } = Typography;
 function AccountSetting() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [fullName, setFullName] = useState();
+  const [Role, setRole] = useState();
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const userInfoString = localStorage.getItem("user-info");
+      if (!userInfoString) {
+        message.error("No user information found");
+        return;
+      }
+      const userInfo = JSON.parse(userInfoString);
+      const token = userInfo?.data.token;
 
+      if (!token) {
+        message.error("You must be logged in");
+        window.location.href = "/login"; // Redirect to login page
+        return;
+      }
+      console.log();
+
+      try {
+        const response = await axios.get(
+          `https://localhost:7150/api/Customer/${userInfo.data.user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          const userData = response.data;
+          const fullName = userData.data.fullName;
+          const Role = userData.data.user.role;
+          setFullName(fullName);
+          setRole(Role);
+          // Tách fullName thành firstName và lastName
+          
+        } else {
+          message.error("Failed to fetch user information");
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          message.error("Session expired. Please log in again.");
+          localStorage.removeItem("user-info"); // Clear expired token
+          window.location.href = "/login"; // Redirect to login page
+        } else {
+          console.error("API error:", error);
+          message.error("API error");
+        }
+      } 
+    };
+
+    fetchUserInfo();
+  }, [form]);
   const handleChangePassword = async (values) => {
     setLoading(true);
     try {
@@ -29,6 +83,7 @@ function AccountSetting() {
         currentPassword: values.currentPassword,
         newPassword: values.newPassword,
       };
+      
 
       const response = await axios({
         method: "POST",
@@ -41,6 +96,7 @@ function AccountSetting() {
       });
 
       if (response.status === 200) {
+       
         message.success("Password changed successfully");
         form.resetFields([
           "currentPassword",
@@ -129,9 +185,9 @@ function AccountSetting() {
                             </div>
                             <div className="flex-grow-1">
                               <span className="fw-medium d-block">
-                                John Doe
+                                {fullName}
                               </span>
-                              <small className="text-muted">Admin</small>
+                              <small className="text-muted">{{Role}}</small>
                             </div>
                           </div>
                         </Link>
