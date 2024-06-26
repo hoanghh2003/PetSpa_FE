@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useForm } from "antd/es/form/Form";
 dayjs.extend(customParseFormat);
+
 function Cart() {
   const [currentStep, setCurrentStep] = useState(1);
   const [products, setProducts] = useState([]);
@@ -32,6 +33,7 @@ function Cart() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [newDate, setNewDate] = useState(null);
+  const [dataSource, setDataSource] = useState([]);
 
   const handleNext = () => {
     setCurrentStep(currentStep + 1);
@@ -41,14 +43,14 @@ function Cart() {
     setActiveTab(tabId);
   };
 
-  const handleDateChange = (index, date) => {
-    const newDate = dayjs(date).format("YYYY-MM-DDTHH:mm:ss");
-    setProducts((prevProducts) =>
-      prevProducts.map((product, i) =>
-        i === index ? { ...product, date: newDate } : product
-      )
-    );
-  };
+  // const handleDateChange = (index, date) => {
+  //   const newDate = dayjs(date).format("YYYY-MM-DDTHH:mm:ss");
+  //   setProducts((prevProducts) =>
+  //     prevProducts.map((product, i) =>
+  //       i === index ? { ...product, date: newDate } : product
+  //     )
+  //   );
+  // };
 
   const handleCheckboxChange = (productId, petId, date) => {
     setProducts((prevStoredProducts) => {
@@ -56,7 +58,7 @@ function Cart() {
         if (
           product.serviceId === productId &&
           product.petId === petId &&
-          product.date == date
+          product.date === date
         ) {
           return { ...product, selected: !product.selected };
         }
@@ -84,8 +86,8 @@ function Cart() {
   };
 
   const handleShowModal = (index) => {
-    setSelectedProduct(products[index]);
-    setNewDate(dayjs(products[index].date, "YYYY-MM-DDTHH:mm:ss"));
+    setSelectedProduct(dataSource[index]);
+    setNewDate(dayjs(dataSource[index].bookingSchedule));
     setIsOpen(true);
   };
 
@@ -104,10 +106,9 @@ function Cart() {
     const userInfo = JSON.parse(userInfoString);
     const token = userInfo?.data?.token;
     setError("");
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
 
     try {
-      // Sending GET request to check availability
       let url = `https://localhost:7150/api/Booking/available?startTime=${newDate.format(
         "YYYY-MM-DDTHH:mm:ss"
       )}&serviceCode=${selectedProduct.serviceId}`;
@@ -126,12 +127,12 @@ function Cart() {
         console.log("Token expired. Please log in again.");
         setError("Token expired. Please log in again.");
         localStorage.removeItem("user-info");
-        setIsLoading(false); // Stop loading
+        setIsLoading(false);
         return;
       }
 
       if (response.status === 200) {
-        const bookingId = response.data.bookingId; // Assuming bookingId is returned in response
+        const bookingId = response.data.bookingId;
 
         try {
           const updateResponse = await axios.put(
@@ -179,8 +180,125 @@ function Cart() {
         setError("An unexpected error occurred.");
       }
     }
-    setIsLoading(false); // Stop loading
+    setIsLoading(false);
   };
+
+  async function fetchComboType(comboId) {
+    try {
+      const response = await axios.get(
+        `https://localhost:7150/api/Combo/${comboId}`
+      );
+      return response.data.data.comboType;
+    } catch (error) {
+      console.error(`Error fetching combo type for comboId ${comboId}:`, error);
+      return null;
+    }
+  }
+
+  async function fetchStaffName(staffId) {
+    try {
+      const response = await axios.get(
+        `https://localhost:7150/api/Staff/${staffId}`
+      );
+      return response.data.data.fullName;
+    } catch (error) {
+      console.error(`Error fetching staff name for staffId ${staffId}:`, error);
+      return null;
+    }
+  }
+
+  async function fetchPetName(petId) {
+    try {
+      const petsString = localStorage.getItem("pets");
+      if (!petsString) {
+        console.error("No pets data found in localStorage");
+        return null;
+      }
+
+      const pets = JSON.parse(petsString);
+      const pet = pets.data.pets.find((pet) => pet.petId === petId);
+
+      return pet ? pet.petName : null;
+    } catch (error) {
+      console.error(`Error fetching pet name for petId ${petId}:`, error);
+      return null;
+    }
+  }
+
+  async function fetchBookings() {
+    const userInfoString = localStorage.getItem("user-info");
+    const userInfo = JSON.parse(userInfoString);
+
+    if (userInfo != null) {
+      try {
+        const response = await axios.get(
+          `https://localhost:7150/api/Customer/${userInfo.data.user.id}/bookings`,
+          {
+            headers: {
+              Authorization: `Bearer ${userInfo.data.token}`,
+            },
+          }
+        );
+
+        if (response.status === 401) {
+          message.error("Token has expired. Please log in again.");
+          localStorage.removeItem("user-info");
+          navigate("/login");
+          return;
+        }
+
+        const result = response.data;
+        const bookings = result.data.bookings;
+
+        const extractedDataPromises = bookings.map(async (booking) => {
+          const bookingDetailsPromises = booking.bookingDetails.map(
+            async (detail) => {
+              const comboType = detail.service.comboId
+                ? await fetchComboType(detail.service.comboId)
+                : null;
+              const staffName = detail.staffId
+                ? await fetchStaffName(detail.staffId)
+                : null;
+              const petName = await fetchPetName(detail.petId);
+
+              return {
+                petId: detail.petId,
+                petName: petName,
+                scheduleDate: booking.bookingSchedule,
+                comboId: detail.service.comboId,
+                comboType: comboType,
+                serviceName: detail.service.serviceName,
+                staffId: detail.staffId,
+                staffName: staffName,
+                servicePrice: detail.service.price,
+              };
+            }
+          );
+          return Promise.all(bookingDetailsPromises);
+        });
+
+        const extractedData = (await Promise.all(extractedDataPromises)).flat();
+
+        console.log(extractedData); // Output the extracted data
+        setDataSource(extractedData);
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("user-info");
+          message.error("Token has expired. Please log in again.");
+          navigate("/login");
+        } else {
+          console.error("API error:", error);
+          setError("API error");
+        }
+      }
+    } else {
+      setError("You must be logged in");
+      navigate("/login");
+    }
+
+    handleHideModal();
+    form.resetFields();
+  }
 
   async function handleBooking() {
     setIsLoading(true);
@@ -230,7 +348,7 @@ function Cart() {
               comboId: detail.comboId,
               staffId: detail.staffId || null,
               status: true,
-              comboType: item.comboName,
+              comboType: "string",
             })),
           });
         } else if (item.comboDetails && item.period > 1) {
@@ -249,7 +367,7 @@ function Cart() {
                 comboId: detail.comboId,
                 staffId: detail.staffId || null,
                 status: true,
-                comboType: item.comboName,
+                comboType: "string",
               })),
             });
           }
@@ -305,20 +423,18 @@ function Cart() {
         )
       );
 
-      // Get booking IDs from successful bookings
       const bookingCodes = responses
         .filter((response) => response)
         .map((response) => response.data.data.bookingId);
 
-      // Handle payment if there are booking codes
       if (bookingCodes.length > 0) {
         const paymentRequest = {
           bookingIds: bookingCodes,
-          orderType: "string", // Adjust if necessary
-          amount: calculateSubtotal(), // Adjust if necessary
-          orderDescription: "string", // Adjust if necessary
+          orderType: "string",
+          amount: calculateSubtotal(),
+          orderDescription: "string",
           name: "string",
-          returnUrl: "http://localhost:5173/Cart", // Adjust if necessary
+          returnUrl: "http://localhost:5173/Cart",
         };
 
         try {
@@ -333,10 +449,7 @@ function Cart() {
           );
 
           if (paymentResponse.status === 200 && paymentResponse.data) {
-            // Store the selected products in localStorage to refer later after redirection
             localStorage.setItem("selectedProducts", JSON.stringify(cart));
-
-            // Redirect to payment URL
             window.location.href = paymentResponse.data.paymentUrl;
           } else {
             message.error("Failed to create payment link.");
@@ -369,14 +482,13 @@ function Cart() {
     setIsLoading(false);
   }
 
-  // This function can be called after successful payment to filter products and update the cart
   useEffect(() => {
+    fetchBookings();
     const urlParams = new URLSearchParams(window.location.search);
     const responseCode = urlParams.get("vnp_ResponseCode");
 
     if (responseCode != null) {
       if (responseCode === "00") {
-        // Payment successful
         const selectedProducts =
           JSON.parse(localStorage.getItem("selectedProducts")) || [];
         const products = JSON.parse(localStorage.getItem("cart")) || [];
@@ -384,9 +496,10 @@ function Cart() {
           (product) =>
             !selectedProducts.some(
               (selected) =>
-                selected.serviceId === product.serviceId &&
+                selected.serviceName === product.serviceName &&
                 selected.petId === product.petId &&
-                selected.date === product.date
+                selected.date === product.date &&
+                selected.staffId === product.staffId
             )
         );
         setProducts(updatedProducts);
@@ -394,11 +507,8 @@ function Cart() {
         localStorage.removeItem("selectedProducts");
         navigate("/Cart");
         message.success("Payment successful and items removed from cart.");
-        // Navigate back to the cart page
       } else if (responseCode === "24") {
-        // Payment failed
         message.error("Payment failed.");
-        // Navigate back to the cart page
         navigate("/Cart");
       }
     } else {
@@ -414,10 +524,6 @@ function Cart() {
       }
     }
   }, []);
-
-  // Lắng nghe sự kiện thanh toán thành công từ URL callback
-
-  // Lắng nghe sự kiện thanh toán thành công từ URL callbac
 
   return (
     <div>
@@ -1143,7 +1249,7 @@ function Cart() {
                             <div className="row">
                               <div className="col-xl-9 mb-3 mb-xl-0">
                                 <ul className="list-group">
-                                  {products.map((product, index) => (
+                                  {dataSource.map((product, index) => (
                                     <li
                                       key={index}
                                       className="list-group-item p-4"
@@ -1164,9 +1270,9 @@ function Cart() {
                                                   href="javascript:void(0)"
                                                   className="text-body"
                                                 >
-                                                  {product.serviceId
-                                                    ? `Service: ${product.serviceName}`
-                                                    : `Combo: ${product.serviceName}`}
+                                                  {product.comboId
+                                                    ? `Combo: ${product.comboType}`
+                                                    : `Service: ${product.serviceName}`}
                                                 </a>
                                               </p>
                                               <div className="text-muted mb-2 d-flex flex-wrap">
@@ -1190,45 +1296,40 @@ function Cart() {
                                                       direction="vertical"
                                                       className="w-full"
                                                     >
-                                                      <DatePicker
-                                                        showTime
-                                                        format="YYYY-MM-DD HH:mm:ss"
-                                                        value={
-                                                          product.date
-                                                            ? dayjs(
-                                                                product.date,
-                                                                "YYYY-MM-DDTHH:mm:ss"
-                                                              )
-                                                            : null
-                                                        }
-                                                        onChange={(
-                                                          date,
-                                                          dateString
-                                                        ) =>
-                                                          handleDateChange(
-                                                            index,
-                                                            date,
-                                                            dateString
-                                                          )
-                                                        }
-                                                        className="w-full"
-                                                      />
+                                                      <div className="w-full">
+                                                        {product.scheduleDate
+                                                          ? dayjs(
+                                                              product.scheduleDate
+                                                            ).format(
+                                                              "YYYY-MM-DD HH:mm:ss"
+                                                            )
+                                                          : "N/A"}
+                                                      </div>
                                                     </Space>
                                                   </Form.Item>
                                                 </Form>
                                               </section>
                                               <div className="text-muted mb-2 d-flex flex-wrap">
                                                 <span className="me-1">
-                                                  Period:
+                                                  Staff:
                                                 </span>
                                                 <a
                                                   href="javascript:void(0)"
                                                   className="me-3"
                                                 >
-                                                  {product.period == "1"
-                                                    ? product.period + " time"
-                                                    : product.period +
-                                                      " months"}
+                                                  {product.staffName ||
+                                                    product.staffId}
+                                                </a>
+                                              </div>
+                                              <div className="text-muted mb-2 d-flex flex-wrap">
+                                                <span className="me-1">
+                                                  Verified:
+                                                </span>
+                                                <a
+                                                  href="javascript:void(0)"
+                                                  className="me-3"
+                                                >
+                                                  {/* Add verified status if available */}
                                                 </a>
                                               </div>
                                             </div>

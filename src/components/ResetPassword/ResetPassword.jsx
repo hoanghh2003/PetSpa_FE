@@ -18,7 +18,7 @@ function ResetPassword() {
     const email = emailMatch ? emailMatch[1] : null;
 
     if (!token || !email) {
-      setError("Token hoặc email không hợp lệ");
+      setError("Invalid token or email");
       return;
     }
 
@@ -30,13 +30,13 @@ function ResetPassword() {
       newPassword.length < minPasswordLength
     ) {
       setError(
-        "Mật khẩu không hợp lệ (tối thiểu 8 ký tự, chứa chữ hoa, chữ thường, số và ký tự đặc biệt)"
+        "Password is invalid (minimum 8 characters, must include uppercase, lowercase, number, and special character)"
       );
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError("Mật khẩu xác nhận không khớp");
+      setError("Passwords do not match");
       return;
     }
 
@@ -49,18 +49,17 @@ function ResetPassword() {
     try {
       const response = await axios.post(
         "https://localhost:7150/api/Auth/reset-password",
-        data // Axios tự động chuyển đổi data thành JSON
+        data
       );
 
       if (response.status === 200) {
-        // Kiểm tra mã trạng thái 200 OK
-        setMessage("Đặt lại mật khẩu thành công");
-        // ... (Chuyển hướng đến trang đăng nhập)
+        setMessage("Password reset successful");
+        // Redirect to login page or display appropriate message for success
       } else {
-        setError(response.data.msg || "Có lỗi xảy ra khi đặt lại mật khẩu");
+        setError(response.data.msg || "Error resetting password");
       }
     } catch (error) {
-      setError("Có lỗi xảy ra. Vui lòng thử lại.");
+      setError("An error occurred. Please try again.");
       console.error(error);
     }
   }
@@ -123,4 +122,5 @@ function ResetPassword() {
     </div>
   );
 }
+
 export default ResetPassword;
