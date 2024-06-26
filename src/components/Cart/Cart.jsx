@@ -58,14 +58,27 @@ function Cart() {
     }
   };
 
-  // const handleDateChange = (index, date) => {
-  //   const newDate = dayjs(date).format("YYYY-MM-DDTHH:mm:ss");
-  //   setProducts((prevProducts) =>
-  //     prevProducts.map((product, i) =>
-  //       i === index ? { ...product, date: newDate } : product
-  //     )
-  //   );
-  // };
+  const handleDeleteBooking = async (index) => {
+    // Get the cart from localStorage
+    const cartString = localStorage.getItem("cart");
+    let cart = JSON.parse(cartString);
+    
+    if (!cart || !Array.isArray(cart)) {
+      message.error("Cart is empty or invalid.");
+      return;
+    }
+  
+    // Remove the booking at the specified index
+    cart.splice(index, 1);
+  
+    // Update the state
+    setProducts(cart);
+  
+    // Update localStorage
+    localStorage.setItem("cart", JSON.stringify(cart));
+  
+    message.success("Booking removed successfully.");
+  };
 
   const handleCheckboxChange = (productId, petId, date) => {
     setProducts((prevStoredProducts) => {
@@ -132,22 +145,22 @@ function Cart() {
     const token = userInfo?.data?.token;
     setError("");
     setIsLoading(true);
-
+  
     try {
       let url = `https://localhost:7150/api/Booking/available?startTime=${newDate.format(
         "YYYY-MM-DDTHH:mm:ss"
       )}&serviceCode=${selectedProduct.serviceId}`;
-
+  
       if (selectStaffId.staffId) {
         url += `&staffId=${selectStaffId.staffId}`;
       }
-
+  
       const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
+  
       if (response.status === 401) {
         console.log("Token expired. Please log in again.");
         setError("Token expired. Please log in again.");
@@ -155,21 +168,25 @@ function Cart() {
         setIsLoading(false);
         return;
       }
-
+  
       if (response.status === 200) {
         const bookingId = response.data.bookingId;
-
+  
         try {
           const updateResponse = await axios.put(
-            `https://localhost:7150/api/Booking/${bookingId}`,
-            { newDateTime: newDate.format("YYYY-MM-DDTHH:mm:ss") },
+            `https://localhost:7150/api/Booking/update-time-booking`,
+            {
+              bookingId,
+              newDateTime: newDate.format("YYYY-MM-DDTHH:mm:ss"),
+              staffId: selectStaffId.staffId || null
+            },
             {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             }
           );
-
+  
           if (updateResponse.status === 200) {
             console.log("Booking time updated successfully.");
             message.success("Booking time updated successfully.");
@@ -207,6 +224,7 @@ function Cart() {
     }
     setIsLoading(false);
   };
+  
 
   async function fetchComboType(comboId) {
     try {
@@ -346,43 +364,49 @@ function Cart() {
 
   async function handleBooking() {
     setIsLoading(true);
-    const userInfoString = localStorage.getItem("user-info");
-    const userInfo = JSON.parse(userInfoString);
-
-    if (!userInfo) {
+  
+    let userInfo;
+    try {
+      const userInfoString = localStorage.getItem("user-info");
+      if (!userInfoString) {
+        throw new Error("User info not found in localStorage.");
+      }
+      userInfo = JSON.parse(userInfoString);
+    } catch (error) {
+      console.error("Error parsing user info:", error);
       setIsLoading(false);
-      message.error("User not logged in.");
+      message.error("Invalid user information. Please log in again.");
       return;
     }
-
-    const token = userInfo.data.token;
-    const userId = userInfo.data.user.id;
-
-    if (!userId) {
+  
+    const token = userInfo.data?.token;
+    const userId = userInfo.data?.user?.id;
+  
+    if (!token || !userId) {
       setIsLoading(false);
-      message.error("User ID not found.");
+      message.error("User information is incomplete.");
       return;
     }
-
-    if (products.every((item) => item.selected === false)) {
+  
+    if (products.every((item) => !item.selected)) {
       setIsLoading(false);
       message.error("Cart list is empty");
       return;
     }
-
+  
     const cart = products.filter((item) => item.selected);
-
+  
     if (cart.length === 0) {
       setIsLoading(false);
       setError("Your cart is empty.");
       return;
     }
-
+  
     const bookingPromises = [];
-
+  
     for (let item of cart) {
       if (item.selected) {
-        if (item.comboDetails && item.period == 1) {
+        if (item.comboDetails && item.period === 1) {
           bookingPromises.push({
             cusId: userId,
             bookingSchedule: item.date,
@@ -401,7 +425,7 @@ function Cart() {
             const bookingDate = dayjs(item.date)
               .add(i, "months")
               .format("YYYY-MM-DDTHH:mm:ss");
-
+  
             bookingPromises.push({
               cusId: userId,
               bookingSchedule: bookingDate,
@@ -421,7 +445,7 @@ function Cart() {
             const bookingDate = dayjs(item.date)
               .add(i, "months")
               .format("YYYY-MM-DDTHH:mm:ss");
-
+  
             bookingPromises.push({
               cusId: userId,
               bookingSchedule: bookingDate,
@@ -455,7 +479,7 @@ function Cart() {
         }
       }
     }
-
+  
     try {
       const responses = await Promise.all(
         bookingPromises.map((requestData) =>
@@ -466,11 +490,11 @@ function Cart() {
           })
         )
       );
-
+  
       const bookingCodes = responses
         .filter((response) => response)
         .map((response) => response.data.data.bookingId);
-
+  
       if (bookingCodes.length > 0) {
         const paymentRequest = {
           bookingIds: bookingCodes,
@@ -480,7 +504,7 @@ function Cart() {
           name: "string",
           returnUrl: "http://localhost:5173/Cart",
         };
-
+  
         try {
           const paymentResponse = await axios.post(
             `https://localhost:7150/api/Payments/create-payment`,
@@ -491,14 +515,9 @@ function Cart() {
               },
             }
           );
-
+  
           if (paymentResponse.status === 200 && paymentResponse.data) {
-            const newBookings = bookingCodes.map((code) => ({
-              code,
-              expiry: new Date().getTime() + 24 * 60 * 60 * 1000, // Current time + 24 hours
-            }));
-            localStorage.setItem("checkBookings", JSON.stringify(newBookings));
-
+            localStorage.setItem("selectedProducts", JSON.stringify(cart));
             window.location.href = paymentResponse.data.paymentUrl;
           } else {
             message.error("Failed to create payment link.");
@@ -527,20 +546,19 @@ function Cart() {
         setError("An unexpected error occurred.");
       }
     }
-
+  
     setIsLoading(false);
   }
-
+  
   useEffect(() => {
     fetchStaff();
     fetchBookings();
     const urlParams = new URLSearchParams(window.location.search);
     const responseCode = urlParams.get("vnp_ResponseCode");
-
+  
     if (responseCode != null) {
       if (responseCode === "00") {
-        const selectedProducts =
-          JSON.parse(localStorage.getItem("selectedProducts")) || [];
+        const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
         const products = JSON.parse(localStorage.getItem("cart")) || [];
         const updatedProducts = products.filter(
           (product) =>
@@ -554,20 +572,16 @@ function Cart() {
         );
         setProducts(updatedProducts);
         localStorage.setItem("cart", JSON.stringify(updatedProducts));
-        let existingBookings = localStorage.getItem("bookings") || [];
-        let checkbookings = localStorage.getItem("checkBookings") || [];
-        const bookingsData = [...existingBookings, ...checkbookings];
-        localStorage.setItem("bookings", JSON.stringify(bookingsData));
         navigate("/Cart");
         message.success("Payment successful and items removed from cart.");
       } else if (responseCode === "24") {
-        localStorage.removeItemItem("checkBookings");
+        localStorage.removeItem("selectedProducts");
         message.error("Payment failed.");
         navigate("/Cart");
       }
     } else {
       setIsLoading(false);
-      const storedProducts = getFromLocalStorage();
+      const storedProducts = JSON.parse(localStorage.getItem("cart")) || [];
       if (storedProducts) {
         setProducts(
           storedProducts.map((product) => ({
@@ -578,6 +592,7 @@ function Cart() {
       }
     }
   }, []);
+  
 
   return (
     <div>
@@ -760,28 +775,11 @@ function Cart() {
                   <i className="ti ti-chevron-right"></i>
                 </div>
 
-                <div className="step" data-target="#checkout-payment">
-                  <button
-                    type="button"
-                    className="step-trigger"
-                    onClick={() => setCurrentStep(2)}
-                  >
-                    <span className="bs-stepper-icon">
-                      <svg viewBox="0 0 58 54">
-                        <FontAwesomeIcon icon={faMoneyCheckDollar} />{" "}
-                      </svg>
-                    </span>
-                    <span className="bs-stepper-label">Payment</span>
-                  </button>
-                </div>
-                <div className="line">
-                  <i className="ti ti-chevron-right"></i>
-                </div>
                 <div className="step" data-target="#checkout-confirmation">
                   <button
                     type="button"
                     className="step-trigger"
-                    onClick={() => setCurrentStep(3)}
+                    onClick={() => setCurrentStep(2)}
                   >
                     <span className="bs-stepper-icon">
                       <svg viewBox="0 0 58 54">
@@ -915,6 +913,7 @@ function Cart() {
                                           <button
                                             type="button"
                                             className="btn-close btn-pinned"
+                                            onClick={() => handleDeleteBooking(index)}
                                             aria-label="Close"
                                           ></button>
                                           <div className="my-2 my-md-4 mb-md-5">
@@ -957,42 +956,8 @@ function Cart() {
                         <div className="col-xl-4">
                           <div className="border rounded p-4 mb-3 pb-3">
                             <h6>Offer</h6>
-                            <div className="row g-3 mb-3">
-                              <div className="col-8 col-xxl-8 col-xl-12">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  placeholder="Enter Promo Code"
-                                  aria-label="Enter Promo Code"
-                                />
-                              </div>
-                              <div className="col-4 col-xxl-4 col-xl-12">
-                                <div className="d-grid">
-                                  <button
-                                    type="button"
-                                    className="btn btn-label-primary"
-                                  >
-                                    Apply
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
 
-                            <div className="bg-lighter rounded p-3">
-                              <p className="fw-medium mb-2">
-                                Buying gift for a loved one?
-                              </p>
-                              <p className="mb-2">
-                                Gift wrap and personalized message on card, Only
-                                for $2.
-                              </p>
-                              <a
-                                href="javascript:void(0)"
-                                className="fw-medium"
-                              >
-                                Add a gift wrap
-                              </a>
-                            </div>
+
                             <hr className="my-4" />
 
                             <div className="d-flex justify-content-between mb-2">
@@ -1016,9 +981,9 @@ function Cart() {
                               <button
                                 type="button"
                                 className="btn btn-primary btn-next"
-                                onClick={handleNext}
+                                onClick={handleBooking}
                               >
-                                Next
+                                Submit
                               </button>
                             </div>
                           </div>
@@ -1027,304 +992,6 @@ function Cart() {
                     </div>
                   )}
                   {currentStep === 2 && (
-                    <div id="checkout-payment" className="content">
-                      <div className="row">
-                        <div className="col-xl-8 col-xxl-9 mb-3 mb-xl-0">
-                          <div className="alert alert-success" role="alert">
-                            <div className="d-flex gap-3">
-                              <div className="flex-shrink-0">
-                                <i className="fas fa-bookmark alert-icon alert-icon-lg"></i>
-                              </div>
-                              <div className="flex-grow-1">
-                                <div className="fw-medium mb-2">
-                                  Bank Offers
-                                </div>
-                                <ul className="list-unstyled mb-0">
-                                  <li>
-                                    - 10% Instant Discount on Bank of America
-                                    Corp Bank Debit and Credit cards
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                            <button
-                              type="button"
-                              className="btn-close btn-pinned"
-                              data-bs-dismiss="alert"
-                              aria-label="Close"
-                            ></button>
-                          </div>
-
-                          <div className="col-xxl-9 col-lg-8">
-                            <ul
-                              className="nav nav-pills card-header-pills mb-3"
-                              id="paymentTabs"
-                              role="tablist"
-                            >
-                              <li className="nav-item" role="presentation">
-                                <button
-                                  className={`nav-link ${
-                                    activeTab === "pills-cc" ? "active" : ""
-                                  }`}
-                                  id="pills-cc-tab"
-                                  data-bs-toggle="pill"
-                                  data-bs-target="#pills-cc"
-                                  type="button"
-                                  role="tab"
-                                  aria-controls="pills-cc"
-                                  aria-selected={activeTab === "pills-cc"}
-                                  onClick={() => handleTabChange("pills-cc")}
-                                >
-                                  Card
-                                </button>
-                              </li>
-                              <li className="nav-item" role="presentation">
-                                <button
-                                  className={`nav-link ${
-                                    activeTab === "pills-cod" ? "active" : ""
-                                  }`}
-                                  id="pills-cod-tab"
-                                  data-bs-toggle="pill"
-                                  data-bs-target="#pills-cod"
-                                  type="button"
-                                  role="tab"
-                                  aria-controls="pills-cod"
-                                  aria-selected={activeTab === "pills-cod"}
-                                  onClick={() => handleTabChange("pills-cod")}
-                                >
-                                  Cash On Delivery
-                                </button>
-                              </li>
-                              <li className="nav-item" role="presentation">
-                                <button
-                                  className={`nav-link ${
-                                    activeTab === "pills-gift-card"
-                                      ? "active"
-                                      : ""
-                                  }`}
-                                  id="pills-gift-card-tab"
-                                  data-bs-toggle="pill"
-                                  data-bs-target="#pills-gift-card"
-                                  type="button"
-                                  role="tab"
-                                  aria-controls="pills-gift-card"
-                                  aria-selected={
-                                    activeTab === "pills-gift-card"
-                                  }
-                                  onClick={() =>
-                                    handleTabChange("pills-gift-card")
-                                  }
-                                >
-                                  Gift Card
-                                </button>
-                              </li>
-                            </ul>
-                            <div
-                              className="tab-content px-0"
-                              id="paymentTabsContent"
-                            >
-                              <div
-                                className={`tab-pane fade ${
-                                  activeTab === "pills-cc" ? "show active" : ""
-                                }`}
-                                id="pills-cc"
-                                role="tabpanel"
-                                aria-labelledby="pills-cc-tab"
-                              >
-                                <div className="row g-3">
-                                  <div className="col-12">
-                                    <label
-                                      className="form-label w-100"
-                                      htmlFor="paymentCard"
-                                    >
-                                      Card Number
-                                    </label>
-                                    <div className="input-group input-group-merge">
-                                      <input
-                                        id="paymentCard"
-                                        name="paymentCard"
-                                        className="form-control credit-card-mask"
-                                        type="text"
-                                        placeholder="1356 3215 6548 7898"
-                                        aria-describedby="paymentCard2"
-                                      />
-                                      <span
-                                        className="input-group-text cursor-pointer p-1"
-                                        id="paymentCard2"
-                                      >
-                                        <span className="card-type"></span>
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <div className="col-12 col-md-6">
-                                    <label
-                                      className="form-label"
-                                      htmlFor="paymentCardName"
-                                    >
-                                      Name
-                                    </label>
-                                    <input
-                                      type="text"
-                                      id="paymentCardName"
-                                      className="form-control"
-                                      placeholder="John Doe"
-                                    />
-                                  </div>
-                                  <div className="col-6 col-md-3">
-                                    <label
-                                      className="form-label"
-                                      htmlFor="paymentCardExpiryDate"
-                                    >
-                                      Exp. Date
-                                    </label>
-                                    <input
-                                      type="text"
-                                      id="paymentCardExpiryDate"
-                                      className="form-control expiry-date-mask"
-                                      placeholder="MM/YY"
-                                    />
-                                  </div>
-                                  <div className="col-6 col-md-3">
-                                    <label
-                                      className="form-label"
-                                      htmlFor="paymentCardCvv"
-                                    >
-                                      CVV Code
-                                    </label>
-                                    <div className="input-group input-group-merge">
-                                      <input
-                                        type="text"
-                                        id="paymentCardCvv"
-                                        className="form-control cvv-code-mask"
-                                        maxLength="3"
-                                        placeholder="654"
-                                      />
-                                      <span
-                                        className="input-group-text cursor-pointer"
-                                        id="paymentCardCvv2"
-                                      >
-                                        <i
-                                          className="fas fa-question-circle text-muted"
-                                          data-bs-toggle="tooltip"
-                                          data-bs-placement="top"
-                                          title="Card Verification Value"
-                                        ></i>
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <div className="col-12">
-                                    <label className="switch">
-                                      <input
-                                        type="checkbox"
-                                        className="switch-input"
-                                      />
-                                      <span className="switch-toggle-slider">
-                                        <span className="switch-on"></span>
-                                        <span className="switch-off"></span>
-                                      </span>
-                                      <span className="switch-label">
-                                        Save card for future billing?
-                                      </span>
-                                    </label>
-                                  </div>
-                                  <div className="col-12">
-                                    <button
-                                      type="button"
-                                      className="btn btn-primary btn-next me-sm-3 me-1"
-                                      onClick={handleBooking}
-                                      disabled={isLoading}
-                                    >
-                                      Submit
-                                    </button>
-                                    <button
-                                      type="reset"
-                                      className="btn btn-secondary"
-                                    >
-                                      Cancel
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div
-                                className={`tab-pane fade ${
-                                  activeTab === "pills-cod" ? "show active" : ""
-                                }`}
-                                id="pills-cod"
-                                role="tabpanel"
-                                aria-labelledby="pills-cod-tab"
-                              >
-                                <p>
-                                  Cash on Delivery is a type of payment method
-                                  where the recipient makes payment for the
-                                  order at the time of delivery rather than in
-                                  advance.
-                                </p>
-                                <button
-                                  type="button"
-                                  className="btn btn-primary btn-next"
-                                >
-                                  Pay On Delivery
-                                </button>
-                              </div>
-
-                              <div
-                                className={`tab-pane fade ${
-                                  activeTab === "pills-gift-card"
-                                    ? "show active"
-                                    : ""
-                                }`}
-                                id="pills-gift-card"
-                                role="tabpanel"
-                                aria-labelledby="pills-gift-card-tab"
-                              >
-                                <h6>Enter Gift Card Details</h6>
-                                <div className="row g-3">
-                                  <div className="col-12">
-                                    <label
-                                      htmlFor="giftCardNumber"
-                                      className="form-label"
-                                    >
-                                      Gift card number
-                                    </label>
-                                    <input
-                                      type="number"
-                                      className="form-control"
-                                      id="giftCardNumber"
-                                      placeholder="Gift card number"
-                                    />
-                                  </div>
-                                  <div className="col-12">
-                                    <label
-                                      htmlFor="giftCardPin"
-                                      className="form-label"
-                                    >
-                                      Gift card pin
-                                    </label>
-                                    <input
-                                      type="number"
-                                      className="form-control"
-                                      id="giftCardPin"
-                                      placeholder="Gift card pin"
-                                    />
-                                  </div>
-                                  <div className="col-12">
-                                    <button
-                                      type="button"
-                                      className="btn btn-primary btn-next"
-                                    >
-                                      Redeem Gift Card
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {currentStep === 3 && (
                     <div className="bs-stepper-content border-top">
                       <form
                         id="wizard-checkout-form"

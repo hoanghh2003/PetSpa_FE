@@ -1,8 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faArrowUp,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { faQuoteRight } from "@fortawesome/free-solid-svg-icons";
@@ -61,6 +58,28 @@ function Service() {
   CustomNextArrow.propTypes = {
     onClick: PropTypes.func.isRequired,
   };
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const response = await axios.get("https://localhost:7150/api/Booking");
+        if (response.data.status) {
+          const filteredBookings = response.data.data.filter(
+            booking => booking.feedback != null
+          );
+          setBookings(filteredBookings);
+          console.log(filteredBookings);
+        } else {
+          console.error("Failed to fetch bookings");
+        }
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+      }
+    };
+
+    fetchBookings();
+  }, []);
 
   const settings = {
     dots: false,
@@ -269,60 +288,72 @@ function Service() {
                 )}
               </div>
               <div className="row justify-content-center">
-  {Array.isArray(services) &&
-    services.map((service) => {
-      const formattedPrice = new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND',
-      }).format(service.price);
-      const backgroundImage = service.serviceImage
-        ? `url(${service.serviceImage})`
-        : 'url("src/assets/images/shape/shape_path_1.svg")';
-      return (
-        <div key={service.serviceId} className="col col-lg-4">
-          <div
-            className="service_item"
-            style={{
-              backgroundImage: backgroundImage,
-            }}
-          >
-            <div className="title_wrap">
-              <div className="item_icon">
-                <img src="src/assets/images/icon/icon_pet_walking.svg" alt="" />
+                {Array.isArray(services) &&
+                  services.map((service) => {
+                    const formattedPrice = new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(service.price);
+                    const backgroundImage = service.serviceImage
+                      ? `url(${service.serviceImage})`
+                      : 'url("src/assets/images/shape/shape_path_1.svg")';
+                    return (
+                      <div key={service.serviceId} className="col col-lg-4">
+                        <div
+                          className="service_item"
+                          style={{
+                            backgroundImage: backgroundImage,
+                          }}
+                        >
+                          <div className="title_wrap">
+                            <div className="item_icon">
+                              <img
+                                src="src/assets/images/icon/icon_pet_walking.svg"
+                                alt=""
+                              />
+                            </div>
+                            <h3 className="item_title mb-0">
+                              {service.serviceName}
+                            </h3>
+                          </div>
+                          <p>{service.serviceDescription}</p>
+                          <div className="item_price">
+                            <span>{formattedPrice}</span>
+                          </div>
+                          <Link
+                            className="btn_unfill"
+                            to={`/service/${service.serviceId}`}
+                          >
+                            <span>View More</span>{" "}
+                            <FontAwesomeIcon icon={faArrowRight} />
+                          </Link>
+                          <Button
+                            onClick={() => handleBookNow(service.serviceId)}
+                            className="group w-32 h-10 m-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-full shadow-lg hover:from-purple-600 hover:to-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
+                          >
+                            <span className="block group-hover:text-black transition duration-300 ease-in-out">
+                              Book now
+                            </span>
+                          </Button>
+                          {isOpen &&
+                            selectedServiceId === service.serviceId && (
+                              <BookingCard
+                                isOpen={isOpen}
+                                handleHideModal={handleHideModal}
+                                serviceId={service.serviceId}
+                              />
+                            )}
+                          <div className="decoration_image">
+                            <img
+                              src="src/assets/images/shape/shape_paws.svg"
+                              alt="Pet Paws"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
               </div>
-              <h3 className="item_title mb-0">{service.serviceName}</h3>
-            </div>
-            <p>{service.serviceDescription}</p>
-            <div className="item_price">
-              <span>{formattedPrice}</span>
-            </div>
-            <Link className="btn_unfill" to={`/service/${service.serviceId}`}>
-              <span>View More</span>{" "}
-              <FontAwesomeIcon icon={faArrowRight} />
-            </Link>
-            <Button
-              onClick={() => handleBookNow(service.serviceId)}
-              className="group w-32 h-10 m-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-full shadow-lg hover:from-purple-600 hover:to-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              <span className="block group-hover:text-black transition duration-300 ease-in-out">
-                Book now
-              </span>
-            </Button>
-            {isOpen && selectedServiceId === service.serviceId && (
-              <BookingCard
-                isOpen={isOpen}
-                handleHideModal={handleHideModal}
-                serviceId={service.serviceId}
-              />
-            )}
-            <div className="decoration_image">
-              <img src="src/assets/images/shape/shape_paws.svg" alt="Pet Paws" />
-            </div>
-          </div>
-        </div>
-      );
-    })}
-</div>
             </div>
           </section>
           <section
@@ -331,17 +362,13 @@ function Service() {
               backgroundImage:
                 'url("src/assets/images/background/shape_bg_2.png")',
             }}
-          >
-
-
-
-          </section>
+          ></section>
 
           <section className="testimonial_section section_space_lg">
             <div className="container">
               <div className="section_title">
                 <h2 className="title_text mb-0">
-                  <span className="sub_title">Our Reviews</span>
+                  <span className="sub_title">Our Feedback</span>
                   What People Say
                 </h2>
               </div>
@@ -349,335 +376,42 @@ function Service() {
 
             <div className="testimonial_carousel">
               <Slider {...settings}>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_1.png"
-                          alt="Pet Thumbnail Image"
-                        />
+                {bookings.map((booking) => (
+                  <div className="col carousel_item" key={booking.bookingId}>
+                    <div className="testimonial_item">
+                      <div className="testimonial_admin">
+                        <div className="admin_thumbnail">
+                          <img
+                            src="src/assets/images/meta/thumbnail_img_1.png"
+                            alt="Pet Thumbnail Image"
+                          />
+                        </div>
+                        <div className="admin_info">
+                          <h4 className="admin_name">
+                            {booking.bookingDetails[0]?.service?.serviceName ||
+                              "Service Name"}
+                          </h4>
+                          <span className="admin_designation">
+                            {booking.cus?.fullName || "Customer Name"}
+                          </span>
+                        </div>
                       </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Home Visits</h4>
-                        <span className="admin_designation">Lucas Simões</span>
-                      </div>
+                      <ul className="rating_star">
+                        {[...Array(5)].map((star, index) => (
+                          <li key={index}>
+                            <FontAwesomeIcon icon={faStar} />{" "}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="mb-0">
+                        {booking.feedback || "No feedback provided."}
+                      </p>
+                      <span className="quote_icon">
+                        <FontAwesomeIcon icon={faQuoteRight} />{" "}
+                      </span>
                     </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Tristique nulla aliquet enim tortor at auctor urna nunc.
-                      Massa enim nec dui nunc mattis enim ut tellus
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
                   </div>
-                </div>
-
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_2.png"
-                          alt="Pet Thumbnail Image"
-                        />
-                      </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Dog Boarding</h4>
-                        <span className="admin_designation">
-                          Wilhelm Dowall
-                        </span>
-                      </div>
-                    </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Lectus magna fringilla urna porttitor rhoncus dolor purus
-                      non enim. Tellus in hac habitasse platea dictumst
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
-                  </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_3.png"
-                          alt="Pet Thumbnail Image"
-                        />
-                      </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Pet Training</h4>
-                        <span className="admin_designation">Lara Madrigal</span>
-                      </div>
-                    </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Ut tortor pretium viverra suspendisse potenti nullam.
-                      Venenatis urna cursus eget nunc scelerisque viverra mauris
-                      in aliquam
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
-                  </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_4.png"
-                          alt="Pet Thumbnail Image"
-                        />
-                      </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Home Visit</h4>
-                        <span className="admin_designation">Lara Madrigal</span>
-                      </div>
-                    </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Ut tortor pretium viverra suspendisse potenti nullam.
-                      Venenatis urna cursus eget nunc scelerisque viverra mauris
-                      in aliquam
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
-                  </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_1.png"
-                          alt="Pet Thumbnail Image"
-                        />
-                      </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Home Visits</h4>
-                        <span className="admin_designation">Lucas Simões</span>
-                      </div>
-                    </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Tristique nulla aliquet enim tortor at auctor urna nunc.
-                      Massa enim nec dui nunc mattis enim ut tellus
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
-                  </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_2.png"
-                          alt="Pet Thumbnail Image"
-                        />
-                      </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Dog Boarding</h4>
-                        <span className="admin_designation">
-                          Wilhelm Dowall
-                        </span>
-                      </div>
-                    </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Lectus magna fringilla urna porttitor rhoncus dolor purus
-                      non enim. Tellus in hac habitasse platea dictumst
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
-                  </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_3.png"
-                          alt="Pet Thumbnail Image"
-                        />
-                      </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Pet Training</h4>
-                        <span className="admin_designation">Lara Madrigal</span>
-                      </div>
-                    </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Ut tortor pretium viverra suspendisse potenti nullam.
-                      Venenatis urna cursus eget nunc scelerisque viverra mauris
-                      in aliquam
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
-                  </div>
-                </div>
-                <div className="col carousel_item">
-                  <div className="testimonial_item">
-                    <div className="testimonial_admin">
-                      <div className="admin_thumbnail">
-                        <img
-                          src="src/assets/images/meta/thumbnail_img_4.png"
-                          alt="Pet Thumbnail Image"
-                        />
-                      </div>
-                      <div className="admin_info">
-                        <h4 className="admin_name">Home Visit</h4>
-                        <span className="admin_designation">Lara Madrigal</span>
-                      </div>
-                    </div>
-                    <ul className="rating_star">
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faStar} />{" "}
-                      </li>
-                    </ul>
-                    <p className="mb-0">
-                      Ut tortor pretium viverra suspendisse potenti nullam.
-                      Venenatis urna cursus eget nunc scelerisque viverra mauris
-                      in aliquam
-                    </p>
-                    <span className="quote_icon">
-                      <FontAwesomeIcon icon={faQuoteRight} />{" "}
-                    </span>
-                  </div>
-                </div>
+                ))}
               </Slider>
             </div>
           </section>

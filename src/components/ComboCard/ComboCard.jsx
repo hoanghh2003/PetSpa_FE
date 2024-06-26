@@ -18,7 +18,7 @@ const ComboCard = ({ combo }) => {
         onClick={() => handleOpenModal(combo.comboId)}
         className={`${
           isHover ? "bg-purple-600 text-white shadow-xl" : ""
-        } p-4 border-2 rounded-lg duration-300 ease-in-out`}
+        } p-4 h-[300px] border-2 rounded-lg duration-300 ease-in-out`}
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
       >
@@ -28,7 +28,7 @@ const ComboCard = ({ combo }) => {
             isHover
               ? "border-purple-600 text-purple-600 bg-white"
               : "bg-yellow-500 text-white"
-          } text-xl my-5 rounded-lg border-2 py-2 text-center  shadow-xl`}
+          } text-xl my-5 rounded-lg border-2 py-2 text-center shadow-xl`}
         >
           <span className="value_text">$ {combo.price}</span>
         </div>
