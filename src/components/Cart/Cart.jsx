@@ -493,18 +493,12 @@ function Cart() {
           );
 
           if (paymentResponse.status === 200 && paymentResponse.data) {
-            let existingBookings = localStorage.getItem("bookings");
-            let bookingsData = existingBookings
-              ? JSON.parse(existingBookings)
-              : [];
-
             const newBookings = bookingCodes.map((code) => ({
               code,
               expiry: new Date().getTime() + 24 * 60 * 60 * 1000, // Current time + 24 hours
             }));
+            localStorage.setItem("checkBookings", JSON.stringify(newBookings));
 
-            bookingsData = [...bookingsData, ...newBookings];
-            localStorage.setItem("bookings", JSON.stringify(bookingsData));
             window.location.href = paymentResponse.data.paymentUrl;
           } else {
             message.error("Failed to create payment link.");
@@ -560,10 +554,14 @@ function Cart() {
         );
         setProducts(updatedProducts);
         localStorage.setItem("cart", JSON.stringify(updatedProducts));
-        localStorage.setItem("bookings", JSON.stringify(updatedProducts));
+        let existingBookings = localStorage.getItem("bookings") || [];
+        let checkbookings = localStorage.getItem("checkBookings") || [];
+        const bookingsData = [...existingBookings, ...checkbookings];
+        localStorage.setItem("bookings", JSON.stringify(bookingsData));
         navigate("/Cart");
         message.success("Payment successful and items removed from cart.");
       } else if (responseCode === "24") {
+        localStorage.removeItemItem("checkBookings");
         message.error("Payment failed.");
         navigate("/Cart");
       }
