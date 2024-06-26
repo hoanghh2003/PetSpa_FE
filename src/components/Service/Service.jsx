@@ -482,933 +482,11 @@ function Service() {
                 'url("src/assets/images/background/shape_bg_2.png")',
             }}
           >
-            <div className="container">
-              <div className="row align-items-center">
-                <div className="col col-lg-5">
-                  <div className="feature_image">
-                    <div className="image_wrap">
-                      <img
-                        src="src/assets/images/feature/feature_img_1.jpg"
-                        alt="Pet Grooming Service Image"
-                      />
-                    </div>
-                    <div className="shape_image_1">
-                      <img
-                        src="src/assets/images/shape/shape_butterfly.svg"
-                        alt="Butterfly Shape"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="col col-lg-4">
-                  <div className="feature_content">
-                    <h2 className="item_title">Pet Grooming Service</h2>
-                    <ul className="icon_list unorder_list_block">
-                      <li>
-                        <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                        <span>Bathing – wash and fluff dry</span>
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                        <span>Pawdicure – nail trimming and filing</span>
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                        <span>
-                          Breed specific styling, cutting and stripping
-                        </span>
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                        <span>De-matting and detangling</span>
-                      </li>
-                    </ul>
-                    <Link className="btn btn_primary" to="/service_details">
-                      <FontAwesomeIcon icon={faPaw} /> Get Service
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="decoration_item shape_image_2">
-              <img
-                src="src/assets/images/shape/shape_group_1.svg"
-                alt="Pet Tools Box"
-              />
-            </div>
-            <div className="decoration_item decoration_image_1">
-              <img
-                src="src/assets/images/feature/feature_img_2.jpg"
-                alt="Pet Grooming Service Image"
-              />
-            </div>
-            <div className="decoration_item decoration_image_2">
-              <img
-                src="src/assets/images/feature/feature_img_3.jpg"
-                alt="Pet Grooming Service Image"
-              />
-            </div>
+
+
+
           </section>
-          <section
-            className="service_section section_space_lg"
-            style={{
-              backgroundImage:
-                'url("src/assets/images/overlay/shapes_overlay_6.svg")',
-            }}
-          >
-            <div className="container">
-              <div className="section_title text-center">
-                <div className="row justify-content-center">
-                  <div className="col col-lg-5">
-                    <h2 className="title_text">
-                      <span className="sub_title">Our Prices</span> Pet Services
-                      + Rates
-                    </h2>
-                    <p className="mb-0">
-                      We can fully customize your pet sitting schedule to fit
-                      your pet’s needs. Pick and choose what visits work best
-                      for you and your family
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="services_price_tab">
-                <ul className="nav tabs_nav unorder_list_center" role="tablist">
-                  <li role="presentation">
-                    <button
-                      className="active"
-                      data-bs-toggle="tab"
-                      data-bs-target="#tab_walking_sitting"
-                      type="button"
-                      role="tab"
-                      aria-selected="true"
-                    >
-                      Walking &amp; Sitting
-                    </button>
-                  </li>
-                  <li role="presentation">
-                    <button
-                      data-bs-toggle="tab"
-                      data-bs-target="#tab_training"
-                      type="button"
-                      role="tab"
-                      aria-selected="false"
-                    >
-                      Training
-                    </button>
-                  </li>
-                  <li role="presentation">
-                    <button
-                      data-bs-toggle="tab"
-                      data-bs-target="#tab_pet_taxi"
-                      type="button"
-                      role="tab"
-                      aria-selected="false"
-                    >
-                      Pet Taxi
-                    </button>
-                  </li>
-                  <li role="presentation">
-                    <button
-                      data-bs-toggle="tab"
-                      data-bs-target="#tab_pet_hotel"
-                      type="button"
-                      role="tab"
-                      aria-selected="false"
-                    >
-                      Pet Hotel
-                    </button>
-                  </li>
-                </ul>
-                <div className="tab-content" id="myTabContent">
-                  <div
-                    className="tab-pane fade show active"
-                    id="tab_walking_sitting"
-                    role="tabpanel"
-                  >
-                    <div className="row">
-                      <div className="col col-lg-6">
-                        <div className="services_price_items_wrap">
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_1.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  15 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$22.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                1 x Visit per day, small pet visit can be added
-                                per quote
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_2.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  30 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$29.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                A 12-hour stay, including the evening visit and
-                                morning visit
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_3.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  45 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$36.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                Drop-off and pick-up times are flexible. $10
-                                each additional dog.
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col col-lg-6">
-                        <div className="services_price_items_wrap">
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_4.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  29 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$22.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                1 x Visit per day, small pet visit can be added
-                                per quote
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_5.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  65 Overnight Pet Sitting
-                                </div>
-                                <div className="item_price">
-                                  <span>$29.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                A 12-hour stay, including the evening visit and
-                                morning visit
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_6.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  40 Private Boarding
-                                </div>
-                                <div className="item_price">
-                                  <span>$36.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                Drop-off and pick-up times are flexible. $10
-                                each additional dog.
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="tab-pane fade"
-                    id="tab_training"
-                    role="tabpanel"
-                  >
-                    <div className="row">
-                      <div className="col col-lg-6">
-                        <div className="services_price_items_wrap">
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_1.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  15 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$22.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                1 x Visit per day, small pet visit can be added
-                                per quote
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_2.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  30 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$29.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                A 12-hour stay, including the evening visit and
-                                morning visit
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_3.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  45 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$36.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                Drop-off and pick-up times are flexible. $10
-                                each additional dog.
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col col-lg-6">
-                        <div className="services_price_items_wrap">
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_4.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  29 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$22.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                1 x Visit per day, small pet visit can be added
-                                per quote
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_5.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  65 Overnight Pet Sitting
-                                </div>
-                                <div className="item_price">
-                                  <span>$29.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                A 12-hour stay, including the evening visit and
-                                morning visit
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_6.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  40 Private Boarding
-                                </div>
-                                <div className="item_price">
-                                  <span>$36.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                Drop-off and pick-up times are flexible. $10
-                                each additional dog.
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="tab-pane fade"
-                    id="tab_pet_taxi"
-                    role="tabpanel"
-                  >
-                    <div className="row">
-                      <div className="col col-lg-6">
-                        <div className="services_price_items_wrap">
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_1.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  15 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$22.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                1 x Visit per day, small pet visit can be added
-                                per quote
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_2.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  30 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$29.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                A 12-hour stay, including the evening visit and
-                                morning visit
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_3.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  45 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$36.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                Drop-off and pick-up times are flexible. $10
-                                each additional dog.
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col col-lg-6">
-                        <div className="services_price_items_wrap">
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_4.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  29 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$22.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                1 x Visit per day, small pet visit can be added
-                                per quote
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_5.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  65 Overnight Pet Sitting
-                                </div>
-                                <div className="item_price">
-                                  <span>$29.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                A 12-hour stay, including the evening visit and
-                                morning visit
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_6.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  40 Private Boarding
-                                </div>
-                                <div className="item_price">
-                                  <span>$36.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                Drop-off and pick-up times are flexible. $10
-                                each additional dog.
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="tab-pane fade"
-                    id="tab_pet_hotel"
-                    role="tabpanel"
-                  >
-                    <div className="row">
-                      <div className="col col-lg-6">
-                        <div className="services_price_items_wrap">
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_1.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  15 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$22.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                1 x Visit per day, small pet visit can be added
-                                per quote
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_2.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  30 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$29.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                A 12-hour stay, including the evening visit and
-                                morning visit
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_3.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  45 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$36.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                Drop-off and pick-up times are flexible. $10
-                                each additional dog.
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col col-lg-6">
-                        <div className="services_price_items_wrap">
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_4.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  29 minute visit
-                                </div>
-                                <div className="item_price">
-                                  <span>$22.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                1 x Visit per day, small pet visit can be added
-                                per quote
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_5.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  65 Overnight Pet Sitting
-                                </div>
-                                <div className="item_price">
-                                  <span>$29.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                A 12-hour stay, including the evening visit and
-                                morning visit
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                          <div className="service_price_item">
-                            <div className="item_image">
-                              <img
-                                src="src/assets/images/service/service_img_6.jpg"
-                                alt="Pet Care Service"
-                              />
-                            </div>
-                            <div className="item_content">
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="service_time">
-                                  <FontAwesomeIcon
-                                    icon={faClock}
-                                    style={{ color: "#8161f5" }}
-                                  />{" "}
-                                  40 Private Boarding
-                                </div>
-                                <div className="item_price">
-                                  <span>$36.00</span>
-                                </div>
-                              </div>
-                              <h3 className="item_title mb-0">
-                                Drop-off and pick-up times are flexible. $10
-                                each additional dog.
-                              </h3>
-                            </div>
-                            <Link
-                              className="item_global_link"
-                              to="/service_details"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+
           <section className="testimonial_section section_space_lg">
             <div className="container">
               <div className="section_title">
@@ -1753,11 +831,11 @@ function Service() {
               </Slider>
             </div>
           </section>
-          <section className="team_section bg_gray section_space_lg">
+          <section className="team_section section_space_lg">
             <div className="container">
               <div className="section_title text-center">
                 <h2 className="title_text mb-0">
-                  <span className="sub_title">Pet Care Team</span>
+                  <span className="sub_title">Staff Team</span>
                   Welcome To Our Family
                 </h2>
               </div>
@@ -1766,7 +844,7 @@ function Service() {
                   <div className="team_item text-center">
                     <div className="item_image">
                       <img
-                        src="src/assets/images/team/team_img_1.png"
+                        src="src/assets/images/team/team_img_1.jpg"
                         alt="Team Image"
                       />
                     </div>
@@ -1777,12 +855,20 @@ function Service() {
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="https://www.facebook.com/2010.HaHuyHoanglacuaai.2003">
+                          <a
+                            href="https://www.facebook.com/2010.HaHuyHoanglacuaai.2003"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
-                          <a href="https://www.instagram.com/hardy._.03">
+                          <a
+                            href="https://www.instagram.com/hardy._.03"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
@@ -1794,7 +880,7 @@ function Service() {
                   <div className="team_item text-center">
                     <div className="item_image">
                       <img
-                        src="src/assets/images/team/team_img_2.png"
+                        src="src/assets/images/team/team_img_1.jpg"
                         alt="Team Image"
                       />
                     </div>
@@ -1805,12 +891,20 @@ function Service() {
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="https://www.facebook.com/namtheshy2mai">
+                          <a
+                            href="https://www.facebook.com/namtheshy2mai"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
-                          <a href="https://www.instagram.com/namle2330">
+                          <a
+                            href="https://www.instagram.com/namle2330"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>
@@ -1822,7 +916,7 @@ function Service() {
                   <div className="team_item text-center">
                     <div className="item_image">
                       <img
-                        src="src/assets/images/team/team_img_3.png"
+                        src="src/assets/images/team/team_img_1.jpg"
                         alt="Team Image"
                       />
                     </div>
@@ -1833,12 +927,20 @@ function Service() {
                       </span>
                       <ul className="social_links unorder_list">
                         <li>
-                          <a href="https://www.facebook.com/profile.php?id=100024098480982">
+                          <a
+                            href="https://www.facebook.com/profile.php?id=100024098480982"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <FontAwesomeIcon icon={faFacebook} />{" "}
                           </a>
                         </li>
                         <li>
-                          <a href="#!">
+                          <a
+                            href="#!"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <FontAwesomeIcon icon={faInstagram} />{" "}
                           </a>
                         </li>

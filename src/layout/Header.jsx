@@ -56,30 +56,9 @@ const Header = () => {
                   <li>
                     <Link to="/HomePage">Home</Link>
                   </li>
-
-                  <li className="dropdown">
-                    <a
-                      className="nav-link"
-                      href="#"
-                      id="service_submenu"
-                      role="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Services
-                    </a>
-                    <ul
-                      className="dropdown-menu"
-                      aria-labelledby="service_submenu"
-                    >
                       <li>
-                        <Link to="/service">Our Service</Link>
+                        <Link to="/service">Service</Link>
                       </li>
-                      <li>
-                        <Link to="/service_details">Service Details</Link>
-                      </li>
-                    </ul>
-                  </li>
                   <li className="dropdown">
                     <a
                       className="nav-link"

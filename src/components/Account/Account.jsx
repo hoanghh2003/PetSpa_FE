@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Alert } from 'antd';
+import { Alert } from "antd";
 import {
   Form,
   Input,
@@ -22,8 +22,9 @@ function Account() {
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [accountDeactivated, setAccountDeactivated] = useState(false);
-  const [accountActivationChecked, setAccountActivationChecked] = useState(false);
-
+  const [accountActivationChecked, setAccountActivationChecked] =
+    useState(false);
+  const [fullName, setFullName] = useState();
   useEffect(() => {
     const fetchUserInfo = async () => {
       const userInfoString = localStorage.getItem("user-info");
@@ -54,7 +55,7 @@ function Account() {
         if (response.status === 200) {
           const userData = response.data;
           const fullName = userData.data.fullName;
-
+          setFullName(fullName);
           // Tách fullName thành firstName và lastName
           const nameParts = fullName.split(" ");
           const firstName = nameParts[0];
@@ -287,7 +288,7 @@ function Account() {
                             </div>
                             <div className="flex-grow-1">
                               <span className="fw-medium d-block">
-                                John Doe
+                                  {fullName}
                               </span>
                               <small className="text-muted">Admin</small>
                             </div>

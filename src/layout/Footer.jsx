@@ -67,27 +67,14 @@ const Footer = () => {
                       </Link>
                     </li>
                     <li>
-                      <Link to="/about">
-                        <FontAwesomeIcon icon={faCircle} size="xs" /> About
-                      </Link>
-                    </li>
-                    <li>
                     <Link to="/service">
                         <FontAwesomeIcon icon={faCircle} size="xs" /> Services
                      </Link>
                      </li>
-
-                  </ul>
-                  <ul className="unorder_list_block">
-                    <li>
-                    <Link to="/faq">
-                        <FontAwesomeIcon icon={faCircle} size="xs" /> FAQ
+                     <li>
+                      <Link to="/blog">
+                        <FontAwesomeIcon icon={faCircle} size="xs" /> Blog
                       </Link>
-                    </li>
-                    <li>
-                    <Link to="/shop">
-                        <FontAwesomeIcon icon={faCircle} size="xs" /> Shop
-                    </Link>
                     </li>
                   </ul>
                 </div>

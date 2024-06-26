@@ -8,16 +8,17 @@ import {
   Upload,
   message,
   Table,
+  InputNumber,
+  Space,
+  DatePicker,
 } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
-import { DatePicker, Space } from "antd";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import uploadFile from "@/utils/upload";
-
 import "../../components/Petmanagement/Petmanagement.css"; // Create a separate CSS file for custom styles
 
 function Petmanagement() {
@@ -58,6 +59,7 @@ function Petmanagement() {
         if (response.status === 200) {
           const listAfterDelete = dataSource.filter((pet) => pet.petId !== id);
           setDataSource(listAfterDelete);
+          message.success("Delete successfully");
         } else {
           console.error(
             "Failed to delete pet:",
@@ -97,7 +99,7 @@ function Petmanagement() {
   );
 
   async function fetchMovies() {
-    const userInfoString = localStorage.getItem("user-info");
+const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
 
     if (userInfo != null) {
@@ -196,8 +198,7 @@ function Petmanagement() {
           },
           data: petData,
         });
-
-        if (response.status === 200 || response.status === 201) {
+if (response.status === 200 || response.status === 201) {
           message.success(`Pet ${isUpdate ? "updated" : "added"} successfully`);
           setError("");
           if (isUpdate) {
@@ -207,7 +208,10 @@ function Petmanagement() {
               )
             );
           } else {
-            setDataSource((prevDataSource) => [...prevDataSource, petData]);
+            setDataSource((prevDataSource) => [
+              ...prevDataSource,
+              { ...petData, petId: response.data.petId },
+            ]);
           }
         } else {
           setError(
@@ -216,8 +220,14 @@ function Petmanagement() {
           );
         }
       } catch (error) {
-        console.error("API error:", error);
-        setError("API error");
+        if (error.response && error.response.status === 401) {
+          message.error("Token has expired. Please log in again.");
+          localStorage.removeItem("user-info");
+          navigate("/login");
+        } else {
+          console.error("API error:", error);
+          setError("API error");
+        }
       }
     } else {
       setError("You must be logged in");
@@ -296,10 +306,10 @@ function Petmanagement() {
       <Table columns={columns} dataSource={dataSource} rowKey="petId" />
 
       <Modal
-        title={isUpdate ? "Update Pet" : "Add New Pet"}
+        title="Add new pet"
         open={isOpen}
-        onCancel={handleHideModal}
         onOk={handleOk}
+        onCancel={handleHideModal}
       >
         <Form
           labelCol={{
@@ -311,15 +321,47 @@ function Petmanagement() {
           <Form.Item
             label="Name"
             name="name"
-            rules={[{ required: true, message: "Please input the pet name!" }]}
+            rules={[
+{ required: true, message: "Please input the pet name!" },
+              {
+                pattern: regex30KyTu,
+                message: "Name must be between 1 and 30 characters!",
+              },
+            ]}
           >
             <Input />
           </Form.Item>
-          <Form.Item label="Height" name="height">
-            <Input />
+          <Form.Item
+            label="Height"
+            name="height"
+            rules={[
+              { required: true, message: "Please input the height!" },
+              { type: "number", message: "Height must be a number!" },
+              {
+                validator: (_, value) =>
+                  value >= 0
+                    ? Promise.resolve()
+                    : Promise.reject("Height must be a non-negative number!"),
+              },
+            ]}
+          >
+            <InputNumber style={{ width: "100%" }} min={0} />
           </Form.Item>
-          <Form.Item label="Weight" name="weight">
-            <Input />
+          <Form.Item
+            label="Weight"
+            name="weight"
+            rules={[
+              { required: true, message: "Please input the weight!" },
+              { type: "number", message: "Weight must be a number!" },
+              {
+                validator: (_, value) =>
+                  value >= 0
+                    ? Promise.resolve()
+                    : Promise.reject("Weight must be a non-negative number!"),
+              },
+            ]}
+          >
+            <InputNumber style={{ width: "100%" }} min={0} />
           </Form.Item>
           <Form.Item
             label="Category"
@@ -372,5 +414,4 @@ function Petmanagement() {
     </div>
   );
 }
-
 export default Petmanagement;

@@ -246,18 +246,8 @@ function HomePage() {
             <div className="container">
               <div className="section_title text-center">
                 <h2 className="title_text">
-                  <span className="sub_title">Our prices</span>
-                  Dog Grooming Services &amp; Pricing
+                  <span className="sub_title">Our combo</span>  
                 </h2>
-                <div className="row justify-content-center">
-                  <div className="col col-lg-6">
-                    <p className="mb-0">
-                      We can fully customize your pet sitting schedule to fit
-                      your pet’s needs. Pick and choose what visits work best
-                      for you and your family
-                    </p>
-                  </div>
-                </div>
               </div>
               <div className="pricing_tab_wrap">
                 <div className="tab-content">
@@ -485,85 +475,12 @@ function HomePage() {
               />
             </div>
           </section>
-          <section
-            className="feature_service decoration_wrap"
-            style={{
-              backgroundImage:
-                'url("src/assets/images/background/shape_bg_2.png")',
-            }}
-          >
-            <div className="container">
-              <div className="row align-items-center">
-                <div className="col col-lg-5">
-                  <div className="feature_image">
-                    <div className="image_wrap">
-                      <img
-                        src="src/assets/images/feature/feature_img_1.jpg"
-                        alt="Pet Grooming Service Image"
-                      />
-                    </div>
-                    <div className="shape_image_1">
-                      <img
-                        src="src/assets/images/shape/shape_butterfly.svg"
-                        alt="Butterfly Shape"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="col col-lg-4">
-                  <div className="feature_content">
-                    <h2 className="item_title">Pet Grooming Service</h2>
-                    <ul className="icon_list unorder_list_block">
-                      <li>
-                        <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                        <span>Bathing – wash and fluff dry</span>
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                        <span>Pawdicure – nail trimming and filing</span>
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                        <span>
-                          Breed specific styling, cutting and stripping
-                        </span>
-                      </li>
-                      <li>
-                        <FontAwesomeIcon icon={faCheckCircle} />{" "}
-                        <span>De-matting and detangling</span>
-                      </li>
-                    </ul>
-                    <Link className="btn btn_primary" to="/service_details">
-                      <FontAwesomeIcon icon={faPaw} /> Get Service
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="decoration_item shape_image_2">
-              <img
-                src="src/assets/images/shape/shape_group_1.svg"
-                alt="Pet Tools Box"
-              />
-            </div>
-            <div className="decoration_item decoration_image_1">
-              <img
-                src="src/assets/images/feature/feature_img_2.jpg"
-                alt="Pet Grooming Service Image"
-              />
-            </div>
-            <div className="decoration_item decoration_image_2">
-              <img
-                src="src/assets/images/feature/feature_img_3.jpg"
-                alt="Pet Grooming Service Image"
-              />
-            </div>
-          </section>
+
           <section className="team_section section_space_lg">
             <div className="container">
               <div className="section_title text-center">
                 <h2 className="title_text mb-0">
-                  <span className="sub_title">Pet Care Team</span>
+                  <span className="sub_title">Staff Team</span>
                   Welcome To Our Family
                 </h2>
               </div>
@@ -691,9 +608,6 @@ function HomePage() {
                   <span className="sub_title">Our Contacts</span>
                   Contacts
                 </h2>
-                <p className="mb-0">
-                  Massa enim nec dui nunc mattis enim ut tellus
-                </p>
               </div>
               <div className="row justify-content-center">
                 <div className="col col-lg-3 col-md-6 col-sm-6">
