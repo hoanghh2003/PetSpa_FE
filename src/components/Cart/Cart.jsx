@@ -19,7 +19,7 @@ import {
 import axios from "axios";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useForm } from "antd/es/form/Form";
@@ -62,21 +62,21 @@ function Cart() {
     // Get the cart from localStorage
     const cartString = localStorage.getItem("cart");
     let cart = JSON.parse(cartString);
-    
+
     if (!cart || !Array.isArray(cart)) {
       message.error("Cart is empty or invalid.");
       return;
     }
-  
+
     // Remove the booking at the specified index
     cart.splice(index, 1);
-  
+
     // Update the state
     setProducts(cart);
-  
+
     // Update localStorage
     localStorage.setItem("cart", JSON.stringify(cart));
-  
+
     message.success("Booking removed successfully.");
   };
 
@@ -101,9 +101,9 @@ function Cart() {
   }
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
     }).format(price);
   };
 
@@ -114,17 +114,17 @@ function Cart() {
   };
 
   const handleShowModal = (index) => {
-    const selectedProduct = dataSource[index];
-    setSelectedProduct(selectedProduct);
-    setNewDate(moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"));
+    // const selectedProduct = dataSource[index];
+    // setSelectedProduct(selectedProduct);
+    // setNewDate(moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"));
 
-    if (selectedProduct.staffId != null) {
-      setSelectedStaffId(selectedProduct.staffId);
-      form.setFieldsValue({ staff: selectedProduct.staffName });
-      console.log(selectedStaffId);
-    } else {
-      form.resetFields(["staff"]);
-    }
+    // if (selectedProduct.staffId != null) {
+    //   setSelectedStaffId(selectedProduct.staffId);
+    //   form.setFieldsValue({ staff: selectedProduct.staffName });
+    //   console.log(selectedStaffId);
+    // } else {
+    //   form.resetFields(["staff"]);
+    // }
 
     setIsOpen(true);
   };
@@ -145,22 +145,22 @@ function Cart() {
     const token = userInfo?.data?.token;
     setError("");
     setIsLoading(true);
-  
+
     try {
       let url = `https://localhost:7150/api/Booking/available?startTime=${newDate.format(
         "YYYY-MM-DDTHH:mm:ss"
       )}&serviceCode=${selectedProduct.serviceId}`;
-  
+
       if (selectStaffId.staffId) {
         url += `&staffId=${selectStaffId.staffId}`;
       }
-  
+
       const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (response.status === 401) {
         console.log("Token expired. Please log in again.");
         setError("Token expired. Please log in again.");
@@ -168,17 +168,17 @@ function Cart() {
         setIsLoading(false);
         return;
       }
-  
+
       if (response.status === 200) {
         const bookingId = response.data.bookingId;
-  
+
         try {
           const updateResponse = await axios.put(
             `https://localhost:7150/api/Booking/update-time-booking`,
             {
               bookingId,
               newDateTime: newDate.format("YYYY-MM-DDTHH:mm:ss"),
-              staffId: selectStaffId.staffId || null
+              staffId: selectStaffId.staffId || null,
             },
             {
               headers: {
@@ -186,7 +186,7 @@ function Cart() {
               },
             }
           );
-  
+
           if (updateResponse.status === 200) {
             console.log("Booking time updated successfully.");
             message.success("Booking time updated successfully.");
@@ -224,7 +224,6 @@ function Cart() {
     }
     setIsLoading(false);
   };
-  
 
   async function fetchComboType(comboId) {
     try {
@@ -364,7 +363,7 @@ function Cart() {
 
   async function handleBooking() {
     setIsLoading(true);
-  
+
     let userInfo;
     try {
       const userInfoString = localStorage.getItem("user-info");
@@ -378,32 +377,32 @@ function Cart() {
       message.error("Invalid user information. Please log in again.");
       return;
     }
-  
+
     const token = userInfo.data?.token;
     const userId = userInfo.data?.user?.id;
-  
+
     if (!token || !userId) {
       setIsLoading(false);
       message.error("User information is incomplete.");
       return;
     }
-  
+
     if (products.every((item) => !item.selected)) {
       setIsLoading(false);
       message.error("Cart list is empty");
       return;
     }
-  
+
     const cart = products.filter((item) => item.selected);
-  
+
     if (cart.length === 0) {
       setIsLoading(false);
       setError("Your cart is empty.");
       return;
     }
-  
+
     const bookingPromises = [];
-  
+
     for (let item of cart) {
       if (item.selected) {
         if (item.comboDetails && item.period === 1) {
@@ -425,7 +424,7 @@ function Cart() {
             const bookingDate = dayjs(item.date)
               .add(i, "months")
               .format("YYYY-MM-DDTHH:mm:ss");
-  
+
             bookingPromises.push({
               cusId: userId,
               bookingSchedule: bookingDate,
@@ -445,7 +444,7 @@ function Cart() {
             const bookingDate = dayjs(item.date)
               .add(i, "months")
               .format("YYYY-MM-DDTHH:mm:ss");
-  
+
             bookingPromises.push({
               cusId: userId,
               bookingSchedule: bookingDate,
@@ -479,7 +478,7 @@ function Cart() {
         }
       }
     }
-  
+
     try {
       const responses = await Promise.all(
         bookingPromises.map((requestData) =>
@@ -490,11 +489,11 @@ function Cart() {
           })
         )
       );
-  
+
       const bookingCodes = responses
         .filter((response) => response)
         .map((response) => response.data.data.bookingId);
-  
+
       if (bookingCodes.length > 0) {
         const paymentRequest = {
           bookingIds: bookingCodes,
@@ -504,7 +503,7 @@ function Cart() {
           name: "string",
           returnUrl: "http://localhost:5173/Cart",
         };
-  
+
         try {
           const paymentResponse = await axios.post(
             `https://localhost:7150/api/Payments/create-payment`,
@@ -515,7 +514,7 @@ function Cart() {
               },
             }
           );
-  
+
           if (paymentResponse.status === 200 && paymentResponse.data) {
             localStorage.setItem("selectedProducts", JSON.stringify(cart));
             window.location.href = paymentResponse.data.paymentUrl;
@@ -546,19 +545,30 @@ function Cart() {
         setError("An unexpected error occurred.");
       }
     }
-  
+
     setIsLoading(false);
   }
-  
+
   useEffect(() => {
-    fetchStaff();
-    fetchBookings();
+    const fetchStaffAndBookings = async () => {
+      await fetchStaff();
+      await fetchBookings();
+    };
+
+    fetchStaffAndBookings();
+
     const urlParams = new URLSearchParams(window.location.search);
     const responseCode = urlParams.get("vnp_ResponseCode");
-  
+    const vnpTxnRef = urlParams.get("vnp_TxnRef");
+    console.log(urlParams);
+
+    // Log đường dẫn hiện tại
+    console.log("Current URL:", window.location.href);
+
     if (responseCode != null) {
       if (responseCode === "00") {
-        const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
+        const selectedProducts =
+          JSON.parse(localStorage.getItem("selectedProducts")) || [];
         const products = JSON.parse(localStorage.getItem("cart")) || [];
         const updatedProducts = products.filter(
           (product) =>
@@ -574,10 +584,27 @@ function Cart() {
         localStorage.setItem("cart", JSON.stringify(updatedProducts));
         navigate("/Cart");
         message.success("Payment successful and items removed from cart.");
-      } else if (responseCode === "24") {
+      } else if (responseCode !== "00" && vnpTxnRef) {
+        const products = JSON.parse(localStorage.getItem("cart")) || [];
+        setProducts(products);
         localStorage.removeItem("selectedProducts");
-        message.error("Payment failed.");
-        navigate("/Cart");
+
+        axios
+          .delete(
+            `https://localhost:7150/api/Payments?transactionId=${vnpTxnRef}`
+          )
+          .then((response) => {
+            console.log("Payment failure data:", response.data);
+            message.error("Payment failed. Please try again.");
+            navigate("/Cart");
+          })
+          .catch((error) => {
+            console.error("Error fetching payment failure data:", error);
+            message.error(
+              "Payment failed and we encountered an error while fetching the failure details."
+            );
+            navigate("/Cart");
+          });
       }
     } else {
       setIsLoading(false);
@@ -592,7 +619,6 @@ function Cart() {
       }
     }
   }, []);
-  
 
   return (
     <div>
@@ -913,9 +939,12 @@ function Cart() {
                                           <button
                                             type="button"
                                             className="btn-close btn-pinned"
-                                            onClick={() => handleDeleteBooking(index)}
+                                            onClick={() =>
+                                              handleDeleteBooking(index)
+                                            }
                                             aria-label="Close"
                                           ></button>
+                                          
                                           <div className="my-2 my-md-4 mb-md-5">
                                             <span className="text-primary">
                                               {formatPrice(
@@ -923,6 +952,7 @@ function Cart() {
                                               )}
                                             </span>
                                           </div>
+                                          
                                           <Checkbox
                                             checked={product.selected}
                                             onChange={() =>
@@ -956,7 +986,6 @@ function Cart() {
                         <div className="col-xl-4">
                           <div className="border rounded p-4 mb-3 pb-3">
                             <h6>Offer</h6>
-
 
                             <hr className="my-4" />
 
@@ -997,162 +1026,15 @@ function Cart() {
                         id="wizard-checkout-form"
                         onSubmit={(e) => e.preventDefault()}
                       >
-                        {currentStep === 3 && (
-                          <div id="checkout-confirmation" className="content">
-                            <div className="row mb-3"></div>
-
-                            <div className="row">
-                              <div className="col-xl-9 mb-3 mb-xl-0">
-                                <ul className="list-group">
-                                  {dataSource.map((product, index) => (
-                                    <li
-                                      key={index}
-                                      className="list-group-item p-4"
-                                    >
-                                      <div className="d-flex gap-3">
-                                        <div className="flex-shrink-0 d-flex align-items-center">
-                                          <img
-                                            src="src/assets/images/products/1.png"
-                                            alt="google home"
-                                            className="w-px-100"
-                                          />
-                                        </div>
-                                        <div className="flex-grow-1">
-                                          <div className="row">
-                                            <div className="col-md-8">
-                                              <p className="me-3">
-                                                <a
-                                                  href="javascript:void(0)"
-                                                  className="text-body"
-                                                >
-                                                  {product.comboId
-                                                    ? `Combo: ${product.comboType}`
-                                                    : `Service: ${product.serviceName}`}
-                                                </a>
-                                              </p>
-                                              <div className="text-muted mb-2 d-flex flex-wrap">
-                                                <span className="me-1">
-                                                  PetName:
-                                                </span>
-                                                <a
-                                                  href="javascript:void(0)"
-                                                  className="me-3"
-                                                >
-                                                  {product.petName}
-                                                </a>
-                                              </div>
-                                              <section>
-                                                <Form>
-                                                  <Form.Item
-                                                    label="Date"
-                                                    className="w-1/2"
-                                                  >
-                                                    <Space
-                                                      direction="vertical"
-                                                      className="w-full"
-                                                    >
-                                                      <div className="w-full">
-                                                        {product.scheduleDate
-                                                          ? dayjs(
-                                                              product.scheduleDate
-                                                            ).format(
-                                                              "YYYY-MM-DD HH:mm:ss"
-                                                            )
-                                                          : "N/A"}
-                                                      </div>
-                                                    </Space>
-                                                  </Form.Item>
-                                                </Form>
-                                              </section>
-                                              {product.staffId && (
-                                                <div className="text-muted mb-2 d-flex flex-wrap">
-                                                  <span className="me-1">
-                                                    Staff:
-                                                  </span>
-                                                  <a
-                                                    href="javascript:void(0)"
-                                                    className="me-3"
-                                                  >
-                                                    {product.staffName ||
-                                                      product.staffId}
-                                                  </a>
-                                                </div>
-                                              )}
-                                              <div className="text-muted mb-2 d-flex flex-wrap">
-                                                <span className="me-1">
-                                                  Status:
-                                                </span>
-                                                <a
-                                                  href="javascript:void(0)"
-                                                  className="me-3"
-                                                >
-                                                  {product.checkAccept
-                                                    ? "Accepted"
-                                                    : "Waiting"}
-                                                </a>
-                                              </div>
-                                            </div>
-                                            <div className="col-md-4 d-flex flex-column justify-content-between">
-                                              <div className="text-md-end">
-                                                <div className="my-2 my-md-4 mb-md-5">
-                                                  <span className="text-primary">
-                                                    {formatPrice(
-                                                      product.servicePrice
-                                                    )}
-                                                  </span>
-                                                </div>
-                                              </div>
-                                              <div className="text-md-end">
-                                                <Button
-                                                  type="button"
-                                                  onClick={() =>
-                                                    handleShowModal(index)
-                                                  }
-                                                  className="btn btn-primary btn-pinned"
-                                                >
-                                                  Update Time
-                                                </Button>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                              <div className="col-xl-3">
-                                <div className="border rounded p-4 pb-3">
-                                  <h6>Price Details</h6>
-                                  <dl className="row mb-0">
-                                    <dt className="col-6 fw-normal text-heading">
-                                      Order Total
-                                    </dt>
-                                    <dd className="col-6 text-end">$1198.00</dd>
-
-                                    <dt className="col-sm-6 text-heading fw-normal">
-                                      Delivery Charges
-                                    </dt>
-                                    <dd className="col-sm-6 text-end">
-                                      <s className="text-muted">$5.00</s>
-                                      <span className="badge bg-label-success ms-1">
-                                        Free
-                                      </span>
-                                    </dd>
-                                  </dl>
-                                  <hr className="mx-n4" />
-                                  <dl className="row mb-0">
-                                    <dt className="col-6 text-heading">
-                                      Total
-                                    </dt>
-                                    <dd className="col-6 fw-medium text-end text-heading mb-0">
-                                      $1198.00
-                                    </dd>
-                                  </dl>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                        {currentStep === 2 && (
+                          <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+                          <h1>Thank You! 😇</h1>
+                          <p>Your order has been placed!</p>
+                          
+                          <p>Time placed: </p>
+                          
+                          
+                        </div>
                         )}
                       </form>
                     </div>
