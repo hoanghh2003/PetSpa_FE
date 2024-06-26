@@ -582,7 +582,8 @@ function Cart() {
         );
         setProducts(updatedProducts);
         localStorage.setItem("cart", JSON.stringify(updatedProducts));
-        navigate("/Cart");
+        setCurrentStep(2);
+        // navigate("/Cart");
         message.success("Payment successful and items removed from cart.");
       } else if (responseCode !== "00" && vnpTxnRef) {
         const products = JSON.parse(localStorage.getItem("cart")) || [];
@@ -787,7 +788,7 @@ function Cart() {
                   <button
                     type="button"
                     className="step-trigger"
-                    onClick={() => setCurrentStep(1)}
+                    // onClick={() => setCurrentStep(1)}
                   >
                     <span className="bs-stepper-icon">
                       <svg viewBox="0 0 58 54">
@@ -805,7 +806,7 @@ function Cart() {
                   <button
                     type="button"
                     className="step-trigger"
-                    onClick={() => setCurrentStep(2)}
+                    // onClick={() => setCurrentStep(2)}
                   >
                     <span className="bs-stepper-icon">
                       <svg viewBox="0 0 58 54">
