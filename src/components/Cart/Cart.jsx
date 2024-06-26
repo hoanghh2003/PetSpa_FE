@@ -113,21 +113,7 @@ function Cart() {
       .reduce((total, product) => total + product.servicePrice, 0);
   };
 
-  const handleShowModal = (index) => {
-    // const selectedProduct = dataSource[index];
-    // setSelectedProduct(selectedProduct);
-    // setNewDate(moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"));
-
-    // if (selectedProduct.staffId != null) {
-    //   setSelectedStaffId(selectedProduct.staffId);
-    //   form.setFieldsValue({ staff: selectedProduct.staffName });
-    //   console.log(selectedStaffId);
-    // } else {
-    //   form.resetFields(["staff"]);
-    // }
-
-    setIsOpen(true);
-  };
+  
 
   const handleHideModal = () => {
     setIsOpen(false);
