@@ -113,8 +113,6 @@ function Cart() {
       .reduce((total, product) => total + product.servicePrice, 0);
   };
 
-  
-
   const handleHideModal = () => {
     setIsOpen(false);
     setSelectedProduct(null);
@@ -888,7 +886,7 @@ function Cart() {
                                           >
                                             {new Date(
                                               product.date
-                                            ).toLocaleDateString("en-US", {
+                                            ).toLocaleDateString("vi-VN", {
                                               year: "numeric",
                                               month: "long",
                                               day: "numeric",
@@ -903,7 +901,7 @@ function Cart() {
                                           >
                                             {new Date(
                                               product.date
-                                            ).toLocaleTimeString("en-US", {
+                                            ).toLocaleTimeString("vi-VN", {
                                               hour: "2-digit",
                                               minute: "2-digit",
                                             })}
@@ -931,7 +929,7 @@ function Cart() {
                                             }
                                             aria-label="Close"
                                           ></button>
-                                          
+
                                           <div className="my-2 my-md-4 mb-md-5">
                                             <span className="text-primary">
                                               {formatPrice(
@@ -939,7 +937,7 @@ function Cart() {
                                               )}
                                             </span>
                                           </div>
-                                          
+
                                           <Checkbox
                                             checked={product.selected}
                                             onChange={() =>
@@ -1014,14 +1012,19 @@ function Cart() {
                         onSubmit={(e) => e.preventDefault()}
                       >
                         {currentStep === 2 && (
-                          <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-                          <h1 style={{textAlign: "center"}}>Thank You! 😇</h1>
-                          <h2 style={{textAlign: "center"}}>Your appointment has been placed!</h2>
-                          
-                          <p>Time placed: </p>
-                          
-                          
-                        </div>
+                          <div
+                            style={{
+                              padding: "20px",
+                              fontFamily: "Arial, sans-serif",
+                            }}
+                          >
+                            <h1 style={{ textAlign: "center" }}>
+                              Thank You! 😇
+                            </h1>
+                            <h2 style={{ textAlign: "center" }}>
+                              Your appointment has been placed!
+                            </h2>
+                          </div>
                         )}
                       </form>
                     </div>
