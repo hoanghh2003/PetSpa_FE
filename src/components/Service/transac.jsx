@@ -1,53 +1,368 @@
-﻿import React, { useState } from "react";
+﻿import React, { useState, useEffect } from "react";
 import "../../assets/css/trans.css";
+import {
+  Form,
+  DatePicker,
+  Space,
+  Button,
+  Select,
+  message,
+  Col,
+  Row,
+  Modal,
+} from "antd";
+import axios from "axios";
+import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
+import moment from "moment";
+
+const { Option } = Select;
 
 const Transac = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedStaffId, setSelectedStaffId] = useState([]);
+  const [form] = Form.useForm();
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [newDate, setNewDate] = useState(null);
+  const [dataSource, setDataSource] = useState([]);
+  const [staffList, setStaffList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    fetchStaff();
+    fetchBookings();
+  }, []);
+
+  const handleOk = () => {
+    form.submit();
+  };
+
+  const fetchStaff = async () => {
+    try {
+      const response = await axios.get("https://localhost:7150/api/Staff");
+      setStaffList(response.data.data);
+    } catch (error) {
+      message.error("Failed to fetch staff members");
+    }
+  };
+
+  const handleHideModal = () => {
+    setIsOpen(false);
+    setSelectedProduct(null);
+    setNewDate(null);
+    form.resetFields();
+  };
+
+  const fetchBookings = async () => {
+    const userInfoString = localStorage.getItem("user-info");
+    const userInfo = JSON.parse(userInfoString);
+
+    if (userInfo) {
+      try {
+        const response = await axios.get(
+          `https://localhost:7150/api/Customer/${userInfo.data.user.id}/bookings`,
+          {
+            headers: {
+              Authorization: `Bearer ${userInfo.data.token}`,
+            },
+          }
+        );
+
+        if (response.status === 401) {
+          message.error("Token has expired. Please log in again.");
+          localStorage.removeItem("user-info");
+          navigate("/login");
+          return;
+        }
+
+        const result = response.data;
+        const bookings = result.data.bookings;
+
+        const extractedDataPromises = bookings.map(async (booking) => {
+          const bookingDetailsPromises = booking.bookingDetails.map(
+            async (detail) => {
+              const petName = await fetchPetName(detail.petId);
+              const staffName = detail.staffId
+                ? await fetchStaffName(detail.staffId)
+                : null;
+
+              if (
+                booking.bookingDetails.length >= 2 &&
+                detail.service.comboId
+              ) {
+                const comboType = await fetchComboType(detail.service.comboId);
+                return {
+                  bookingId: detail.bookingId,
+                  petId: detail.petId,
+                  petName: petName,
+                  scheduleDate: booking.bookingSchedule,
+                  comboId: detail.service.comboId,
+                  comboType: comboType,
+                  serviceName: null,
+                  serviceId: null,
+                  staffId: detail.staffId,
+                  staffName: staffName,
+                  servicePrice: detail.service.price,
+                  checkAccept: booking.checkAccept,
+                };
+              } else {
+                return {
+                  bookingId: detail.bookingId,
+                  petId: detail.petId,
+                  petName: petName,
+                  scheduleDate: booking.bookingSchedule,
+                  comboId: null,
+                  comboType: null,
+                  serviceName: detail.service.serviceName,
+                  serviceId: detail.service.serviceId,
+                  staffId: detail.staffId,
+                  staffName: staffName,
+                  servicePrice: detail.service.price,
+                  checkAccept: booking.checkAccept,
+                };
+              }
+            }
+          );
+          return Promise.all(bookingDetailsPromises);
+        });
+
+        const extractedData = (await Promise.all(extractedDataPromises)).flat();
+        setDataSource(extractedData);
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("user-info");
+          message.error("Token has expired. Please log in again.");
+          navigate("/login");
+        } else {
+          console.error("API error:", error);
+          setError("API error");
+        }
+      }
+    } else {
+      setError("You must be logged in");
+      navigate("/login");
+    }
+
+    handleHideModal();
+  };
+
+  const fetchPetName = async (petId) => {
+    try {
+      const petsString = localStorage.getItem("pets");
+      if (!petsString) {
+        console.error("No pets data found in localStorage");
+        return null;
+      }
+
+      const pets = JSON.parse(petsString);
+      const pet = pets.data.pets.find((pet) => pet.petId === petId);
+
+      return pet ? pet.petName : null;
+    } catch (error) {
+      console.error(`Error fetching pet name for petId ${petId}:`, error);
+      return null;
+    }
+  };
+
+  const fetchStaffName = async (staffId) => {
+    try {
+      const response = await axios.get(
+        `https://localhost:7150/api/Staff/${staffId}`
+      );
+      return response.data.data.fullName;
+    } catch (error) {
+      console.error(`Error fetching staff name for staffId ${staffId}:`, error);
+      return null;
+    }
+  };
+
+  const fetchComboType = async (comboId) => {
+    try {
+      const response = await axios.get(
+        `https://localhost:7150/api/Combo/${comboId}`
+      );
+      return response.data.data.comboType;
+    } catch (error) {
+      console.error(`Error fetching combo type for comboId ${comboId}:`, error);
+      return null;
+    }
+  };
 
   const handleSelectProduct = (event) => {
     const productId = event.target.value;
     if (event.target.checked) {
       setSelectedProducts([...selectedProducts, productId]);
     } else {
-      setSelectedProducts(selectedProducts.filter(id => id !== productId));
+      setSelectedProducts(selectedProducts.filter((id) => id !== productId));
     }
   };
 
   const handlePrint = () => {
-    const newWindow = window.open('', '', 'height=800,width=600');
-    newWindow.document.write('<html><head><title>Print</title>');
-    newWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" type="text/css" />');
-    newWindow.document.write('<style>');
-    newWindow.document.write('@media print { body { -webkit-print-color-adjust: exact; margin: 20px; font-size: 18px; }');
-    newWindow.document.write('.printable-content { width: 100%; margin: auto; }');
-    newWindow.document.write('.card-body { padding: 20px; border: 1px solid #dee2e6; border-radius: 4px; }');
-    newWindow.document.write('.media-1 { margin-bottom: 20px; display: flex; align-items: center; }');
-    newWindow.document.write('.media-body { padding: 10px; }');
-    newWindow.document.write('img { max-width: 100%; height: auto; }');
-    newWindow.document.write('.h5, .h5 a { font-size: 1.5rem; font-weight: 500; margin-bottom: 0.5rem; }');
-    newWindow.document.write('.text-body { font-size: 1rem; color: #000; }');
-    newWindow.document.write('.d-print-none { display: none; }'); // Hide print button
-    newWindow.document.write('</style>');
-    newWindow.document.write('</head><body class="printable-content">');
-    
-    selectedProducts.forEach(id => {
+    const newWindow = window.open("", "", "height=800,width=600");
+    newWindow.document.write("<html><head><title>Print</title>");
+    newWindow.document.write(
+      '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" type="text/css" />'
+    );
+    newWindow.document.write("<style>");
+    newWindow.document.write(
+      "@media print { body { -webkit-print-color-adjust: exact; margin: 20px; font-size: 18px; }"
+    );
+    newWindow.document.write(
+      ".printable-content { width: 100%; margin: auto; }"
+    );
+    newWindow.document.write(
+      ".card-body { padding: 20px; border: 1px solid #dee2e6; border-radius: 4px; }"
+    );
+    newWindow.document.write(
+      ".media-1 { margin-bottom: 20px; display: flex; align-items: center; }"
+    );
+    newWindow.document.write(".media-body { padding: 10px; }");
+    newWindow.document.write("img { max-width: 100%; height: auto; }");
+    newWindow.document.write(
+      ".h5, .h5 a { font-size: 1.5rem; font-weight: 500; margin-bottom: 0.5rem; }"
+    );
+    newWindow.document.write(".text-body { font-size: 1rem; color: #000; }");
+    newWindow.document.write(".d-print-none { display: none; }"); // Hide print button
+    newWindow.document.write("</style>");
+    newWindow.document.write("</head><body class='printable-content'>");
+
+    selectedProducts.forEach((id) => {
       const printContents = document.getElementById(id).innerHTML;
       newWindow.document.write(printContents);
-      newWindow.document.write('<hr>'); // Add a separator between products
+      newWindow.document.write("<hr>"); // Add a separator between products
     });
-    
-    newWindow.document.write('</body></html>');
+
+    newWindow.document.write("</body></html>");
 
     newWindow.document.close();
     newWindow.focus(); // Necessary for IE >= 10
     newWindow.print();
   };
+
   const getCurrentDate = () => {
     const date = new Date();
     const options = { year: "numeric", month: "long", day: "numeric" };
 
     return date.toLocaleDateString("en-US", options);
   };
+
+  const handleShowModal = (index) => {
+    const selectedProduct = dataSource[index];
+    setSelectedProduct(selectedProduct);
+    setNewDate(moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"));
+
+    // Check if bookingId is valid and not expired
+    const checkBookings = JSON.parse(localStorage.getItem("bookings")) || [];
+    const currentBooking = checkBookings.find(
+      (booking) => booking.code === selectedProduct.bookingId
+    );
+    console.log(selectedProduct.bookingId);
+    console.log(currentBooking);
+    if (!currentBooking || currentBooking.expiry < new Date().getTime()) {
+      message.error("Booking ID has expired or is invalid.");
+      return;
+    }
+
+    setSelectedStaffId(selectedProduct.staffId || []);
+    form.setFieldsValue({ staff: selectedProduct.staffName || null });
+    setIsOpen(true);
+  };
+
+  const handleUpdateTime = async () => {
+    const userInfoString = localStorage.getItem("user-info");
+    const userInfo = JSON.parse(userInfoString);
+    const token = userInfo?.data?.token;
+    setError("");
+    setIsLoading(true);
+
+    try {
+      let url = `https://localhost:7150/api/Booking/available?startTime=${newDate.format(
+        "YYYY-MM-DDTHH:mm:ss"
+      )}&serviceCode=${selectedProduct.serviceId}`;
+
+      if (selectedStaffId) {
+        url += `&staffId=${selectedStaffId}`;
+      }
+
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        console.log("Token expired. Please log in again.");
+        setError("Token expired. Please log in again.");
+        localStorage.removeItem("user-info");
+        setIsLoading(false);
+        return;
+      }
+
+      if (response.status === 200) {
+        const bookingId = selectedProduct.bookingId;
+
+        try {
+          const updateResponse = await axios.post(
+            `https://localhost:7150/api/Booking/update-time-booking`,
+            {
+              bookingId,
+              newDateTime: newDate.format("YYYY-MM-DDTHH:mm:ss"),
+              staffId: selectedStaffId || null,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (updateResponse.status === 200) {
+            console.log("Booking time updated successfully.");
+            message.success("Booking time updated successfully.");
+            setError("");
+          } else {
+            throw new Error("Failed to update booking.");
+          }
+        } catch (updateError) {
+          console.error("Error updating booking time:", updateError);
+          message.error(
+            updateError.response?.data || "Failed to update booking time."
+          );
+          setError(
+            updateError.response?.data || "Failed to update booking time."
+          );
+        }
+      }
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          localStorage.removeItem("user-info");
+          console.log("Token expired. Please log in again.");
+          message.error("Token expired. Please log in again.");
+          navigate("/login");
+        } else {
+          console.error("Error response:", error.response.data);
+          message.error(error.response.data || "An error occurred.");
+          setError(error.response.data || "An error occurred.");
+        }
+      } else {
+        console.error("Error:", error);
+        message.error("An unexpected error occurred.");
+        setError("An unexpected error occurred.");
+      }
+    }
+    setIsLoading(false);
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(price);
+  };
+
   const styles = {
     container: {
       display: "flex",
@@ -80,6 +395,7 @@ const Transac = () => {
       marginLeft: "0.5rem",
     },
   };
+
   return (
     <main id="content" role="main" className="main">
       <div className="content container-fluid">
@@ -113,120 +429,170 @@ const Transac = () => {
         </div>
 
         <div className="container">
-      <div className="row">
-        <div className="col-lg mb-3 mb-lg-0">
-          <div className="card mb-3 mb-lg-5">
-            <div className="card-header">
-              <h4 className="card-header-title">
-                Order details
-                <span className="badge badge-soft-dark rounded-circle ml-1">4</span>
-              </h4>
-            </div>
-
-            <div className="card-body">
-              <div id="product-1" className="media-1 mb-3">
-              <input type="checkbox" value="product-1" onChange={handleSelectProduct} className="mr-2"/>
-                <div className="avatar avatar-xl mr-3">
-                  <img
-                    className="img-fluid"
-                    src="assets/img/400x400/img26.jpg"
-                    alt="Topman shoe in green"
-                  />
+          <div className="row">
+            <div className="col-lg mb-3 mb-lg-0">
+              <div className="card mb-3 mb-lg-5">
+                <div className="card-header">
+                  <h4 className="card-header-title">
+                    Order details
+                    <span className="badge badge-soft-dark rounded-circle ml-1">
+                      {dataSource.length}
+                    </span>
+                  </h4>
                 </div>
-                <div className="media-body">
-                  <div className="row">
-                    <div className="col-md-8 mb-3 mb-md-0">
-                      <a className="h5 d-block" href="ecommerce-product-details.html">Topman shoe in green</a>
-                      <div className="font-size-sm text-body">
-                        <span>Gender: </span>
-                        <span className="font-weight-bold">Women</span>
+
+                <div className="card-body">
+                  {dataSource.map((product, index) => (
+                    <div
+                      key={index}
+                      id={`product-${index}`}
+                      className="media-1 mb-3"
+                    >
+                      <input
+                        type="checkbox"
+                        value={`product-${index}`}
+                        onChange={handleSelectProduct}
+                        className="mr-2"
+                      />
+                      <div className="avatar avatar-xl mr-3">
+                        <img
+                          className="img-fluid"
+                          src="assets/img/400x400/img26.jpg"
+                          alt="product"
+                        />
                       </div>
-                      <div className="font-size-sm text-body">
-                        <span>Color: </span>
-                        <span className="font-weight-bold">Green</span>
-                      </div>
-                      <div className="font-size-sm text-body">
-                        <span>Size: </span>
-                        <span className="font-weight-bold">UK 7</span>
+                      <div className="media-body">
+                        <div className="row">
+                          <div className="col-md-8 mb-3 mb-md-0">
+                            <a className="h5 d-block" href="javascript:void(0)">
+                              {product.comboId
+                                ? `Combo: ${product.comboType}`
+                                : `Service: ${product.serviceName}`}
+                            </a>
+                            <div className="font-size-sm text-body">
+                              <span>PetName: </span>
+                              <span className="font-weight-bold">
+                                {product.petName}
+                              </span>
+                            </div>
+                            <Form>
+                              <Form.Item label="Date" className="w-1/2">
+                                <Space direction="vertical" className="w-full">
+                                  <div className="w-full">
+                                    {product.scheduleDate
+                                      ? dayjs(product.scheduleDate).format(
+                                          "YYYY-MM-DD HH:mm:ss"
+                                        )
+                                      : "N/A"}
+                                  </div>
+                                </Space>
+                              </Form.Item>
+                            </Form>
+                            {product.staffId && (
+                              <div className="font-size-sm text-body">
+                                <span>Staff: </span>
+                                <span className="font-weight-bold">
+                                  {product.staffName || product.staffId}
+                                </span>
+                              </div>
+                            )}
+                            <div className="font-size-sm text-body">
+                              <span>Status: </span>
+                              <span className="font-weight-bold">
+                                {product.checkAccept ? "Accepted" : "Waiting"}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="col-md-4 align-self-center text-right">
+                            <h5 className="mb-0">
+                              {formatPrice(product.servicePrice)}
+                            </h5>
+                            <Button
+                              type="button"
+                              onClick={() => handleShowModal(index)}
+                              className="btn btn-primary btn-pinned mt-3"
+                            >
+                              Update Time
+                            </Button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className="col-md-4 align-self-center text-right">
-                      <h5 className="mb-0">$42.00</h5>
-                    </div>
-                  </div>
+                  ))}
+
+                  <button
+                    className="btn btn-primary mt-2"
+                    onClick={handlePrint}
+                  >
+                    Print Selected Products
+                  </button>
+                  <hr />
                 </div>
               </div>
-
-              <hr />
-
-              <div id="product-2" className="media-1 mb-3">
-              <input type="checkbox" value="product-2" onChange={handleSelectProduct} className="mr-2"/>
-                <div className="avatar avatar-xl mr-3">
-                  <img
-                    className="img-fluid"
-                    src="assets/img/400x400/img22.jpg"
-                    alt="Office Notebook"
-                  />
-                </div>
-                <div className="media-body">
-                  <div className="row">
-                    <div className="col-md-8 mb-3 mb-md-0">
-                      <a className="h5 d-block" href="ecommerce-product-details.html">Office Notebook</a>
-                      <div className="font-size-sm text-body">
-                        <span>Color: </span>
-                        <span className="font-weight-bold">Gray</span>
-                      </div>
-                    </div>
-                    <div className="col-md-4 align-self-center text-right">
-                      <h5 className="mb-0">$9.00</h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <hr />
-
-              <div id="product-3" className="media-1 mb-3">
-              <input type="checkbox" value="product-3" onChange={handleSelectProduct} className="mr-2"/>
-                <div className="avatar avatar-xl mr-3">
-                  <img
-                    className="img-fluid"
-                    src="assets/img/400x400/img15.jpg"
-                    alt="RayBan sunglasses"
-                  />
-                </div>
-                <div className="media-body">
-                  <div className="row">
-                    <div className="col-md-8 mb-3 mb-md-0">
-                      <a className="h5 d-block" href="ecommerce-product-details.html">RayBan sunglasses</a>
-                      <div className="font-size-sm text-body">
-                        <span>Gender: </span>
-                        <span className="font-weight-bold">Unisex</span>
-                      </div>
-                      <div className="font-size-sm text-body">
-                        <span>Color: </span>
-                        <span className="font-weight-bold">Black</span>
-                      </div>
-                      <div className="font-size-sm text-body">
-                        <span>Size: </span>
-                        <span className="font-weight-bold">One size</span>
-                      </div>
-                    </div>
-                    <div className="col-md-4 align-self-center text-right">
-                      <h5 className="mb-0">$14.00</h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <button className="btn btn-primary mt-2" onClick={handlePrint}>
-                Print Selected Products
-              </button>
-              <hr />
             </div>
           </div>
         </div>
-      </div>
-    </div>
+
+        <Modal
+          title={
+            <div
+              style={{
+                textAlign: "center",
+                fontSize: "24px",
+                fontWeight: "bold",
+              }}
+            >
+              Change time for booking
+            </div>
+          }
+          open={isOpen}
+          onCancel={handleHideModal}
+          onOk={handleOk}
+        >
+          <Form
+            labelCol={{
+              span: 24,
+            }}
+            form={form}
+            onFinish={handleUpdateTime}
+          >
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item label="New Date">
+                  <Space direction="vertical">
+                    <DatePicker
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                      value={newDate}
+                      onChange={(date) => setNewDate(date)}
+                      className="w-full"
+                    />
+                  </Space>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Select Staff" name="staff">
+                  <Select
+                    showSearch
+                    placeholder="Select a staff"
+                    optionFilterProp="children"
+                    onChange={(value) => setSelectedStaffId(value)}
+                    className="w-full"
+                    value={selectedStaffId}
+                  >
+                    {Array.isArray(staffList) &&
+                      staffList.map((staff) => (
+                        <Option key={staff.staffId} value={staff.staffId}>
+                          {staff.fullName}
+                        </Option>
+                      ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            {error && <p className="error-message">{error}</p>}
+          </Form>
+        </Modal>
       </div>
     </main>
   );
