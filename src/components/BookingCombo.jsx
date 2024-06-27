@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import {
+  Avatar,
   Button,
   DatePicker,
   Form,
@@ -164,17 +165,7 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
       key: "image",
       align: "center",
       width: "30%",
-      render: (image) => (
-        <div className="flex justify-center">
-          <img
-            src={image ? image : null}
-            width={150}
-            height={150}
-            className="rounded-full"
-            alt="Pet"
-          />
-        </div>
-      ),
+      render: (image) => <Avatar size={56} src={image} />,
     },
     {
       title: <span className="text-lg text-blue-500 font-semibold">Name</span>,

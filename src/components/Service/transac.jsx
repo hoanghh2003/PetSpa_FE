@@ -253,15 +253,18 @@ const Transac = () => {
     setSelectedProduct(selectedProduct);
     setNewDate(moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"));
 
-    // Check if bookingId is valid and not expired
-    const checkBookings = JSON.parse(localStorage.getItem("bookings")) || [];
-    const currentBooking = checkBookings.find(
-      (booking) => booking.code === selectedProduct.bookingId
+    // Get current date and original booking date
+    const now = moment();
+    const originalBookingTime = moment(
+      selectedProduct.scheduleDate,
+      "YYYY-MM-DD HH:mm:ss"
     );
-    console.log(selectedProduct.bookingId);
-    console.log(currentBooking);
-    if (!currentBooking || currentBooking.expiry < new Date().getTime()) {
-      message.error("Booking ID has expired or is invalid.");
+
+    // Check if the selected booking time is at least 24 hours from now
+    if (originalBookingTime.diff(now, "hours") < 24) {
+      message.error(
+        "Booking time is less than 24 hours from now, therefore it cannot be changed."
+      );
       return;
     }
 
@@ -276,6 +279,27 @@ const Transac = () => {
     const token = userInfo?.data?.token;
     setError("");
     setIsLoading(true);
+
+    // Validate that new date is at least 24 hours from now and from the original booking time
+    const now = moment();
+    const originalBookingTime = moment(
+      selectedProduct.scheduleDate,
+      "YYYY-MM-DD HH:mm:ss"
+    );
+
+    if (newDate.diff(now, "hours") < 24) {
+      message.error("New schedule time must be at least 24 hours from now.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (newDate.diff(originalBookingTime, "hours") < 24) {
+      message.error(
+        "The new schedule time is less than 24 hours before the appointment, therefore it cannot be changed."
+      );
+      setIsLoading(false);
+      return;
+    }
 
     try {
       let url = `https://localhost:7150/api/Booking/available?startTime=${newDate.format(
@@ -308,8 +332,8 @@ const Transac = () => {
             `https://localhost:7150/api/Booking/update-time-booking`,
             {
               bookingId,
-              newDateTime: newDate.format("YYYY-MM-DDTHH:mm:ss"),
-              staffId: selectedStaffId || null,
+              newBookingSchedule: newDate.format("YYYY-MM-DDTHH:mm:ss"),
+              newStaffId: selectedStaffId || null,
             },
             {
               headers: {
@@ -321,6 +345,7 @@ const Transac = () => {
           if (updateResponse.status === 200) {
             console.log("Booking time updated successfully.");
             message.success("Booking time updated successfully.");
+            handleHideModal();
             setError("");
           } else {
             throw new Error("Failed to update booking.");
@@ -328,10 +353,12 @@ const Transac = () => {
         } catch (updateError) {
           console.error("Error updating booking time:", updateError);
           message.error(
-            updateError.response?.data || "Failed to update booking time."
+            updateError.response?.data?.errorMessage ||
+              "Failed to update booking time."
           );
           setError(
-            updateError.response?.data || "Failed to update booking time."
+            updateError.response?.data?.errorMessage ||
+              "Failed to update booking time."
           );
         }
       }
