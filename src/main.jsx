@@ -21,6 +21,7 @@ import Blog from "./components/Blog/Blog";
 import BlogDetails from "./components/Blog/Blog_Details";
 import AddAccount from "./components/Account/AddAccount";
 import ManageAccount from "./components/Account/ManageAccount";
+import AdminPage from "./components/Account/AdminPage";
 //route
 const router = createBrowserRouter([
   {
@@ -108,7 +109,10 @@ const router = createBrowserRouter([
       },
     ],
   },
-  
+  {
+    path: "/admin",
+    element: <AdminPage />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
