@@ -41,6 +41,7 @@ function Cart() {
   const [dataSource, setDataSource] = useState([]);
   const [staffList, setStaffList] = useState([]);
   const [selectStaffId, setSelectStaffId] = useState([]);
+  const [bookingId, setBookingId] = useState();
   const [selectedStaffId, setSelectedStaffId] = useState([]);
   const handleNext = () => {
     setCurrentStep(currentStep + 1);
@@ -125,29 +126,32 @@ function Cart() {
 
   const handleShowModal = (index) => {
     const selectedProduct = dataSource[index];
+    console.log(selectedProduct);
     setSelectedProduct(selectedProduct);
     setNewDate(moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"));
 
-    // Check if bookingId is valid
-    const checkBookings =
-      JSON.parse(localStorage.getItem("checkBookings")) || [];
+    // Check if bookingId is valid and not expired
+    const checkBookings = JSON.parse(localStorage.getItem("bookings")) || [];
     const currentBooking = checkBookings.find(
       (booking) => booking.code === selectedProduct.bookingId
     );
+    console.log(currentBooking);
+    console.log(currentBooking.expiry < new Date().getTime());
 
-    if (currentBooking && currentBooking.expiry > new Date().getTime()) {
-      if (selectedProduct.staffId != null) {
-        setSelectedStaffId(selectedProduct.staffId);
-        form.setFieldsValue({ staff: selectedProduct.staffName });
-        console.log(selectedStaffId);
-      } else {
-        form.resetFields(["staff"]);
-      }
-
-      setIsOpen(true);
-    } else {
+    if (!currentBooking || currentBooking.expiry < new Date().getTime()) {
       message.error("Booking ID has expired or is invalid.");
+      return;
     }
+    setBookingId(selectedProduct.bookingId);
+    if (selectedProduct.staffId != null) {
+      setSelectedStaffId(selectedProduct.staffId);
+      form.setFieldsValue({ staff: selectedProduct.staffName });
+      console.log(selectedStaffId);
+    } else {
+      form.resetFields(["staff"]);
+    }
+
+    setIsOpen(true);
   };
 
   const handleUpdateTime = async () => {
@@ -181,7 +185,7 @@ function Cart() {
       }
 
       if (response.status === 200) {
-        const bookingId = response.data.bookingId;
+        const bookingId = selectedProduct.bookingId;
 
         try {
           const updateResponse = await axios.put(
@@ -313,6 +317,7 @@ function Cart() {
               ) {
                 const comboType = await fetchComboType(detail.service.comboId);
                 return {
+                  bookingId: detail.bookingId,
                   petId: detail.petId,
                   petName: petName,
                   scheduleDate: booking.bookingSchedule,
@@ -327,6 +332,7 @@ function Cart() {
                 };
               } else {
                 return {
+                  bookingId: detail.bookingId,
                   petId: detail.petId,
                   petName: petName,
                   scheduleDate: booking.bookingSchedule,
@@ -670,8 +676,9 @@ function Cart() {
                   showSearch
                   placeholder="Select a staff"
                   optionFilterProp="children"
-                  onChange={(value) => setSelectStaffId(value)}
+                  onChange={(value) => setSelectedStaffId(value)}
                   className="w-full"
+                  value={selectedStaffId}
                 >
                   {Array.isArray(staffList) &&
                     staffList.map((staff) => (
