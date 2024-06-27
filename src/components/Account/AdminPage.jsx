@@ -197,7 +197,7 @@ const AdminPage = () => {
                 name="role"
                 value={formData.role}
                 onChange={handleInputChange}
-                required
+                
               />
               <Box mt={2} display="flex" justifyContent="space-between">
                 <Button type="submit" variant="contained" color="primary">
@@ -233,7 +233,7 @@ const AdminPage = () => {
                 <TableCell>{account.userName}</TableCell>
                 <TableCell>{account.email}</TableCell>
                 <TableCell>{account.phoneNumber}</TableCell>
-                <TableCell>{account.role}</TableCell>
+                <TableCell>{account.roles.join(', ')}</TableCell>
                 <TableCellActions>
                   <ActionButton
                     onClick={() => handleEdit(account)}
