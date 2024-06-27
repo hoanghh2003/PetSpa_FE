@@ -41,9 +41,9 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
     return savedCart ? JSON.parse(savedCart) : [];
   });
   const formatPrice = (price) => {
-    return new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 3,
-      maximumFractionDigits: 3,
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
     }).format(price);
   };
 
@@ -372,7 +372,7 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
               </Select>
             </Form.Item>
             <div className="w-1/2 text-right">
-              <p className="text-2xl font-bold">${formatPrice(priceCombo)}</p>
+              <p className="text-2xl font-bold">{formatPrice(priceCombo)}</p>
             </div>
           </div>
           <p className="text-red-500">{error}</p>

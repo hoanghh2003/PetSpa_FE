@@ -11,14 +11,19 @@ const ComboCard = ({ combo }) => {
     setSelectComboId(comboId);
   };
   const handleHideModal = () => setIsOpen(false);
-
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(price);
+  };
   return (
     <div className="col col-lg-3 col-md-6 col-sm-6 cursor-pointer">
       <div
         onClick={() => handleOpenModal(combo.comboId)}
         className={`${
           isHover ? "bg-purple-600 text-white shadow-xl" : ""
-        } p-4 h-[300px] border-2 rounded-lg duration-300 ease-in-out`}
+        } p-4 h-[350px] border-2 rounded-lg duration-300 ease-in-out`}
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
       >
@@ -30,7 +35,7 @@ const ComboCard = ({ combo }) => {
               : "bg-yellow-500 text-white"
           } text-xl my-5 rounded-lg border-2 py-2 text-center shadow-xl`}
         >
-          <span className="value_text">$ {combo.price}</span>
+          <span className="value_text">{formatPrice(combo.price)}</span>
         </div>
         <div className="w-full">
           {combo.services.map((service, idx) => (
