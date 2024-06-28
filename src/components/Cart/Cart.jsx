@@ -40,8 +40,7 @@ function Cart() {
   const [newDate, setNewDate] = useState(null);
   const [dataSource, setDataSource] = useState([]);
   const [staffList, setStaffList] = useState([]);
-  const [selectStaffId, setSelectStaffId] = useState([]);
-  const [bookingId, setBookingId] = useState();
+
   const [selectedStaffId, setSelectedStaffId] = useState([]);
   const handleNext = () => {
     setCurrentStep(currentStep + 1);
@@ -142,7 +141,7 @@ function Cart() {
       message.error("Booking ID has expired or is invalid.");
       return;
     }
-    setBookingId(selectedProduct.bookingId);
+
     if (selectedProduct.staffId != null) {
       setSelectedStaffId(selectedProduct.staffId);
       form.setFieldsValue({ staff: selectedProduct.staffName });

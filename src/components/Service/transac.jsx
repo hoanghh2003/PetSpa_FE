@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import "../../assets/css/trans.css";
 import {
   Form,
@@ -10,6 +10,7 @@ import {
   Col,
   Row,
   Modal,
+  Input,
 } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -20,16 +21,19 @@ const { Option } = Select;
 
 const Transac = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [selectedStaffId, setSelectedStaffId] = useState([]);
+  const [selectedStaffId, setSelectedStaffId] = useState(null);
   const [form] = Form.useForm();
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [newDate, setNewDate] = useState(null);
+  const [feedbackText, setFeedbackText] = useState("");
   const [dataSource, setDataSource] = useState([]);
   const [staffList, setStaffList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     fetchStaff();
     fetchBookings();
@@ -50,6 +54,7 @@ const Transac = () => {
 
   const handleHideModal = () => {
     setIsOpen(false);
+    setIsFeedbackModalOpen(false);
     setSelectedProduct(null);
     setNewDate(null);
     form.resetFields();
@@ -97,7 +102,7 @@ const Transac = () => {
                   bookingId: detail.bookingId,
                   petId: detail.petId,
                   petName: petName,
-                  scheduleDate: booking.bookingSchedule,
+                  scheduleDate: booking.startDate,
                   comboId: detail.service.comboId,
                   comboType: comboType,
                   serviceName: null,
@@ -106,13 +111,16 @@ const Transac = () => {
                   staffName: staffName,
                   servicePrice: detail.service.price,
                   checkAccept: booking.checkAccept,
+                  status: booking.status || 0,
+                  feedback: booking.feedback,
+                  bookingSchedule: booking.bookingSchedule,
                 };
               } else {
                 return {
                   bookingId: detail.bookingId,
                   petId: detail.petId,
                   petName: petName,
-                  scheduleDate: booking.bookingSchedule,
+                  scheduleDate: booking.startDate,
                   comboId: null,
                   comboType: null,
                   serviceName: detail.service.serviceName,
@@ -121,6 +129,9 @@ const Transac = () => {
                   staffName: staffName,
                   servicePrice: detail.service.price,
                   checkAccept: booking.checkAccept,
+                  status: booking.status || 0,
+                  feedback: booking.feedback,
+                  bookingSchedule: booking.bookingSchedule,
                 };
               }
             }
@@ -251,22 +262,33 @@ const Transac = () => {
   const handleShowModal = (index) => {
     const selectedProduct = dataSource[index];
     setSelectedProduct(selectedProduct);
-    setNewDate(moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"));
-
-    // Check if bookingId is valid and not expired
-    const checkBookings = JSON.parse(localStorage.getItem("bookings")) || [];
-    const currentBooking = checkBookings.find(
-      (booking) => booking.code === selectedProduct.bookingId
+    console.log(selectedProduct.status);
+    // Get current date and original booking date
+    const now = moment();
+    const originalBookingTime = moment(
+      selectedProduct.scheduleDate,
+      "YYYY-MM-DD HH:mm:ss"
     );
-    console.log(selectedProduct.bookingId);
-    console.log(currentBooking);
-    if (!currentBooking || currentBooking.expiry < new Date().getTime()) {
-      message.error("Booking ID has expired or is invalid.");
+
+    // Check if the original booking time is more than 24 hours from now
+    if (originalBookingTime.diff(now, "hours") < 24) {
+      message.error(
+        "Booking time is less than 24 hours from now, therefore it cannot be changed."
+      );
+      setError(null);
       return;
     }
 
-    setSelectedStaffId(selectedProduct.staffId || []);
-    form.setFieldsValue({ staff: selectedProduct.staffName || null });
+    setSelectedStaffId(selectedProduct.staffId || null);
+
+    // Reset form and set new values
+    form.resetFields();
+    setNewDate(moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"));
+    form.setFieldsValue({
+      staff: selectedProduct.staffId || null,
+      date: moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"),
+    });
+
     setIsOpen(true);
   };
 
@@ -276,6 +298,38 @@ const Transac = () => {
     const token = userInfo?.data?.token;
     setError("");
     setIsLoading(true);
+
+    // Validate that new date is not empty
+    if (!newDate || !newDate.isValid()) {
+      message.error("New schedule time cannot be empty.");
+      setError(null);
+      setIsLoading(false);
+      return;
+    }
+
+    // Validate that new date is at least 24 hours from now
+    const now = moment();
+    const originalBookingTime = moment(
+      selectedProduct.scheduleDate,
+      "YYYY-MM-DD HH:mm:ss"
+    );
+
+    if (newDate.diff(now, "hours") < 24) {
+      message.error("New schedule time must be at least 24 hours from now.");
+      setError(null);
+      setIsLoading(false);
+      return;
+    }
+
+    // Check if the original booking time is more than 24 hours from now
+    if (originalBookingTime.diff(now, "hours") < 24) {
+      message.error(
+        "The original booking time is less than 24 hours from now, therefore it cannot be changed."
+      );
+      setError(null);
+      setIsLoading(false);
+      return;
+    }
 
     try {
       let url = `https://localhost:7150/api/Booking/available?startTime=${newDate.format(
@@ -308,8 +362,8 @@ const Transac = () => {
             `https://localhost:7150/api/Booking/update-time-booking`,
             {
               bookingId,
-              newDateTime: newDate.format("YYYY-MM-DDTHH:mm:ss"),
-              staffId: selectedStaffId || null,
+              newBookingSchedule: newDate.format("YYYY-MM-DDTHH:mm:ss"),
+              newStaffId: selectedStaffId || null,
             },
             {
               headers: {
@@ -321,6 +375,19 @@ const Transac = () => {
           if (updateResponse.status === 200) {
             console.log("Booking time updated successfully.");
             message.success("Booking time updated successfully.");
+
+            // Update the booking time in dataSource
+            const updatedDataSource = dataSource.map((item) =>
+              item.bookingId === selectedProduct.bookingId
+                ? {
+                    ...item,
+                    scheduleDate: newDate.format("YYYY-MM-DD HH:mm:ss"),
+                  }
+                : item
+            );
+            setDataSource(updatedDataSource);
+
+            handleHideModal();
             setError("");
           } else {
             throw new Error("Failed to update booking.");
@@ -328,10 +395,12 @@ const Transac = () => {
         } catch (updateError) {
           console.error("Error updating booking time:", updateError);
           message.error(
-            updateError.response?.data || "Failed to update booking time."
+            updateError.response?.data?.errorMessage ||
+              "Failed to update booking time."
           );
           setError(
-            updateError.response?.data || "Failed to update booking time."
+            updateError.response?.data?.errorMessage ||
+              "Failed to update booking time."
           );
         }
       }
@@ -341,11 +410,14 @@ const Transac = () => {
           localStorage.removeItem("user-info");
           console.log("Token expired. Please log in again.");
           message.error("Token expired. Please log in again.");
+          setError("Token expired. Please log in again.");
           navigate("/login");
         } else {
           console.error("Error response:", error.response.data);
-          message.error(error.response.data || "An error occurred.");
-          setError(error.response.data || "An error occurred.");
+          message.error(
+            error.response.data?.errorMessage || "An error occurred."
+          );
+          setError(error.response.data?.errorMessage || "An error occurred.");
         }
       } else {
         console.error("Error:", error);
@@ -354,6 +426,83 @@ const Transac = () => {
       }
     }
     setIsLoading(false);
+  };
+
+  const handleFeedbackSubmit = async () => {
+    const userInfoString = localStorage.getItem("user-info");
+    const userInfo = JSON.parse(userInfoString);
+    const token = userInfo?.data?.token;
+
+    try {
+      const response = await axios.post(
+        `https://localhost:7150/api/Booking/update-feedback`,
+        {
+          bookingId: selectedProduct.bookingId,
+          feedback: feedbackText,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        message.success("Feedback submitted successfully.");
+
+        // Optionally, update the status in dataSource if needed
+        setIsFeedbackModalOpen(false);
+        setFeedbackText("");
+        const updatedDataSource = dataSource.map((item) =>
+          item.bookingId === selectedProduct.bookingId
+            ? { ...item, feedback: feedbackText }
+            : item
+        );
+        setDataSource(updatedDataSource);
+      } else {
+        throw new Error("Failed to submit feedback.");
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      message.error(
+        error.response?.data?.errorMessage || "Failed to submit feedback."
+      );
+    }
+  };
+
+  const handleCancelBooking = async (bookingId) => {
+    const userInfoString = localStorage.getItem("user-info");
+    const userInfo = JSON.parse(userInfoString);
+    const token = userInfo?.data?.token;
+
+    try {
+      const response = await axios.post(
+        `https://localhost:7150/api/Booking/cancel-booking`,
+        { bookingId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        message.success("Booking cancelled successfully.");
+
+        // Update the booking status in dataSource
+        const updatedDataSource = dataSource.map((item) =>
+          item.bookingId === bookingId ? { ...item, status: -1 } : item
+        );
+        setDataSource(updatedDataSource);
+      } else {
+        throw new Error("Failed to cancel booking.");
+      }
+    } catch (error) {
+      console.error("Error cancelling booking:", error);
+      message.error(
+        error.response?.data?.errorMessage || "Failed to cancel booking."
+      );
+    }
   };
 
   const formatPrice = (price) => {
@@ -502,18 +651,50 @@ const Transac = () => {
                                 {product.checkAccept ? "Accepted" : "Waiting"}
                               </span>
                             </div>
+                            {product.status === 1 && !product.feedback && (
+                              <Button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedProduct(product);
+                                  setIsFeedbackModalOpen(true);
+                                }}
+                                className="btn btn-primary btn-pinned mt-3"
+                              >
+                                Feedback
+                              </Button>
+                            )}
+                            {product.status === 1 && product.feedback && (
+                              <div className="font-size-sm text-body mt-3">
+                                Feedbacked
+                              </div>
+                            )}
                           </div>
                           <div className="col-md-4 align-self-center text-right">
                             <h5 className="mb-0">
                               {formatPrice(product.servicePrice)}
                             </h5>
-                            <Button
-                              type="button"
-                              onClick={() => handleShowModal(index)}
-                              className="btn btn-primary btn-pinned mt-3"
-                            >
-                              Update Time
-                            </Button>
+                            {product.status !== 1 && (
+                              <Button
+                                type="button"
+                                onClick={() => handleShowModal(index)}
+                                className="btn btn-primary btn-pinned mt-3"
+                              >
+                                Update Time
+                              </Button>
+                            )}
+                            {moment(product.bookingSchedule).isAfter(
+                              moment().add(5, "hours")
+                            ) && (
+                              <Button
+                                type="button"
+                                onClick={() =>
+                                  handleCancelBooking(product.bookingId)
+                                }
+                                className="btn btn-danger btn-pinned mt-3"
+                              >
+                                Cancel Booking
+                              </Button>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -592,6 +773,29 @@ const Transac = () => {
             </Row>
             {error && <p className="error-message">{error}</p>}
           </Form>
+        </Modal>
+
+        <Modal
+          title={
+            <div
+              style={{
+                textAlign: "center",
+                fontSize: "24px",
+                fontWeight: "bold",
+              }}
+            >
+              Submit Feedback
+            </div>
+          }
+          open={isFeedbackModalOpen}
+          onCancel={() => setIsFeedbackModalOpen(false)}
+          onOk={handleFeedbackSubmit}
+        >
+          <Input.TextArea
+            placeholder="Enter your feedback"
+            value={feedbackText}
+            onChange={(e) => setFeedbackText(e.target.value)}
+          />
         </Modal>
       </div>
     </main>

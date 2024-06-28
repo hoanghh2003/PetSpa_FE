@@ -99,7 +99,7 @@ function Petmanagement() {
   );
 
   async function fetchMovies() {
-const userInfoString = localStorage.getItem("user-info");
+    const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
 
     if (userInfo != null) {
@@ -198,7 +198,7 @@ const userInfoString = localStorage.getItem("user-info");
           },
           data: petData,
         });
-if (response.status === 200 || response.status === 201) {
+        if (response.status === 200 || response.status === 201) {
           message.success(`Pet ${isUpdate ? "updated" : "added"} successfully`);
           setError("");
           if (isUpdate) {
@@ -306,7 +306,7 @@ if (response.status === 200 || response.status === 201) {
       <Table columns={columns} dataSource={dataSource} rowKey="petId" />
 
       <Modal
-        title="Add new pet"
+        title={isUpdate ? "Update pet" : "Add new pet"}
         open={isOpen}
         onOk={handleOk}
         onCancel={handleHideModal}
@@ -324,8 +324,9 @@ if (response.status === 200 || response.status === 201) {
             rules={[
               { required: true, message: "Please input the pet name!" },
               {
-                pattern: regex30KyTu,
-                message: "Name must be between 1 and 30 characters!",
+                pattern: /^[a-zA-Z\s]{1,30}$/,
+                message:
+                  "Name must be between 1 and 30 characters and cannot contain special characters!",
               },
             ]}
           >
