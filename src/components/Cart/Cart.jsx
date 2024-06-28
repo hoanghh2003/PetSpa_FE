@@ -1,11 +1,9 @@
 import {
   faCartShopping,
   faCircleCheck,
-  faMoneyCheckDollar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  Button,
   Checkbox,
   Col,
   DatePicker,
@@ -19,11 +17,11 @@ import {
 import axios from "axios";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useForm } from "antd/es/form/Form";
-import moment from "moment";
+
 import { Option } from "antd/es/mentions";
 dayjs.extend(customParseFormat);
 
@@ -32,23 +30,19 @@ function Cart() {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("pills-cc");
+
+  const [rank, setRank] = useState(null);
+  const [discount, setDiscount] = useState(0);
+
   const [form] = useForm();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [newDate, setNewDate] = useState(null);
-  const [dataSource, setDataSource] = useState([]);
+
   const [staffList, setStaffList] = useState([]);
 
   const [selectedStaffId, setSelectedStaffId] = useState([]);
-  const handleNext = () => {
-    setCurrentStep(currentStep + 1);
-  };
 
-  const handleTabChange = (tabId) => {
-    setActiveTab(tabId);
-  };
   const fetchStaff = async () => {
     try {
       const response = await axios.get("https://localhost:7150/api/Staff");
@@ -59,7 +53,6 @@ function Cart() {
   };
 
   const handleDeleteBooking = async (index) => {
-    // Get the cart from localStorage
     const cartString = localStorage.getItem("cart");
     let cart = JSON.parse(cartString);
 
@@ -68,15 +61,9 @@ function Cart() {
       return;
     }
 
-    // Remove the booking at the specified index
     cart.splice(index, 1);
-
-    // Update the state
     setProducts(cart);
-
-    // Update localStorage
     localStorage.setItem("cart", JSON.stringify(cart));
-
     message.success("Booking removed successfully.");
   };
 
@@ -95,11 +82,6 @@ function Cart() {
     });
   };
 
-  function getFromLocalStorage() {
-    const jsonData = localStorage.getItem("cart");
-    return JSON.parse(jsonData);
-  }
-
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -108,9 +90,36 @@ function Cart() {
   };
 
   const calculateSubtotal = () => {
-    return products
+    const subtotal = products
       .filter((product) => product.selected)
       .reduce((total, product) => total + product.servicePrice, 0);
+    const discountedSubtotal = subtotal * (1 - discount);
+    return discountedSubtotal;
+  };
+
+  const fetchCustomerRankAndDiscount = async () => {
+    const userInfoString = localStorage.getItem("user-info");
+    const userInfo = JSON.parse(userInfoString);
+
+    if (userInfo != null) {
+      const response = await axios.get(
+        `https://localhost:7150/api/Customer/${userInfo.data.user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.data.token}`,
+          },
+        }
+      );
+
+      const rank = response.data.data.cusRank;
+      setRank(rank);
+
+      if (rank === "silver") {
+        setDiscount(0.05);
+      } else if (rank === "gold") {
+        setDiscount(0.1);
+      }
+    }
   };
 
   const handleHideModal = () => {
@@ -123,42 +132,11 @@ function Cart() {
     form.submit();
   };
 
-  const handleShowModal = (index) => {
-    const selectedProduct = dataSource[index];
-    console.log(selectedProduct);
-    setSelectedProduct(selectedProduct);
-    setNewDate(moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"));
-
-    // Check if bookingId is valid and not expired
-    const checkBookings = JSON.parse(localStorage.getItem("bookings")) || [];
-    const currentBooking = checkBookings.find(
-      (booking) => booking.code === selectedProduct.bookingId
-    );
-    console.log(currentBooking);
-    console.log(currentBooking.expiry < new Date().getTime());
-
-    if (!currentBooking || currentBooking.expiry < new Date().getTime()) {
-      message.error("Booking ID has expired or is invalid.");
-      return;
-    }
-
-    if (selectedProduct.staffId != null) {
-      setSelectedStaffId(selectedProduct.staffId);
-      form.setFieldsValue({ staff: selectedProduct.staffName });
-      console.log(selectedStaffId);
-    } else {
-      form.resetFields(["staff"]);
-    }
-
-    setIsOpen(true);
-  };
-
   const handleUpdateTime = async () => {
     const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
     const token = userInfo?.data?.token;
     setError("");
-    setIsLoading(true);
 
     try {
       let url = `https://localhost:7150/api/Booking/available?startTime=${newDate.format(
@@ -179,7 +157,7 @@ function Cart() {
         console.log("Token expired. Please log in again.");
         setError("Token expired. Please log in again.");
         localStorage.removeItem("user-info");
-        setIsLoading(false);
+
         return;
       }
 
@@ -232,7 +210,6 @@ function Cart() {
         setError("An unexpected error occurred.");
       }
     }
-    setIsLoading(false);
   };
 
   async function fetchComboType(comboId) {
@@ -350,10 +327,7 @@ function Cart() {
           return Promise.all(bookingDetailsPromises);
         });
 
-        const extractedData = (await Promise.all(extractedDataPromises)).flat();
-
-        console.log(extractedData); // Output the extracted data
-        setDataSource(extractedData);
+        (await Promise.all(extractedDataPromises)).flat();
       } catch (error) {
         if (error.response && error.response.status === 401) {
           localStorage.removeItem("user-info");
@@ -374,8 +348,6 @@ function Cart() {
   }
 
   async function handleBooking() {
-    setIsLoading(true);
-
     let userInfo;
     try {
       const userInfoString = localStorage.getItem("user-info");
@@ -385,7 +357,7 @@ function Cart() {
       userInfo = JSON.parse(userInfoString);
     } catch (error) {
       console.error("Error parsing user info:", error);
-      setIsLoading(false);
+
       message.error("Invalid user information. Please log in again.");
       return;
     }
@@ -394,13 +366,11 @@ function Cart() {
     const userId = userInfo.data?.user?.id;
 
     if (!token || !userId) {
-      setIsLoading(false);
       message.error("User information is incomplete.");
       return;
     }
 
     if (products.every((item) => !item.selected)) {
-      setIsLoading(false);
       message.error("Cart list is empty");
       return;
     }
@@ -408,7 +378,6 @@ function Cart() {
     const cart = products.filter((item) => item.selected);
 
     if (cart.length === 0) {
-      setIsLoading(false);
       setError("Your cart is empty.");
       return;
     }
@@ -533,7 +502,7 @@ function Cart() {
               JSON.parse(localStorage.getItem("checkBookings")) || [];
             const newBookings = bookingCodes.map((code) => ({
               code,
-              expiry: new Date().getTime() + 24 * 60 * 60 * 1000, // Current time + 24 hours
+              expiry: new Date().getTime() + 24 * 60 * 60 * 1000,
             }));
             const updatedBookings = [...existingBookings, ...newBookings];
             localStorage.setItem(
@@ -570,14 +539,13 @@ function Cart() {
         setError("An unexpected error occurred.");
       }
     }
-
-    setIsLoading(false);
   }
 
   useEffect(() => {
     const fetchStaffAndBookings = async () => {
       await fetchStaff();
       await fetchBookings();
+      await fetchCustomerRankAndDiscount();
     };
 
     fetchStaffAndBookings();
@@ -587,7 +555,6 @@ function Cart() {
     const vnpTxnRef = urlParams.get("vnp_TxnRef");
     console.log(urlParams);
 
-    // Log current URL
     console.log("Current URL:", window.location.href);
 
     if (responseCode != null) {
@@ -634,7 +601,6 @@ function Cart() {
           });
       }
     } else {
-      setIsLoading(false);
       const storedProducts = JSON.parse(localStorage.getItem("cart")) || [];
       if (storedProducts) {
         setProducts(
@@ -1020,12 +986,42 @@ function Cart() {
                             <div className="d-flex justify-content-between mb-2">
                               <span>Subtotal</span>
                               <span className="text-end">
-                                {formatPrice(calculateSubtotal())}
+                                {formatPrice(
+                                  products
+                                    .filter((product) => product.selected)
+                                    .reduce(
+                                      (total, product) =>
+                                        total + product.servicePrice,
+                                      0
+                                    )
+                                )}
                               </span>
                             </div>
+
                             <div className="d-flex justify-content-between mb-2">
-                              <span>Discount</span>
-                              <span className="text-end">$0.00</span>
+                              <span>
+                                Discount{" "}
+                                {rank === "silver"
+                                  ? "(5%)"
+                                  : rank === "gold"
+                                  ? "(10%)"
+                                  : ""}
+                              </span>
+                              <span className="text-end">
+                                {formatPrice(
+                                  products
+                                    .filter((product) => product.selected)
+                                    .reduce(
+                                      (total, product) =>
+                                        total + product.servicePrice,
+                                      0
+                                    ) * discount
+                                )}
+                              </span>
+                            </div>
+                            <div className="d-flex justify-content-between mb-4">
+                              <span>Rank</span>
+                              <span className="text-end">{rank}</span>
                             </div>
                             <hr />
                             <div className="d-flex justify-content-between mb-4">
@@ -1034,6 +1030,7 @@ function Cart() {
                                 {formatPrice(calculateSubtotal())}
                               </span>
                             </div>
+
                             <div className="d-grid">
                               <button
                                 type="button"
