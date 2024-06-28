@@ -55,7 +55,7 @@ const LoginPage = () => {
             localStorage.setItem("user-info", JSON.stringify(response.data));
           }
 
-          message.success("Login successfully");
+          message.success("Login successful");
           navigate("/");
         } else {
           throw new Error("Failed to login, status code: " + response.status);
@@ -145,7 +145,7 @@ const LoginPage = () => {
         } else {
           let result = await response.json();
           localStorage.setItem("user-info", JSON.stringify(result));
-          setError("Login successfully");
+          message.success("Login successful");
           console.log(result);
           navigate("/");
         }

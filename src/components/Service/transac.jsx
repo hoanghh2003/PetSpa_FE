@@ -23,13 +23,17 @@ const Transac = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedStaffId, setSelectedStaffId] = useState(null);
   const [form] = Form.useForm();
+  const [refundForm] = Form.useForm();
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [newDate, setNewDate] = useState(null);
   const [feedbackText, setFeedbackText] = useState("");
+  const [refundBank, setRefundBank] = useState("");
+  const [refundCard, setRefundCard] = useState("");
   const [dataSource, setDataSource] = useState([]);
   const [staffList, setStaffList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,9 +59,11 @@ const Transac = () => {
   const handleHideModal = () => {
     setIsOpen(false);
     setIsFeedbackModalOpen(false);
+    setIsRefundModalOpen(false);
     setSelectedProduct(null);
     setNewDate(null);
     form.resetFields();
+    refundForm.resetFields();
   };
 
   const fetchBookings = async () => {
@@ -375,13 +381,17 @@ const Transac = () => {
           if (updateResponse.status === 200) {
             console.log("Booking time updated successfully.");
             message.success("Booking time updated successfully.");
-
+            const staffName = selectedStaffId
+              ? await fetchStaffName(selectedStaffId)
+              : null;
             // Update the booking time in dataSource
             const updatedDataSource = dataSource.map((item) =>
               item.bookingId === selectedProduct.bookingId
                 ? {
                     ...item,
                     scheduleDate: newDate.format("YYYY-MM-DD HH:mm:ss"),
+                    staffId: selectedStaffId,
+                    staffName: staffName,
                   }
                 : item
             );
@@ -395,12 +405,10 @@ const Transac = () => {
         } catch (updateError) {
           console.error("Error updating booking time:", updateError);
           message.error(
-            updateError.response?.data?.errorMessage ||
-              "Failed to update booking time."
+            updateError.response?.data || "Failed to update booking time."
           );
           setError(
-            updateError.response?.data?.errorMessage ||
-              "Failed to update booking time."
+            updateError.response?.data || "Failed to update booking time."
           );
         }
       }
@@ -414,10 +422,8 @@ const Transac = () => {
           navigate("/login");
         } else {
           console.error("Error response:", error.response.data);
-          message.error(
-            error.response.data?.errorMessage || "An error occurred."
-          );
-          setError(error.response.data?.errorMessage || "An error occurred.");
+          message.error(error.response.data || "An error occurred.");
+          setError(error.response.data || "An error occurred.");
         }
       } else {
         console.error("Error:", error);
@@ -471,38 +477,56 @@ const Transac = () => {
   };
 
   const handleCancelBooking = async (bookingId) => {
-    const userInfoString = localStorage.getItem("user-info");
-    const userInfo = JSON.parse(userInfoString);
-    const token = userInfo?.data?.token;
+    setSelectedProduct(dataSource.find((item) => item.bookingId === bookingId));
+    setIsRefundModalOpen(true);
+  };
 
-    try {
-      const response = await axios.post(
-        `https://localhost:7150/api/Booking/cancel-booking`,
-        { bookingId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+  const handleRefundSubmit = async () => {
+    refundForm
+      .validateFields()
+      .then(async (values) => {
+        const userInfoString = localStorage.getItem("user-info");
+        const userInfo = JSON.parse(userInfoString);
+        const token = userInfo?.data?.token;
+
+        try {
+          const response = await axios.post(
+            `https://localhost:7150/api/Booking/cancel-booking`,
+            { bookingId: selectedProduct.bookingId },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.status === 200) {
+            message.success(
+              "Booking cancelled successfully. Refund will be processed within 24 hours."
+            );
+
+            // Update the booking status in dataSource
+            const updatedDataSource = dataSource.map((item) =>
+              item.bookingId === selectedProduct.bookingId
+                ? { ...item, status: 2 }
+                : item
+            );
+            setDataSource(updatedDataSource);
+
+            handleHideModal();
+          } else {
+            throw new Error("Failed to cancel booking.");
+          }
+        } catch (error) {
+          console.error("Error cancelling booking:", error);
+          message.error(
+            error.response?.data?.errorMessage || "Failed to cancel booking."
+          );
         }
-      );
-
-      if (response.status === 200) {
-        message.success("Booking cancelled successfully.");
-
-        // Update the booking status in dataSource
-        const updatedDataSource = dataSource.map((item) =>
-          item.bookingId === bookingId ? { ...item, status: -1 } : item
-        );
-        setDataSource(updatedDataSource);
-      } else {
-        throw new Error("Failed to cancel booking.");
-      }
-    } catch (error) {
-      console.error("Error cancelling booking:", error);
-      message.error(
-        error.response?.data?.errorMessage || "Failed to cancel booking."
-      );
-    }
+      })
+      .catch((errorInfo) => {
+        console.error("Validate Failed:", errorInfo);
+      });
   };
 
   const formatPrice = (price) => {
@@ -611,6 +635,21 @@ const Transac = () => {
     },
   };
 
+  const getStatusText = (status) => {
+    switch (status) {
+      case -1:
+        return "Not started";
+      case 0:
+        return "In progress";
+      case 1:
+        return "Completed";
+      case 2:
+        return "Cancelled";
+      default:
+        return "";
+    }
+  };
+
   return (
     <main id="content" role="main" className="main">
       <div className="content container-fluid">
@@ -670,7 +709,10 @@ const Transac = () => {
                         onChange={handleSelectProduct}
                         className="mr-2 d-print-none"
                       />
-                      <div className="avatar avatar-xl mr-3" style={styles.avatar}>
+                      <div
+                        className="avatar avatar-xl mr-3"
+                        style={styles.avatar}
+                      >
                         <img
                           className="img-fluid"
                           src="src/assets/images/icon/icon_pet_walking.svg"
@@ -719,7 +761,15 @@ const Transac = () => {
                             <div className="font-size-sm text-body">
                               <span>Status: </span>
                               <span className="font-weight-bold">
-                                {product.checkAccept ? "Accepted" : "Waiting"}
+                                {product.checkAccept === 0
+                                  ? "Checking"
+                                  : "Confirmed"}
+                              </span>
+                            </div>
+                            <div className="font-size-sm text-body">
+                              <span>Work Status: </span>
+                              <span className="font-weight-bold">
+                                {getStatusText(product.status)}
                               </span>
                             </div>
                             {product.status === 1 && !product.feedback && (
@@ -746,31 +796,35 @@ const Transac = () => {
                             <h5 className="mb-0" style={styles.productPrice}>
                               {formatPrice(product.servicePrice)}
                             </h5>
-                            {product.status !== 1 && (
-                              <Button
-                                type="button"
-                                size="small"
-                                onClick={() => handleShowModal(index)}
-                                className="btn btn-primary btn-pinned mt-3 d-print-none"
-                                style={styles.buttonPrimary}
-                              >
-                                Update
-                              </Button>
-                            )}
-                            {moment(product.bookingSchedule).isBefore(
-                              moment().add(5, "hours")
-                            ) && (
-                              <Button
-                                type="button"
-                                size="small"
-                                onClick={() =>
-                                  handleCancelBooking(product.bookingId)
-                                }
-                                className="btn btn-danger btn-pinned mt-3 d-print-none"
-                                style={styles.buttonDanger}
-                              >
-                                Refund
-                              </Button>
+                            {product.status !== 2 && (
+                              <>
+                                {product.status !== 1 && (
+                                  <Button
+                                    type="button"
+                                    size="small"
+                                    onClick={() => handleShowModal(index)}
+                                    className="btn btn-primary btn-pinned mt-3 d-print-none"
+                                    style={styles.buttonPrimary}
+                                  >
+                                    Update
+                                  </Button>
+                                )}
+                                {moment(product.bookingSchedule).isBefore(
+                                  moment().add(5, "hours")
+                                ) && (
+                                  <Button
+                                    type="button"
+                                    size="small"
+                                    onClick={() =>
+                                      handleCancelBooking(product.bookingId)
+                                    }
+                                    className="btn btn-danger btn-pinned mt-3 d-print-none"
+                                    style={styles.buttonDanger}
+                                  >
+                                    Refund
+                                  </Button>
+                                )}
+                              </>
                             )}
                           </div>
                         </div>
@@ -875,6 +929,54 @@ const Transac = () => {
             value={feedbackText}
             onChange={(e) => setFeedbackText(e.target.value)}
           />
+        </Modal>
+
+        <Modal
+          title={
+            <div
+              style={{
+                textAlign: "center",
+                fontSize: "24px",
+                fontWeight: "bold",
+              }}
+            >
+              Refund Information
+            </div>
+          }
+          open={isRefundModalOpen}
+          onCancel={() => setIsRefundModalOpen(false)}
+          onOk={handleRefundSubmit}
+        >
+          <Form
+            form={refundForm}
+            labelCol={{ span: 24 }}
+            initialValues={{ refundBank, refundCard }}
+          >
+            <Form.Item
+              label="Bank Name"
+              name="refundBank"
+              rules={[
+                { required: true, message: "Please enter your bank name" },
+              ]}
+            >
+              <Input
+                value={refundBank}
+                onChange={(e) => setRefundBank(e.target.value)}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Card Number"
+              name="refundCard"
+              rules={[
+                { required: true, message: "Please enter your card number" },
+              ]}
+            >
+              <Input
+                value={refundCard}
+                onChange={(e) => setRefundCard(e.target.value)}
+              />
+            </Form.Item>
+          </Form>
         </Modal>
       </div>
     </main>
