@@ -682,7 +682,7 @@ const Transac = () => {
                                 Update Time
                               </Button>
                             )}
-                            {moment(product.bookingSchedule).isAfter(
+                            {moment(product.bookingSchedule).isBefore(
                               moment().add(5, "hours")
                             ) && (
                               <Button
