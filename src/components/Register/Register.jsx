@@ -2,7 +2,7 @@
 //   primary: "#060606",
 //   background: "#E0E0E0",
 //   disbaled: "#D9D9D9",
-import React from "react";
+
 import { Link, useNavigate } from "react-router-dom";
 import COVER_IMAGE from "../LoginPage/login.jpg";
 import { useState } from "react";
@@ -32,7 +32,7 @@ const Register = () => {
     const genderRegex = /^(Male|Female|Other)$/i;
 
     // Validate data
-    if(!email){
+    if (!email) {
       setError("Please input email");
       return;
     }
@@ -95,15 +95,12 @@ const Register = () => {
       if (!response.ok) {
         // If registration fails
         const errorData = await response.json(); // Get error information from response
-        setError(errorData.message || "Email is already registered"); // Display error message
+        setError(errorData.msg || "Email is already registered"); // Display error message
       } else {
         // If registration is successful
-        const result = await response.json();
-        localStorage.setItem("user-info", JSON.stringify(result));
 
         message.success("You Register successfully");
-
-        navigate("/"); // Clear error message if any
+        navigate("/Login"); // Clear error message if any
       }
     } catch (error) {
       setError("An error occurred. Please try again later.");
