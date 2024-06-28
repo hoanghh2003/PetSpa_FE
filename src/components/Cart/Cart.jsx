@@ -376,7 +376,7 @@ function Cart() {
 
   async function handleBooking() {
     setIsLoading(true);
-
+  
     let userInfo;
     try {
       const userInfoString = localStorage.getItem("user-info");
@@ -390,32 +390,32 @@ function Cart() {
       message.error("Invalid user information. Please log in again.");
       return;
     }
-
+  
     const token = userInfo.data?.token;
     const userId = userInfo.data?.user?.id;
-
+  
     if (!token || !userId) {
       setIsLoading(false);
       message.error("User information is incomplete.");
       return;
     }
-
+  
     if (products.every((item) => !item.selected)) {
       setIsLoading(false);
       message.error("Cart list is empty");
       return;
     }
-
+  
     const cart = products.filter((item) => item.selected);
-
+  
     if (cart.length === 0) {
       setIsLoading(false);
       setError("Your cart is empty.");
       return;
     }
-
+  
     const bookingPromises = [];
-
+  
     for (let item of cart) {
       if (item.selected) {
         if (item.comboDetails && item.period === 1) {
@@ -437,7 +437,7 @@ function Cart() {
             const bookingDate = dayjs(item.date)
               .add(i, "months")
               .format("YYYY-MM-DDTHH:mm:ss");
-
+  
             bookingPromises.push({
               cusId: userId,
               bookingSchedule: bookingDate,
@@ -457,7 +457,7 @@ function Cart() {
             const bookingDate = dayjs(item.date)
               .add(i, "months")
               .format("YYYY-MM-DDTHH:mm:ss");
-
+  
             bookingPromises.push({
               cusId: userId,
               bookingSchedule: bookingDate,
@@ -491,7 +491,7 @@ function Cart() {
         }
       }
     }
-
+  
     try {
       const responses = await Promise.all(
         bookingPromises.map((requestData) =>
@@ -502,11 +502,11 @@ function Cart() {
           })
         )
       );
-
+  
       const bookingCodes = responses
         .filter((response) => response)
         .map((response) => response.data.data.bookingId);
-
+  
       if (bookingCodes.length > 0) {
         const paymentRequest = {
           bookingIds: bookingCodes,
@@ -516,7 +516,7 @@ function Cart() {
           name: "string",
           returnUrl: "http://localhost:5173/Cart",
         };
-
+  
         try {
           const paymentResponse = await axios.post(
             `https://localhost:7150/api/Payments/create-payment`,
@@ -527,7 +527,7 @@ function Cart() {
               },
             }
           );
-
+  
           if (paymentResponse.status === 200 && paymentResponse.data) {
             const existingBookings =
               JSON.parse(localStorage.getItem("checkBookings")) || [];
@@ -540,7 +540,9 @@ function Cart() {
               "checkBookings",
               JSON.stringify(updatedBookings)
             );
+            localStorage.setItem("selectedProducts", JSON.stringify(cart));
 
+  
             window.location.href = paymentResponse.data.paymentUrl;
           } else {
             message.error("Failed to create payment link.");
@@ -569,30 +571,31 @@ function Cart() {
         setError("An unexpected error occurred.");
       }
     }
-
+  
     setIsLoading(false);
   }
-
+  
   useEffect(() => {
     const fetchStaffAndBookings = async () => {
       await fetchStaff();
       await fetchBookings();
     };
-
+  
     fetchStaffAndBookings();
-
+  
     const urlParams = new URLSearchParams(window.location.search);
     const responseCode = urlParams.get("vnp_ResponseCode");
     const vnpTxnRef = urlParams.get("vnp_TxnRef");
     console.log(urlParams);
-
-    // Log đường dẫn hiện tại
+  
+    // Log current URL
     console.log("Current URL:", window.location.href);
-
+  
     if (responseCode != null) {
       if (responseCode === "00") {
         const selectedProducts =
           JSON.parse(localStorage.getItem("selectedProducts")) || [];
+        localStorage.removeItem("selectedProducts");
         const products = JSON.parse(localStorage.getItem("cart")) || [];
         const updatedProducts = products.filter(
           (product) =>
@@ -606,21 +609,15 @@ function Cart() {
         );
         setProducts(updatedProducts);
         localStorage.setItem("cart", JSON.stringify(updatedProducts));
-        let existingBookings = localStorage.getItem("bookings") || [];
-        let checkbookings = localStorage.getItem("checkBookings") || [];
-        const bookingsData = [...existingBookings, ...checkbookings];
-        localStorage.setItem("bookings", JSON.stringify(bookingsData));
         setCurrentStep(2);
         message.success("Payment successful and items removed from cart.");
       } else if (responseCode !== "00" && vnpTxnRef) {
         const products = JSON.parse(localStorage.getItem("cart")) || [];
         setProducts(products);
         localStorage.removeItem("selectedProducts");
-
+  
         axios
-          .delete(
-            `https://localhost:7150/api/Payments?transactionId=${vnpTxnRef}`
-          )
+          .delete(`https://localhost:7150/api/Payments?transactionId=${vnpTxnRef}`)
           .then((response) => {
             console.log("Payment failure data:", response.data);
             message.error("Payment failed. Please try again.");
@@ -647,6 +644,7 @@ function Cart() {
       }
     }
   }, []);
+  
 
   return (
     <div>
@@ -816,7 +814,7 @@ function Cart() {
                   <button
                     type="button"
                     className="step-trigger"
-                    // onClick={() => setCurrentStep(1)}
+                    onClick={() => setCurrentStep(1)}
                   >
                     <span className="bs-stepper-icon">
                       <svg viewBox="0 0 58 54">
