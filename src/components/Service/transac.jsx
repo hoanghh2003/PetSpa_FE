@@ -506,9 +506,9 @@ const Transac = () => {
   };
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
     }).format(price);
   };
 
@@ -542,6 +542,72 @@ const Transac = () => {
     },
     date: {
       marginLeft: "0.5rem",
+    },
+    cardHeader: {
+      backgroundColor: "#f7f7f7",
+      borderBottom: "1px solid #e6e6e6",
+    },
+    cardTitle: {
+      fontSize: "1.25rem",
+      fontWeight: "600",
+    },
+    media: {
+      display: "flex",
+      alignItems: "center",
+      marginBottom: "20px",
+    },
+    avatar: {
+      borderRadius: "8px",
+      overflow: "hidden",
+    },
+    mediaBody: {
+      flex: "1",
+      padding: "10px",
+    },
+    productTitle: {
+      fontSize: "1.125rem",
+      fontWeight: "600",
+      marginBottom: "10px",
+    },
+    productPrice: {
+      fontSize: "1rem",
+      fontWeight: "600",
+      color: "#28a745",
+    },
+    buttonPrimary: {
+      backgroundColor: "#007bff",
+      borderColor: "#007bff",
+      fontSize: "0.75rem", // Smaller font size
+      padding: "0.25rem 0.5rem", // Smaller padding
+      borderRadius: "0.25rem", // Smaller border radius
+      width: "80px",
+    },
+    buttonSuccess: {
+      backgroundColor: "#009900",
+      borderColor: "#009900",
+      fontSize: "0.75rem", // Smaller font size
+      padding: "0.25rem 0.5rem", // Smaller padding
+      borderRadius: "0.25rem", // Smaller border radius
+      width: "100px",
+    },
+    buttonDanger: {
+      backgroundColor: "#dc3545",
+      borderColor: "#dc3545",
+      fontSize: "0.75rem", // Smaller font size
+      padding: "0.25rem 0.5rem", // Smaller padding
+      borderRadius: "0.25rem", // Smaller border radius
+      width: "80px",
+    },
+    buttonPrint: {
+      backgroundColor: "#003399",
+      borderColor: "#003399",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: "1.5rem", // Adjust font size if needed
+      borderRadius: "0.25rem",
+      color: "white",
+      width: "100%",
     },
   };
 
@@ -581,8 +647,8 @@ const Transac = () => {
           <div className="row">
             <div className="col-lg mb-3 mb-lg-0">
               <div className="card mb-3 mb-lg-5">
-                <div className="card-header">
-                  <h4 className="card-header-title">
+                <div className="card-header" style={styles.cardHeader}>
+                  <h4 className="card-header-title" style={styles.cardTitle}>
                     Order details
                     <span className="badge badge-soft-dark rounded-circle ml-1">
                       {dataSource.length}
@@ -596,24 +662,29 @@ const Transac = () => {
                       key={index}
                       id={`product-${index}`}
                       className="media-1 mb-3"
+                      style={styles.media}
                     >
                       <input
                         type="checkbox"
                         value={`product-${index}`}
                         onChange={handleSelectProduct}
-                        className="mr-2"
+                        className="mr-2 d-print-none"
                       />
-                      <div className="avatar avatar-xl mr-3">
+                      <div className="avatar avatar-xl mr-3" style={styles.avatar}>
                         <img
                           className="img-fluid"
-                          src="assets/img/400x400/img26.jpg"
+                          src="src/assets/images/icon/icon_pet_walking.svg"
                           alt="product"
                         />
                       </div>
-                      <div className="media-body">
+                      <div className="media-body" style={styles.mediaBody}>
                         <div className="row">
                           <div className="col-md-8 mb-3 mb-md-0">
-                            <a className="h5 d-block" href="javascript:void(0)">
+                            <a
+                              className="h5 d-block"
+                              href="javascript:void(0)"
+                              style={styles.productTitle}
+                            >
                               {product.comboId
                                 ? `Combo: ${product.comboType}`
                                 : `Service: ${product.serviceName}`}
@@ -654,11 +725,13 @@ const Transac = () => {
                             {product.status === 1 && !product.feedback && (
                               <Button
                                 type="button"
+                                size="small"
                                 onClick={() => {
                                   setSelectedProduct(product);
                                   setIsFeedbackModalOpen(true);
                                 }}
-                                className="btn btn-primary btn-pinned mt-3"
+                                className="btn btn-primary btn-pinned mt-3 d-print-none"
+                                style={styles.buttonSuccess}
                               >
                                 Feedback
                               </Button>
@@ -670,16 +743,18 @@ const Transac = () => {
                             )}
                           </div>
                           <div className="col-md-4 align-self-center text-right">
-                            <h5 className="mb-0">
+                            <h5 className="mb-0" style={styles.productPrice}>
                               {formatPrice(product.servicePrice)}
                             </h5>
                             {product.status !== 1 && (
                               <Button
                                 type="button"
+                                size="small"
                                 onClick={() => handleShowModal(index)}
-                                className="btn btn-primary btn-pinned mt-3"
+                                className="btn btn-primary btn-pinned mt-3 d-print-none"
+                                style={styles.buttonPrimary}
                               >
-                                Update Time
+                                Update
                               </Button>
                             )}
                             {moment(product.bookingSchedule).isBefore(
@@ -687,12 +762,14 @@ const Transac = () => {
                             ) && (
                               <Button
                                 type="button"
+                                size="small"
                                 onClick={() =>
                                   handleCancelBooking(product.bookingId)
                                 }
-                                className="btn btn-danger btn-pinned mt-3"
+                                className="btn btn-danger btn-pinned mt-3 d-print-none"
+                                style={styles.buttonDanger}
                               >
-                                Cancel Booking
+                                Refund
                               </Button>
                             )}
                           </div>
@@ -701,12 +778,14 @@ const Transac = () => {
                     </div>
                   ))}
 
-                  <button
-                    className="btn btn-primary mt-2"
+                  <Button
+                    className="btn mt-3"
                     onClick={handlePrint}
+                    style={styles.buttonPrint}
+                    size="small"
                   >
                     Print Selected Products
-                  </button>
+                  </Button>
                   <hr />
                 </div>
               </div>

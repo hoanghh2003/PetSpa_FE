@@ -866,13 +866,11 @@ function Cart() {
                                 <ul className="list-unstyled mb-0">
                                   <li>
                                     {" "}
-                                    - 10% Instant Discount on Bank of America
-                                    Corp Bank Debit and Credit cards
+                                    - 5% Silver Rank
                                   </li>
                                   <li>
                                     {" "}
-                                    - 25% Cashback Voucher of up to $60 on first
-                                    ever PayPal transaction. TCA
+                                    - 10% Gold Rank
                                   </li>
                                 </ul>
                               </div>
@@ -892,7 +890,7 @@ function Cart() {
                                 <div className="d-flex gap-3">
                                   <div className="flex-shrink-0 d-flex align-items-center">
                                     <img
-                                      src="src/assets/images/about/about_img_10.png"
+                                      src="src/assets/images/icon/icon_pet_walking.svg"
                                       alt="google home"
                                       className="w-px-100"
                                     />
@@ -1011,7 +1009,7 @@ function Cart() {
 
                         <div className="col-xl-4">
                           <div className="border rounded p-4 mb-3 pb-3">
-                            <h6>Offer</h6>
+                            <div>Your rank: </div>
 
                             <hr className="my-4" />
 
