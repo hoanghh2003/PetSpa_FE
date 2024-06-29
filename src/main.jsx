@@ -22,6 +22,7 @@ import BlogDetails from "./components/Blog/Blog_Details";
 import AddAccount from "./components/Account/AddAccount";
 import ManageAccount from "./components/Account/ManageAccount";
 import AdminPage from "./components/Account/AdminPage";
+import StaffPage from "./components/Account/StaffPage";
 //route
 const router = createBrowserRouter([
   {
@@ -112,6 +113,10 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: <AdminPage />,
+  },
+  {
+    path: "/staff",
+    element: <StaffPage />,
   },
 ]);
 
