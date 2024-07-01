@@ -27,9 +27,12 @@ const Transac = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [newDate, setNewDate] = useState(null);
   const [feedbackText, setFeedbackText] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
   const [dataSource, setDataSource] = useState([]);
   const [staffList, setStaffList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,8 +58,11 @@ const Transac = () => {
   const handleHideModal = () => {
     setIsOpen(false);
     setIsFeedbackModalOpen(false);
+    setIsRefundModalOpen(false);
     setSelectedProduct(null);
     setNewDate(null);
+    setBankName("");
+    setCardNumber("");
     form.resetFields();
   };
 
@@ -262,20 +268,25 @@ const Transac = () => {
   const handleShowModal = (index) => {
     const selectedProduct = dataSource[index];
     setSelectedProduct(selectedProduct);
-    console.log(selectedProduct.status);
-    // Get current date and original booking date
+
+    // Check if the booking is in progress or completed
+    if (selectedProduct.status === 0 || selectedProduct.status === 1) {
+      message.error(
+        "Cannot update booking. Booking is either in progress or completed."
+      );
+      return;
+    }
+
+    // Check if the booking is less than 24 hours from now
     const now = moment();
     const originalBookingTime = moment(
       selectedProduct.scheduleDate,
       "YYYY-MM-DD HH:mm:ss"
     );
-
-    // Check if the original booking time is more than 24 hours from now
     if (originalBookingTime.diff(now, "hours") < 24) {
       message.error(
         "Booking time is less than 24 hours from now, therefore it cannot be changed."
       );
-      setError(null);
       return;
     }
 
@@ -309,23 +320,8 @@ const Transac = () => {
 
     // Validate that new date is at least 24 hours from now
     const now = moment();
-    const originalBookingTime = moment(
-      selectedProduct.scheduleDate,
-      "YYYY-MM-DD HH:mm:ss"
-    );
-
     if (newDate.diff(now, "hours") < 24) {
       message.error("New schedule time must be at least 24 hours from now.");
-      setError(null);
-      setIsLoading(false);
-      return;
-    }
-
-    // Check if the original booking time is more than 24 hours from now
-    if (originalBookingTime.diff(now, "hours") < 24) {
-      message.error(
-        "The original booking time is less than 24 hours from now, therefore it cannot be changed."
-      );
       setError(null);
       setIsLoading(false);
       return;
@@ -450,15 +446,16 @@ const Transac = () => {
       if (response.status === 200) {
         message.success("Feedback submitted successfully.");
 
-        // Optionally, update the status in dataSource if needed
-        setIsFeedbackModalOpen(false);
-        setFeedbackText("");
+        // Update the feedback in dataSource
         const updatedDataSource = dataSource.map((item) =>
           item.bookingId === selectedProduct.bookingId
             ? { ...item, feedback: feedbackText }
             : item
         );
         setDataSource(updatedDataSource);
+
+        setIsFeedbackModalOpen(false);
+        setFeedbackText("");
       } else {
         throw new Error("Failed to submit feedback.");
       }
@@ -470,15 +467,24 @@ const Transac = () => {
     }
   };
 
-  const handleCancelBooking = async (bookingId) => {
+  const handleRefund = async () => {
     const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
     const token = userInfo?.data?.token;
 
+    // if (!bankName || !cardNumber) {
+    //   message.error("Bank name and card number are required.");
+    //   return;
+    // }
+
     try {
       const response = await axios.post(
         `https://localhost:7150/api/Booking/cancel-booking`,
-        { bookingId },
+        {
+          bookingId: selectedProduct.bookingId,
+          // bankName,
+          // cardNumber,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -487,20 +493,26 @@ const Transac = () => {
       );
 
       if (response.status === 200) {
-        message.success("Booking cancelled successfully.");
+        message.success(
+          "Refund request submitted successfully. 70% of the amount will be refunded within 24 hours."
+        );
 
         // Update the booking status in dataSource
         const updatedDataSource = dataSource.map((item) =>
-          item.bookingId === bookingId ? { ...item, status: -1 } : item
+          item.bookingId === selectedProduct.bookingId
+            ? { ...item, status: 2 }
+            : item
         );
         setDataSource(updatedDataSource);
+
+        handleHideModal();
       } else {
-        throw new Error("Failed to cancel booking.");
+        throw new Error("Failed to submit refund request.");
       }
     } catch (error) {
-      console.error("Error cancelling booking:", error);
+      console.error("Error submitting refund request:", error);
       message.error(
-        error.response?.data?.errorMessage || "Failed to cancel booking."
+        error.response?.data?.errorMessage || "Failed to submit refund request."
       );
     }
   };
@@ -510,6 +522,25 @@ const Transac = () => {
       style: "currency",
       currency: "VND",
     }).format(price);
+  };
+
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case -1:
+        return "Not Started";
+      case 0:
+        return "In Progress";
+      case 1:
+        return "Completed";
+      case 2:
+        return "Cancelled";
+      default:
+        return "Unknown";
+    }
+  };
+
+  const getCheckAcceptLabel = (checkAccept) => {
+    return checkAccept ? "Accepted" : "Loading";
   };
 
   const styles = {
@@ -670,7 +701,10 @@ const Transac = () => {
                         onChange={handleSelectProduct}
                         className="mr-2 d-print-none"
                       />
-                      <div className="avatar avatar-xl mr-3" style={styles.avatar}>
+                      <div
+                        className="avatar avatar-xl mr-3"
+                        style={styles.avatar}
+                      >
                         <img
                           className="img-fluid"
                           src="src/assets/images/icon/icon_pet_walking.svg"
@@ -719,7 +753,13 @@ const Transac = () => {
                             <div className="font-size-sm text-body">
                               <span>Status: </span>
                               <span className="font-weight-bold">
-                                {product.checkAccept ? "Accepted" : "Waiting"}
+                                {getStatusLabel(product.status)}
+                              </span>
+                            </div>
+                            <div className="font-size-sm text-body">
+                              <span>Acceptance: </span>
+                              <span className="font-weight-bold">
+                                {getCheckAcceptLabel(product.checkAccept)}
                               </span>
                             </div>
                             {product.status === 1 && !product.feedback && (
@@ -746,7 +786,7 @@ const Transac = () => {
                             <h5 className="mb-0" style={styles.productPrice}>
                               {formatPrice(product.servicePrice)}
                             </h5>
-                            {product.status !== 1 && (
+                            {product.status === -1 && (
                               <Button
                                 type="button"
                                 size="small"
@@ -757,21 +797,23 @@ const Transac = () => {
                                 Update
                               </Button>
                             )}
-                            {moment(product.bookingSchedule).isBefore(
-                              moment().add(5, "hours")
-                            ) && (
-                              <Button
-                                type="button"
-                                size="small"
-                                onClick={() =>
-                                  handleCancelBooking(product.bookingId)
-                                }
-                                className="btn btn-danger btn-pinned mt-3 d-print-none"
-                                style={styles.buttonDanger}
-                              >
-                                Refund
-                              </Button>
-                            )}
+                            {product.status === -1 &&
+                              moment(product.bookingSchedule).isAfter(
+                                moment().subtract(5, "hours")
+                              ) && (
+                                <Button
+                                  type="button"
+                                  size="small"
+                                  onClick={() => {
+                                    setSelectedProduct(product);
+                                    setIsRefundModalOpen(true);
+                                  }}
+                                  className="btn btn-danger btn-pinned mt-3 d-print-none"
+                                  style={styles.buttonDanger}
+                                >
+                                  Refund
+                                </Button>
+                              )}
                           </div>
                         </div>
                       </div>
@@ -875,6 +917,38 @@ const Transac = () => {
             value={feedbackText}
             onChange={(e) => setFeedbackText(e.target.value)}
           />
+        </Modal>
+
+        <Modal
+          title={
+            <div
+              style={{
+                textAlign: "center",
+                fontSize: "24px",
+                fontWeight: "bold",
+              }}
+            >
+              Refund Booking
+            </div>
+          }
+          open={isRefundModalOpen}
+          onCancel={() => setIsRefundModalOpen(false)}
+          onOk={handleRefund}
+        >
+          <Form layout="vertical">
+            <Form.Item label="Bank Name" required>
+              <Input
+                value={bankName}
+                onChange={(e) => setBankName(e.target.value)}
+              />
+            </Form.Item>
+            <Form.Item label="Card Number" required>
+              <Input
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value)}
+              />
+            </Form.Item>
+          </Form>
         </Modal>
       </div>
     </main>

@@ -1,17 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Container, Typography, Box, IconButton } from '@mui/material';
-import { Edit, Delete, Add, Cancel } from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  TextField,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Container,
+  Typography,
+  Box,
+  IconButton,
+} from "@mui/material";
+import { Edit, Delete, Add, Cancel } from "@mui/icons-material";
+import { styled } from "@mui/material/styles";
 
-const FormContainer = styled('form')(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
+const FormContainer = styled("form")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
   gap: theme.spacing(2),
   marginBottom: theme.spacing(4),
 }));
 
-const FormField = ({ label, name, type = 'text', value, onChange, required }) => (
+const FormField = ({
+  label,
+  name,
+  type = "text",
+  value,
+  onChange,
+  required,
+}) => (
   <TextField
     label={label}
     name={name}
@@ -25,8 +46,8 @@ const FormField = ({ label, name, type = 'text', value, onChange, required }) =>
 );
 
 const TableCellActions = styled(TableCell)({
-  display: 'flex',
-  justifyContent: 'center',
+  display: "flex",
+  justifyContent: "center",
 });
 
 const ActionButton = styled(IconButton)(({ theme }) => ({
@@ -36,16 +57,18 @@ const ActionButton = styled(IconButton)(({ theme }) => ({
 const AdminPage = () => {
   const [accounts, setAccounts] = useState([]);
   const [formData, setFormData] = useState({
-    userName: '',
-    email: '',
-    password: '',
-    phoneNumber: '',
-    role: ''
+    userName: "",
+    email: "",
+    password: "",
+    phoneNumber: "",
+    role: "",
+    fullName: "",
+    gender: "",
   });
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchAccounts();
@@ -53,8 +76,9 @@ const AdminPage = () => {
 
   const fetchAccounts = async () => {
     try {
-      const response = await axios.get('https://localhost:7150/api/Account');
+      const response = await axios.get("https://localhost:7150/api/Account");
       setAccounts(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -65,26 +89,34 @@ const AdminPage = () => {
   };
 
   const validateForm = () => {
-    const duplicateEmail = accounts.some(account => account.email === formData.email && account.id !== editId);
-    const duplicateUserName = accounts.some(account => account.userName === formData.userName && account.id !== editId);
-    const duplicatePhoneNumber = accounts.some(account => account.phoneNumber === formData.phoneNumber && account.id !== editId);
+    const duplicateEmail = accounts.some(
+      (account) => account.email === formData.email && account.id !== editId
+    );
+    const duplicateUserName = accounts.some(
+      (account) =>
+        account.userName === formData.userName && account.id !== editId
+    );
+    const duplicatePhoneNumber = accounts.some(
+      (account) =>
+        account.phoneNumber === formData.phoneNumber && account.id !== editId
+    );
 
     if (duplicateEmail) {
-      setError('Email is already in use.');
+      setError("Email is already in use.");
       return false;
     }
 
     if (duplicateUserName) {
-      setError('Username is already in use.');
+      setError("Username is already in use.");
       return false;
     }
 
     if (duplicatePhoneNumber) {
-      setError('Phone number is already in use.');
+      setError("Phone number is already in use.");
       return false;
     }
 
-    setError('');
+    setError("");
     return true;
   };
 
@@ -100,14 +132,16 @@ const AdminPage = () => {
       setIsEditing(false);
       setEditId(null);
     } else {
-      await axios.post('https://localhost:7150/api/Account/register', formData);
+      await axios.post("https://localhost:7150/api/Account/register", formData);
     }
     setFormData({
-      userName: '',
-      email: '',
-      password: '',
-      phoneNumber: '',
-      role: ''
+      userName: "",
+      email: "",
+      password: "",
+      phoneNumber: "",
+      role: "",
+      fullName: "",
+      gender: "",
     });
     setShowForm(false);
     fetchAccounts();
@@ -119,9 +153,11 @@ const AdminPage = () => {
     setFormData({
       userName: account.userName,
       email: account.email,
-      password: '',
+      password: "",
       phoneNumber: account.phoneNumber,
-      role: account.role
+      role: account.role,
+      fullName: account.fullName,
+      gender: account.gender,
     });
     setShowForm(true);
   };
@@ -135,11 +171,13 @@ const AdminPage = () => {
     setIsEditing(false);
     setEditId(null);
     setFormData({
-      userName: '',
-      email: '',
-      password: '',
-      phoneNumber: '',
-      role: ''
+      userName: "",
+      email: "",
+      password: "",
+      phoneNumber: "",
+      role: "",
+      fullName: "",
+      gender: "",
     });
     setShowForm(true);
   };
@@ -151,8 +189,8 @@ const AdminPage = () => {
   return (
     <Container>
       {showForm && (
-        <Container maxWidth="sm" style={{ marginTop: '40px' }}>
-          <Paper elevation={3} style={{ padding: '20px' }}>
+        <Container maxWidth="sm" style={{ marginTop: "40px" }}>
+          <Paper elevation={3} style={{ padding: "20px" }}>
             <Typography variant="h4" gutterBottom align="center">
               Admin Page
             </Typography>
@@ -197,13 +235,32 @@ const AdminPage = () => {
                 name="role"
                 value={formData.role}
                 onChange={handleInputChange}
-                
+                required
+              />
+              <FormField
+                label="Full Name"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleInputChange}
+                required
+              />
+              <FormField
+                label="Gender"
+                name="gender"
+                value={formData.gender}
+                onChange={handleInputChange}
+                required
               />
               <Box mt={2} display="flex" justifyContent="space-between">
                 <Button type="submit" variant="contained" color="primary">
-                  {isEditing ? 'Update' : 'Add'}
+                  {isEditing ? "Update" : "Add"}
                 </Button>
-                <Button variant="outlined" color="secondary" startIcon={<Cancel />} onClick={handleCancel}>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<Cancel />}
+                  onClick={handleCancel}
+                >
                   Cancel
                 </Button>
               </Box>
@@ -212,7 +269,12 @@ const AdminPage = () => {
         </Container>
       )}
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <Button variant="contained" color="primary" startIcon={<Add />} onClick={handleAddNew}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<Add />}
+          onClick={handleAddNew}
+        >
           Add New
         </Button>
       </Box>
@@ -224,6 +286,8 @@ const AdminPage = () => {
               <TableCell>Email</TableCell>
               <TableCell>Phone Number</TableCell>
               <TableCell>Role</TableCell>
+              <TableCell>Full Name</TableCell>
+              <TableCell>Gender</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -233,7 +297,9 @@ const AdminPage = () => {
                 <TableCell>{account.userName}</TableCell>
                 <TableCell>{account.email}</TableCell>
                 <TableCell>{account.phoneNumber}</TableCell>
-                <TableCell>{account.roles.join(', ')}</TableCell>
+                <TableCell>{account.roles.join(", ")}</TableCell>
+                <TableCell>{account.name}</TableCell>
+                <TableCell>{account.gender}</TableCell>
                 <TableCellActions>
                   <ActionButton
                     onClick={() => handleEdit(account)}
