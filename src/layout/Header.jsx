@@ -49,13 +49,11 @@ const Header = () => {
           <link rel="stylesheet" href="src/assets/css/all.css" />
           <div className="box_wrap d-flex align-items-center justify-content-between">
             <div className="site_logo">
-              <Link to="/HomePage">
                 <img
                   className="logo_before"
                   src="src/assets/images/logo/logo.png"
                   alt="Petpia Logo"
                 />
-              </Link>
             </div>
             <nav className="main_menu navbar navbar-expand-lg">
               <div id="main_menu_dropdown">

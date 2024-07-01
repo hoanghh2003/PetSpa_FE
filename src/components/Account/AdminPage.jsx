@@ -11,7 +11,10 @@ import {
 } from "@mui/material";
 import { Edit, Delete, Add, Cancel } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import { Table, Space } from "antd";
+import { Table, Space, Input } from "antd";
+import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AF19FF"];
 
 const FormContainer = styled("form")(({ theme }) => ({
   display: "flex",
@@ -51,6 +54,7 @@ const ActionButton = styled(IconButton)(({ theme }) => ({
 
 const AdminPage = () => {
   const [accounts, setAccounts] = useState([]);
+  const [originalAccounts, setOriginalAccounts] = useState([]);
   const [formData, setFormData] = useState({
     userName: "",
     email: "",
@@ -66,6 +70,11 @@ const AdminPage = () => {
   const [error, setError] = useState("");
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
+  const [searchPhone, setSearchPhone] = useState("");
+  const [searchRole, setSearchRole] = useState("");
+  const [totalAccounts, setTotalAccounts] = useState(0);
+  const [rolePercentages, setRolePercentages] = useState({});
+  const [showDashboard, setShowDashboard] = useState(false);
 
   useEffect(() => {
     fetchAccounts();
@@ -74,10 +83,32 @@ const AdminPage = () => {
   const fetchAccounts = async () => {
     try {
       const response = await axios.get("https://localhost:7150/api/Account");
-      setAccounts(response.data);
+      const accountsData = response.data;
+      setAccounts(accountsData);
+      setOriginalAccounts(accountsData);
+      calculateStatistics(accountsData);
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const calculateStatistics = (accountsData) => {
+    const total = accountsData.length;
+    setTotalAccounts(total);
+
+    const roleCounts = accountsData.reduce((acc, account) => {
+      account.roles.forEach((role) => {
+        acc[role] = (acc[role] || 0) + 1;
+      });
+      return acc;
+    }, {});
+
+    const percentages = Object.keys(roleCounts).reduce((acc, role) => {
+      acc[role] = ((roleCounts[role] / total) * 100).toFixed(2);
+      return acc;
+    }, {});
+
+    setRolePercentages(percentages);
   };
 
   const handleInputChange = (e) => {
@@ -187,6 +218,32 @@ const AdminPage = () => {
     setSortedInfo(sorter);
   };
 
+  const handleSearchPhone = (e) => {
+    const { value } = e.target;
+    setSearchPhone(value);
+    if (value === "") {
+      setAccounts(originalAccounts);
+    } else {
+      const filteredData = originalAccounts.filter((account) =>
+        account.phoneNumber.includes(value)
+      );
+      setAccounts(filteredData);
+    }
+  };
+
+  const handleSearchRole = (e) => {
+    const { value } = e.target;
+    setSearchRole(value);
+    if (value === "") {
+      setAccounts(originalAccounts);
+    } else {
+      const filteredData = originalAccounts.filter((account) =>
+        account.roles.some((role) => role.toLowerCase().includes(value.toLowerCase()))
+      );
+      setAccounts(filteredData);
+    }
+  };
+
   const columns = [
     {
       title: "Username",
@@ -242,6 +299,11 @@ const AdminPage = () => {
       ),
     },
   ];
+
+  const data = Object.keys(rolePercentages).map((role, index) => ({
+    name: role,
+    value: parseFloat(rolePercentages[role]),
+  }));
 
   return (
     <Container>
@@ -334,13 +396,59 @@ const AdminPage = () => {
         >
           Add New
         </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          style={{ marginLeft: "16px" }}
+          onClick={() => setShowDashboard(!showDashboard)}
+        >
+          {showDashboard ? "Hide Dashboard" : "Show Dashboard"}
+        </Button>
       </Box>
+      {showDashboard && (
+        <Box mb={4}>
+          <Typography variant="h6" gutterBottom>
+            Dashboard
+          </Typography>
+          <Typography variant="body1">Total Accounts: {totalAccounts}</Typography>
+          <PieChart width={1000} height={400}>
+            <Pie
+              data={data}
+              cx={500}
+              cy={200}
+              labelLine={false}
+              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(2)}%`}
+              outerRadius={150}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </Box>
+      )}
       <Space
         style={{
           marginBottom: 16,
         }}
       >
-        <Button onClick={() => { setFilteredInfo({}); setSortedInfo({}); }}>
+        <Input
+          placeholder="Search by Phone Number"
+          value={searchPhone}
+          onChange={handleSearchPhone}
+          style={{ width: 200, marginRight: 16 }}
+        />
+        <Input
+          placeholder="Search by Role"
+          value={searchRole}
+          onChange={handleSearchRole}
+          style={{ width: 200, marginRight: 16 }}
+        />
+        <Button onClick={() => { setFilteredInfo({}); setSortedInfo({}); setAccounts(originalAccounts); setSearchPhone(""); setSearchRole(""); }}>
           Clear filters and sorters
         </Button>
       </Space>
@@ -349,6 +457,9 @@ const AdminPage = () => {
         dataSource={accounts}
         onChange={handleChange}
         rowKey="id"
+        pagination={{ pageSize: 10 }}
+        bordered
+        style={{ marginBottom: "20px", backgroundColor: "#fff", borderRadius: "10px" }}
       />
     </Container>
   );
