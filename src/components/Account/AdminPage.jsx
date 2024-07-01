@@ -164,7 +164,8 @@ const AdminPage = () => {
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`https://localhost:7150/api/Account/${id}`);
+    console.log(id);
+    await axios.delete(`https://localhost:7150/api/Account/delete-account/${id}`);
     fetchAccounts();
   };
 
