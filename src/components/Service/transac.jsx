@@ -73,7 +73,7 @@ const Transac = () => {
     if (userInfo) {
       try {
         const response = await axios.get(
-          `https://localhost:7150/api/Customer/${userInfo.data.user.id}/bookings`,
+          `https://localhost:7150/api/Payments/history-customerId?CustomerId=${userInfo.data.user.id}`,
           {
             headers: {
               Authorization: `Bearer ${userInfo.data.token}`,
@@ -89,63 +89,36 @@ const Transac = () => {
         }
 
         const result = response.data;
-        const bookings = result.data.bookings;
+        if (!Array.isArray(result)) {
+          throw new Error("Invalid API response format");
+        }
 
-        const extractedDataPromises = bookings.map(async (booking) => {
-          const bookingDetailsPromises = booking.bookingDetails.map(
-            async (detail) => {
-              const petName = await fetchPetName(detail.petId);
-              const staffName = detail.staffId
-                ? await fetchStaffName(detail.staffId)
-                : null;
+        const extractedData = await Promise.all(
+          result.map(async (transaction) => {
+            const bookingDetails = await Promise.all(
+              transaction.bookingDetails.map(async (detail) => {
+                const petName = await fetchPetName(detail.petId);
+                const staffName = detail.staffId
+                  ? await fetchStaffName(detail.staffId)
+                  : null;
+                const serviceName = await fetchServiceName(detail.serviceId);
 
-              if (
-                booking.bookingDetails.length >= 2 &&
-                detail.service.comboId
-              ) {
-                const comboType = await fetchComboType(detail.service.comboId);
                 return {
-                  bookingId: detail.bookingId,
-                  petId: detail.petId,
-                  petName: petName,
-                  scheduleDate: booking.startDate,
-                  comboId: detail.service.comboId,
-                  comboType: comboType,
-                  serviceName: null,
-                  serviceId: null,
-                  staffId: detail.staffId,
-                  staffName: staffName,
-                  servicePrice: detail.service.price,
-                  checkAccept: booking.checkAccept,
-                  status: booking.status || 0,
-                  feedback: booking.feedback,
-                  bookingSchedule: booking.bookingSchedule,
+                  ...detail,
+                  petName,
+                  staffName,
+                  serviceName,
                 };
-              } else {
-                return {
-                  bookingId: detail.bookingId,
-                  petId: detail.petId,
-                  petName: petName,
-                  scheduleDate: booking.startDate,
-                  comboId: null,
-                  comboType: null,
-                  serviceName: detail.service.serviceName,
-                  serviceId: detail.service.serviceId,
-                  staffId: detail.staffId,
-                  staffName: staffName,
-                  servicePrice: detail.service.price,
-                  checkAccept: booking.checkAccept,
-                  status: booking.status || 0,
-                  feedback: booking.feedback,
-                  bookingSchedule: booking.bookingSchedule,
-                };
-              }
-            }
-          );
-          return Promise.all(bookingDetailsPromises);
-        });
+              })
+            );
 
-        const extractedData = (await Promise.all(extractedDataPromises)).flat();
+            return {
+              ...transaction,
+              bookingDetails,
+            };
+          })
+        );
+
         setDataSource(extractedData);
       } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -195,14 +168,17 @@ const Transac = () => {
     }
   };
 
-  const fetchComboType = async (comboId) => {
+  const fetchServiceName = async (serviceId) => {
     try {
       const response = await axios.get(
-        `https://localhost:7150/api/Combo/${comboId}`
+        `https://localhost:7150/api/Service/${serviceId}`
       );
-      return response.data.data.comboType;
+      return response.data.data.serviceName;
     } catch (error) {
-      console.error(`Error fetching combo type for comboId ${comboId}:`, error);
+      console.error(
+        `Error fetching service name for serviceId ${serviceId}:`,
+        error
+      );
       return null;
     }
   };
@@ -472,18 +448,18 @@ const Transac = () => {
     const userInfo = JSON.parse(userInfoString);
     const token = userInfo?.data?.token;
 
-    // if (!bankName || !cardNumber) {
-    //   message.error("Bank name and card number are required.");
-    //   return;
-    // }
+    if (!bankName || !cardNumber) {
+      message.error("Bank name and card number are required.");
+      return;
+    }
 
     try {
       const response = await axios.post(
         `https://localhost:7150/api/Booking/cancel-booking`,
         {
           bookingId: selectedProduct.bookingId,
-          // bankName,
-          // cardNumber,
+          bankName,
+          cardNumber,
         },
         {
           headers: {
@@ -649,190 +625,201 @@ const Transac = () => {
           <div className="row align-items-center">
             <div className="col-sm mb-2 mb-sm-0">
               <nav aria-label="breadcrumb">
-                <ol className="breadcrumb breadcrumb-no-gutter">
-                  <li className="breadcrumb-item">
-                    <a className="breadcrumb-link" href="ecommerce-orders.html">
-                      Orders
-                    </a>
-                  </li>
-                  <li className="breadcrumb-item active" aria-current="page">
-                    Order details
-                  </li>
-                </ol>
+                <ol className="breadcrumb breadcrumb-no-gutter"></ol>
               </nav>
 
               <div style={styles.container}>
-                <h1 style={styles.title}>Order #32543</h1>
-                <span style={styles.badge}>
-                  <span style={styles.indicator}></span> PAID
-                </span>
-                <span style={styles.date}>
-                  <i className="tio-date-range"></i> {getCurrentDate()}
-                </span>
+                <h1
+                  style={{
+                    ...styles.title,
+                    color: "#6a0dad",
+                    textAlign: "center",
+                    fontSize: "2rem",
+                    margin: "2rem",
+                  }}
+                >
+                  History Payment
+                </h1>
               </div>
             </div>
           </div>
         </div>
 
         <div className="container">
-          <div className="row">
-            <div className="col-lg mb-3 mb-lg-0">
-              <div className="card mb-3 mb-lg-5">
-                <div className="card-header" style={styles.cardHeader}>
-                  <h4 className="card-header-title" style={styles.cardTitle}>
-                    Order details
-                    <span className="badge badge-soft-dark rounded-circle ml-1">
-                      {dataSource.length}
-                    </span>
-                  </h4>
+          {dataSource.map((transaction, index) => (
+            <div key={index} className="card mb-3 mb-lg-5">
+              <div className="card-header" style={styles.cardHeader}>
+                <h4 className="card-header-title" style={styles.cardTitle}>
+                  Payment detail
+                  <span className="badge badge-soft-dark rounded-circle ml-1">
+                    {transaction.bookingDetails.length}
+                  </span>
+                </h4>
+                <div className="font-size-sm text-body">
+                  <span>Customer Name: </span>
+                  <span className="font-weight-bold">
+                    {transaction.customerName}
+                  </span>
                 </div>
+                <div className="font-size-sm text-body">
+                  <span>Payment Method: </span>
+                  <span className="font-weight-bold">
+                    {transaction.paymentMethod}
+                  </span>
+                </div>
+                <div className="font-size-sm text-body">
+                  <span>Total Amount: </span>
+                  <span className="font-weight-bold">
+                    {formatPrice(transaction.totalAmount)}
+                  </span>
+                </div>
+              </div>
 
-                <div className="card-body">
-                  {dataSource.map((product, index) => (
+              <div className="card-body">
+                {transaction.bookingDetails.map((product, index) => (
+                  <div
+                    key={index}
+                    id={`product-${index}`}
+                    className="media-1 mb-3"
+                    style={styles.media}
+                  >
+                    <input
+                      type="checkbox"
+                      value={`product-${index}`}
+                      onChange={handleSelectProduct}
+                      className="mr-2 d-print-none"
+                    />
                     <div
-                      key={index}
-                      id={`product-${index}`}
-                      className="media-1 mb-3"
-                      style={styles.media}
+                      className="avatar avatar-xl mr-3"
+                      style={styles.avatar}
                     >
-                      <input
-                        type="checkbox"
-                        value={`product-${index}`}
-                        onChange={handleSelectProduct}
-                        className="mr-2 d-print-none"
+                      <img
+                        className="img-fluid"
+                        src="src/assets/images/icon/icon_pet_walking.svg"
+                        alt="product"
                       />
-                      <div
-                        className="avatar avatar-xl mr-3"
-                        style={styles.avatar}
-                      >
-                        <img
-                          className="img-fluid"
-                          src="src/assets/images/icon/icon_pet_walking.svg"
-                          alt="product"
-                        />
-                      </div>
-                      <div className="media-body" style={styles.mediaBody}>
-                        <div className="row">
-                          <div className="col-md-8 mb-3 mb-md-0">
-                            <a
-                              className="h5 d-block"
-                              href="javascript:void(0)"
-                              style={styles.productTitle}
+                    </div>
+                    <div className="media-body" style={styles.mediaBody}>
+                      <div className="row">
+                        <div className="col-md-8 mb-3 mb-md-0">
+                          <a
+                            className="h5 d-block"
+                            href="javascript:void(0)"
+                            style={styles.productTitle}
+                          >
+                            {product.comboId
+                              ? `Combo: ${product.comboType}`
+                              : `Service: ${product.serviceName}`}
+                          </a>
+                          <div className="font-size-sm text-body">
+                            <span>PetName: </span>
+                            <span className="font-weight-bold">
+                              {product.petName}
+                            </span>
+                          </div>
+                          <Form>
+                            <Form.Item label="Date" className="w-1/2">
+                              <Space direction="vertical" className="w-full">
+                                <div className="w-full">
+                                  {product.scheduleDate
+                                    ? dayjs(product.scheduleDate).format(
+                                        "YYYY-MM-DD HH:mm:ss"
+                                      )
+                                    : "N/A"}
+                                </div>
+                              </Space>
+                            </Form.Item>
+                          </Form>
+                          {product.staffId && (
+                            <div className="font-size-sm text-body">
+                              <span>Staff: </span>
+                              <span className="font-weight-bold">
+                                {product.staffName || product.staffId}
+                              </span>
+                            </div>
+                          )}
+                          <div className="font-size-sm text-body">
+                            <span>Status: </span>
+                            <span className="font-weight-bold">
+                              {getStatusLabel(product.status)}
+                            </span>
+                          </div>
+                          <div className="font-size-sm text-body">
+                            <span>Acceptance: </span>
+                            <span className="font-weight-bold">
+                              {getCheckAcceptLabel(product.checkAccept)}
+                            </span>
+                          </div>
+                          {product.status === 1 && !product.feedback && (
+                            <Button
+                              type="button"
+                              size="small"
+                              onClick={() => {
+                                setSelectedProduct(product);
+                                setIsFeedbackModalOpen(true);
+                              }}
+                              className="btn btn-primary btn-pinned mt-3 d-print-none"
+                              style={styles.buttonSuccess}
                             >
-                              {product.comboId
-                                ? `Combo: ${product.comboType}`
-                                : `Service: ${product.serviceName}`}
-                            </a>
-                            <div className="font-size-sm text-body">
-                              <span>PetName: </span>
-                              <span className="font-weight-bold">
-                                {product.petName}
-                              </span>
+                              Feedback
+                            </Button>
+                          )}
+                          {product.status === 1 && product.feedback && (
+                            <div className="font-size-sm text-body mt-3">
+                              Feedbacked
                             </div>
-                            <Form>
-                              <Form.Item label="Date" className="w-1/2">
-                                <Space direction="vertical" className="w-full">
-                                  <div className="w-full">
-                                    {product.scheduleDate
-                                      ? dayjs(product.scheduleDate).format(
-                                          "YYYY-MM-DD HH:mm:ss"
-                                        )
-                                      : "N/A"}
-                                  </div>
-                                </Space>
-                              </Form.Item>
-                            </Form>
-                            {product.staffId && (
-                              <div className="font-size-sm text-body">
-                                <span>Staff: </span>
-                                <span className="font-weight-bold">
-                                  {product.staffName || product.staffId}
-                                </span>
-                              </div>
-                            )}
-                            <div className="font-size-sm text-body">
-                              <span>Status: </span>
-                              <span className="font-weight-bold">
-                                {getStatusLabel(product.status)}
-                              </span>
-                            </div>
-                            <div className="font-size-sm text-body">
-                              <span>Acceptance: </span>
-                              <span className="font-weight-bold">
-                                {getCheckAcceptLabel(product.checkAccept)}
-                              </span>
-                            </div>
-                            {product.status === 1 && !product.feedback && (
+                          )}
+                        </div>
+                        <div className="col-md-4 align-self-center text-right">
+                          <h5 className="mb-0" style={styles.productPrice}>
+                            {formatPrice(product.servicePrice)}
+                          </h5>
+                          {product.status === -1 && (
+                            <Button
+                              type="button"
+                              size="small"
+                              onClick={() => handleShowModal(index)}
+                              className="btn btn-primary btn-pinned mt-3 d-print-none"
+                              style={styles.buttonPrimary}
+                            >
+                              Update
+                            </Button>
+                          )}
+                          {product.status === -1 &&
+                            moment(product.bookingSchedule).isAfter(
+                              moment().subtract(5, "hours")
+                            ) && (
                               <Button
                                 type="button"
                                 size="small"
                                 onClick={() => {
                                   setSelectedProduct(product);
-                                  setIsFeedbackModalOpen(true);
+                                  setIsRefundModalOpen(true);
                                 }}
-                                className="btn btn-primary btn-pinned mt-3 d-print-none"
-                                style={styles.buttonSuccess}
+                                className="btn btn-danger btn-pinned mt-3 d-print-none"
+                                style={styles.buttonDanger}
                               >
-                                Feedback
+                                Refund
                               </Button>
                             )}
-                            {product.status === 1 && product.feedback && (
-                              <div className="font-size-sm text-body mt-3">
-                                Feedbacked
-                              </div>
-                            )}
-                          </div>
-                          <div className="col-md-4 align-self-center text-right">
-                            <h5 className="mb-0" style={styles.productPrice}>
-                              {formatPrice(product.servicePrice)}
-                            </h5>
-                            {product.status === -1 && (
-                              <Button
-                                type="button"
-                                size="small"
-                                onClick={() => handleShowModal(index)}
-                                className="btn btn-primary btn-pinned mt-3 d-print-none"
-                                style={styles.buttonPrimary}
-                              >
-                                Update
-                              </Button>
-                            )}
-                            {product.status === -1 &&
-                              moment(product.bookingSchedule).isAfter(
-                                moment().subtract(5, "hours")
-                              ) && (
-                                <Button
-                                  type="button"
-                                  size="small"
-                                  onClick={() => {
-                                    setSelectedProduct(product);
-                                    setIsRefundModalOpen(true);
-                                  }}
-                                  className="btn btn-danger btn-pinned mt-3 d-print-none"
-                                  style={styles.buttonDanger}
-                                >
-                                  Refund
-                                </Button>
-                              )}
-                          </div>
                         </div>
                       </div>
                     </div>
-                  ))}
+                  </div>
+                ))}
 
-                  <Button
-                    className="btn mt-3"
-                    onClick={handlePrint}
-                    style={styles.buttonPrint}
-                    size="small"
-                  >
-                    Print Selected Products
-                  </Button>
-                  <hr />
-                </div>
+                <Button
+                  className="btn mt-3"
+                  onClick={handlePrint}
+                  style={styles.buttonPrint}
+                  size="small"
+                >
+                  Print Selected Products
+                </Button>
+                <hr />
               </div>
             </div>
-          </div>
+          ))}
         </div>
 
         <Modal
