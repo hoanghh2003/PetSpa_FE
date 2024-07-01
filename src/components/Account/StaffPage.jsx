@@ -128,7 +128,7 @@ const TaskList = ({ tasks, printTasks }) => {
           ))}
         </tbody>
       </table>
-      <button onClick={() => printTasks(selectedTasks)} disabled={selectedTasks.length === 0}>
+      <button className="print-button" onClick={() => printTasks(selectedTasks)} disabled={selectedTasks.length === 0}>
         Print Selected Tasks
       </button>
     </div>

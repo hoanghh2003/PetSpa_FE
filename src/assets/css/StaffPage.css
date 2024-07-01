@@ -75,7 +75,7 @@
     font-weight: bold;
   }
   
-  button {
+  .print-button {
     display: block;
     margin: 10px auto;
     padding: 10px 20px;
@@ -87,12 +87,12 @@
     transition: background-color 0.3s;
   }
   
-  button:disabled {
+  .print-button:disabled {
     background-color: #9e9e9e;
     cursor: not-allowed;
   }
   
-  button:hover:not(:disabled) {
+  .print-button:hover:not(:disabled) {
     background-color: #388e3c;
   }
   
