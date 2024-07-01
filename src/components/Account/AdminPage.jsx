@@ -3,20 +3,15 @@ import axios from "axios";
 import {
   TextField,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Container,
   Typography,
+  Paper,
   Box,
   IconButton,
 } from "@mui/material";
 import { Edit, Delete, Add, Cancel } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
+import { Table, Space } from "antd";
 
 const FormContainer = styled("form")(({ theme }) => ({
   display: "flex",
@@ -45,13 +40,13 @@ const FormField = ({
   />
 );
 
-const TableCellActions = styled(TableCell)({
+const TableCellActions = styled("div")({
   display: "flex",
-  justifyContent: "center",
+  justifyContent: "left",
 });
 
 const ActionButton = styled(IconButton)(({ theme }) => ({
-  marginRight: theme.spacing(1),
+  marginRight: theme.spacing(0),
 }));
 
 const AdminPage = () => {
@@ -69,6 +64,8 @@ const AdminPage = () => {
   const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState("");
+  const [filteredInfo, setFilteredInfo] = useState({});
+  const [sortedInfo, setSortedInfo] = useState({});
 
   useEffect(() => {
     fetchAccounts();
@@ -78,7 +75,6 @@ const AdminPage = () => {
     try {
       const response = await axios.get("https://localhost:7150/api/Account");
       setAccounts(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -147,7 +143,6 @@ const AdminPage = () => {
     fetchAccounts();
   };
 
-
   const handleEdit = (account) => {
     setIsEditing(true);
     setEditId(account.id);
@@ -164,7 +159,6 @@ const AdminPage = () => {
   };
 
   const handleDelete = async (id) => {
-    console.log(id);
     await axios.delete(`https://localhost:7150/api/Account/delete-account/${id}`);
     fetchAccounts();
   };
@@ -187,6 +181,67 @@ const AdminPage = () => {
   const handleCancel = () => {
     setShowForm(false);
   };
+
+  const handleChange = (pagination, filters, sorter) => {
+    setFilteredInfo(filters);
+    setSortedInfo(sorter);
+  };
+
+  const columns = [
+    {
+      title: "Username",
+      dataIndex: "userName",
+      key: "userName",
+      sorter: (a, b) => a.userName.length - b.userName.length,
+      sortOrder: sortedInfo.columnKey === "userName" ? sortedInfo.order : null,
+      ellipsis: true,
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      sorter: (a, b) => a.email.length - b.email.length,
+      sortOrder: sortedInfo.columnKey === "email" ? sortedInfo.order : null,
+      ellipsis: true,
+    },
+    {
+      title: "Phone Number",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
+      sorter: (a, b) => a.phoneNumber.localeCompare(b.phoneNumber),
+      sortOrder: sortedInfo.columnKey === "phoneNumber" ? sortedInfo.order : null,
+      ellipsis: true,
+    },
+    {
+      title: "Role",
+      dataIndex: "roles",
+      key: "role",
+      render: (roles) => roles.join(", "),
+      filters: Array.from(new Set(accounts.flatMap((account) => account.roles))).map((role) => ({
+        text: role,
+        value: role,
+      })),
+      filteredValue: filteredInfo.role || null,
+      onFilter: (value, record) => record.roles.includes(value),
+      sorter: (a, b) => a.roles.join(", ").localeCompare(b.roles.join(", ")),
+      sortOrder: sortedInfo.columnKey === "role" ? sortedInfo.order : null,
+      ellipsis: true,
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (text, record) => (
+        <TableCellActions>
+          <ActionButton onClick={() => handleEdit(record)} color="primary">
+            <Edit />
+          </ActionButton>
+          <IconButton onClick={() => handleDelete(record.id)} color="secondary">
+            <Delete />
+          </IconButton>
+        </TableCellActions>
+      ),
+    },
+  ];
 
   return (
     <Container>
@@ -280,47 +335,21 @@ const AdminPage = () => {
           Add New
         </Button>
       </Box>
-      <TableContainer component={Paper} sx={{ marginTop: 4 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Username</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Phone Number</TableCell>
-              <TableCell>Role</TableCell>
-              <TableCell>Full Name</TableCell>
-              <TableCell>Gender</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {accounts.map((account) => (
-              <TableRow key={account.id}>
-                <TableCell>{account.userName}</TableCell>
-                <TableCell>{account.email}</TableCell>
-                <TableCell>{account.phoneNumber}</TableCell>
-                <TableCell>{account.roles.join(", ")}</TableCell>
-                <TableCell>{account.name}</TableCell>
-                <TableCell>{account.gender}</TableCell>
-                <TableCellActions>
-                  <ActionButton
-                    onClick={() => handleEdit(account)}
-                    color="primary"
-                  >
-                    <Edit />
-                  </ActionButton>
-                  <IconButton
-                    onClick={() => handleDelete(account.id)}
-                    color="secondary"
-                  >
-                    <Delete />
-                  </IconButton>
-                </TableCellActions>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Space
+        style={{
+          marginBottom: 16,
+        }}
+      >
+        <Button onClick={() => { setFilteredInfo({}); setSortedInfo({}); }}>
+          Clear filters and sorters
+        </Button>
+      </Space>
+      <Table
+        columns={columns}
+        dataSource={accounts}
+        onChange={handleChange}
+        rowKey="id"
+      />
     </Container>
   );
 };

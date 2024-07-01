@@ -99,19 +99,19 @@ const router = createBrowserRouter([
         path: "/post/:id",
         element: <BlogDetails />,
       },
+      {
+        path: "/admin",
+        element: <AdminPage />,
+      },
+      {
+        path: "/staff",
+        element: <StaffPage />,
+      },
+      {
+        path: "/manager",
+        element: <ManagerPage />,
+      },
     ],
-  },
-  {
-    path: "/admin",
-    element: <AdminPage />,
-  },
-  {
-    path: "/staff",
-    element: <StaffPage />,
-  },
-  {
-    path: "/manager",
-    element: <ManagerPage />,
   },
 ]);
 
