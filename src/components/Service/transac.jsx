@@ -234,13 +234,6 @@ const Transac = () => {
     newWindow.print();
   };
 
-  const getCurrentDate = () => {
-    const date = new Date();
-    const options = { year: "numeric", month: "long", day: "numeric" };
-
-    return date.toLocaleDateString("en-US", options);
-  };
-
   const handleShowModal = (index) => {
     const selectedProduct = dataSource[index];
     setSelectedProduct(selectedProduct);
