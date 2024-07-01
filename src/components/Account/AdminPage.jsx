@@ -128,7 +128,7 @@ const AdminPage = () => {
     }
 
     if (isEditing) {
-      await axios.put(`https://localhost:7150/api/Account/${editId}`, formData);
+      await axios.put(`https://localhost:7150/api/Account/update-user/${editId}`, formData);
       setIsEditing(false);
       setEditId(null);
     } else {
@@ -146,6 +146,7 @@ const AdminPage = () => {
     setShowForm(false);
     fetchAccounts();
   };
+
 
   const handleEdit = (account) => {
     setIsEditing(true);
