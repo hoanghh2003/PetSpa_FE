@@ -156,7 +156,7 @@ const AdminPage = () => {
       email: account.email,
       password: "",
       phoneNumber: account.phoneNumber,
-      role: account.role,
+      role: account.roles.join(", "),
       fullName: account.fullName,
       gender: account.gender,
     });

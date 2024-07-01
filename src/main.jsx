@@ -19,8 +19,6 @@ import Logout from "./components/Logout/logout";
 import Transac from "./components/Service/transac";
 import Blog from "./components/Blog/Blog";
 import BlogDetails from "./components/Blog/Blog_Details";
-import AddAccount from "./components/Account/AddAccount";
-import ManageAccount from "./components/Account/ManageAccount";
 import AdminPage from "./components/Account/AdminPage";
 import StaffPage from "./components/Account/StaffPage";
 import ManagerPage from "./components/Account/ManagerPage";
@@ -100,14 +98,6 @@ const router = createBrowserRouter([
       {
         path: "/post/:id",
         element: <BlogDetails />,
-      },
-      {
-        path: "/addaccount",
-        element: <AddAccount />,
-      },
-      {
-        path: "/manageacc",
-        element: <ManageAccount />,
       },
     ],
   },
