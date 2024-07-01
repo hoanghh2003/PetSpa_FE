@@ -1,418 +1,205 @@
-import {
-  Button,
-  Form,
-  Image,
-  Input,
-  Modal,
-  Select,
-  Upload,
-  message,
-  Table,
-  InputNumber,
-  Space,
-  DatePicker,
-} from "antd";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
-import { useForm } from "antd/es/form/Form";
 import { useNavigate } from "react-router-dom";
-import moment from "moment";
-import uploadFile from "@/utils/upload";
-import "../../components/Petmanagement/Petmanagement.css"; // Create a separate CSS file for custom styles
+import "../../assets/css/StaffPage.css";
 
-function Petmanagement() {
-  const navigate = useNavigate();
-  const regex30KyTu = /^.{1,30}$/; // Ensures the name is between 1 and 30 characters
-  const [form] = useForm();
-  const [dataSource, setDataSource] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [birthday, setBirthday] = useState(null);
-  const [isUpdate, setIsUpdate] = useState(false);
-  const [petId, setPetId] = useState(null);
+const StaffPage = () => {
+  const [tasks, setTasks] = useState({ todo: [], inProgress: [], done: [] });
+  const [activeTab, setActiveTab] = useState("todo");
   const [error, setError] = useState("");
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState([]);
+  const navigate = useNavigate();
 
-  const handleDeleteMovie = async (id) => {
+  useEffect(() => {
     const userInfoString = localStorage.getItem("user-info");
-    const userInfo = JSON.parse(userInfoString);
-
-    if (userInfo != null) {
-      try {
-        const response = await axios.delete(
-          `https://localhost:7150/api/Pet/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${userInfo.data.token}`,
-            },
-          }
-        );
-
-        if (response.status === 401) {
-          localStorage.removeItem("user-info");
-          navigate("/login");
-          return;
-        }
-
-        if (response.status === 200) {
-          const listAfterDelete = dataSource.filter((pet) => pet.petId !== id);
-          setDataSource(listAfterDelete);
-          message.success("Delete successfully");
-        } else {
-          console.error(
-            "Failed to delete pet:",
-            response.status,
-            response.statusText
-          );
-        }
-      } catch (error) {
-        console.error("Error deleting pet:", error);
-      }
-    } else {
+    if (!userInfoString) {
       navigate("/login");
-    }
-  };
-
-  const handleUpdate = async (id) => {
-    setIsUpdate(true);
-    setPetId(id);
-    const pet = dataSource.find((x) => x.petId === id);
-    form.setFieldsValue({
-      name: pet.petName,
-      height: pet.petHeight,
-      weight: pet.petWeight,
-      category: pet.petType,
-      poster_path: pet.image,
-    });
-    setBirthday(pet.petBirthday ? moment(pet.petBirthday, "YYYY-MM-DD") : null);
-    setFileList(pet.image ? [{ url: pet.image }] : []);
-    setIsOpen(true);
-  };
-
-  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
-  const uploadButton = (
-    <Button icon={<PlusOutlined />} type="dashed">
-      Upload
-    </Button>
-  );
-
-  async function fetchMovies() {
-    const userInfoString = localStorage.getItem("user-info");
-    const userInfo = JSON.parse(userInfoString);
-
-    if (userInfo != null) {
-      try {
-        const response = await axios.get(
-          `https://localhost:7150/api/Customer/${userInfo.data.user.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${userInfo.data.token}`,
-            },
-          }
-        );
-
-        if (response.status === 401) {
-          // Token hết hạn, thông báo và chờ 2 giây trước khi điều hướng
-          message.error("Token hết hạn. Vui lòng đăng nhập lại.");
-          localStorage.removeItem("user-info");
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          navigate("/login");
-          return;
-        }
-
-        const result = response.data;
-        localStorage.setItem("pets", JSON.stringify(result));
-
-        setDataSource(result.data.pets.filter((x) => x.status !== false));
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          localStorage.removeItem("user-info");
-          message.error("Please, Login in again");
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          navigate("/login");
-        } else {
-          message.error("Có lỗi xảy ra. Vui lòng thử lại.");
-        }
-      }
-    } else {
-      navigate("/");
-    }
-  }
-
-  function handleShowModal() {
-    setIsOpen(true);
-  }
-
-  function handleHideModal() {
-    setIsOpen(false);
-    form.resetFields();
-    setIsUpdate(false);
-    setPetId(null);
-  }
-
-  function handleOk() {
-    form.submit();
-  }
-
-  const handleSubmit = async (values) => {
-    if (values.poster_path && values.poster_path.file) {
-      const url = await uploadFile(values.poster_path.file.originFileObj);
-      if (url) {
-        values.poster_path = url;
-      }
-    }
-
-    if (!regex30KyTu.test(values.name.trim())) {
-      setError("Name is required");
       return;
     }
 
-    const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
-    const token = userInfo?.data?.token;
+    const token = userInfo.data.token;
+    const userId = userInfo.data.user.id;
 
-    if (userInfo?.data?.user?.id && token) {
-      const apiUrl = isUpdate
-        ? `https://localhost:7150/api/Pet/${petId}`
-        : `https://localhost:7150/api/Pet`;
-      const petData = {
-        cusId: userInfo.data.user.id,
-        petType: values.category,
-        petName: values.name,
-        image: values.poster_path != null ? values.poster_path : "",
-        petBirthday: birthday ? birthday.format("YYYY-MM-DD") : null,
-        status: "true",
-        petWeight: values.weight || "",
-        petHeight: values.height || "",
-      };
-
+    const fetchData = async () => {
       try {
-        const response = await axios({
-          method: isUpdate ? "PUT" : "POST",
-          url: apiUrl,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          data: petData,
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+
+        const todoResponse = await axios.get(
+          `https://localhost:7150/api/Staff/${userId}/pending-bookings`,
+          { headers }
+        );
+        const inProgressResponse = await axios.get(
+          `https://localhost:7150/api/Staff/${userId}/current-booking`,
+          { headers }
+        );
+        const doneResponse = await axios.get(
+          `https://localhost:7150/api/Staff/${userId}/completed-bookings`,
+          { headers }
+        );
+
+        setTasks({
+          todo: mapApiResponse(todoResponse.data),
+          inProgress: mapApiResponse(inProgressResponse.data),
+          done: mapApiResponse(doneResponse.data),
         });
-        if (response.status === 200 || response.status === 201) {
-          message.success(`Pet ${isUpdate ? "updated" : "added"} successfully`);
-          setError("");
-          if (isUpdate) {
-            setDataSource((prevDataSource) =>
-              prevDataSource.map((pet) =>
-                pet.petId === petId ? { ...pet, ...petData } : pet
-              )
-            );
-          } else {
-            setDataSource((prevDataSource) => [
-              ...prevDataSource,
-              { ...petData, petId: response.data.petId },
-            ]);
-          }
-        } else {
-          setError(
-            response.data.message ||
-              `Error ${isUpdate ? "updating" : "adding"} pet`
-          );
-        }
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          message.error("Token has expired. Please log in again.");
-          localStorage.removeItem("user-info");
-          navigate("/login");
+        if (error.response && error.response.status === 403) {
+          setError("You are not authorized to access this resource.");
         } else {
-          console.error("API error:", error);
-          setError("API error");
+          console.error("Error fetching data:", error);
         }
       }
-    } else {
-      setError("You must be logged in");
-      navigate("/login");
-    }
+    };
 
-    handleHideModal();
-    form.resetFields();
+    fetchData();
+  }, [navigate]);
+
+  const mapApiResponse = (data) => {
+    return data.map((item) => ({
+      id: item.bookingId,
+      service: item.serviceName,
+      pet: item.petName,
+      owner: item.customerName,
+      date: new Date(item.startDate).toLocaleDateString(),
+      time: new Date(item.startDate).toLocaleTimeString(),
+    }));
   };
 
-  useEffect(() => {
-    fetchMovies();
-  }, []);
+  const printTasks = (tasksToPrint) => {
+    const newWindow = window.open("", "", "height=800,width=600");
+    newWindow.document.write("<html><head><title>Print</title>");
+    newWindow.document.write(
+      '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" type="text/css" />'
+    );
+    newWindow.document.write("<style>");
+    newWindow.document.write(
+      "@media print { body { -webkit-print-color-adjust: exact; margin: 20px; font-size: 18px; }"
+    );
+    newWindow.document.write(
+      ".printable-content { width: 100%; margin: auto; }"
+    );
+    newWindow.document.write(
+      ".card-body { padding: 20px; border: 1px solid #dee2e6; border-radius: 4px; }"
+    );
+    newWindow.document.write(
+      ".media-1 { margin-bottom: 20px; display: flex; align-items: center; }"
+    );
+    newWindow.document.write(".media-body { padding: 10px; }");
+    newWindow.document.write("img { max-width: 100%; height: auto; }");
+    newWindow.document.write(
+      ".h5, .h5 a { font-size: 1.5rem; font-weight: 500; margin-bottom: 0.5rem; }"
+    );
+    newWindow.document.write(".text-body { font-size: 1rem; color: #000; }");
+    newWindow.document.write(".d-print-none { display: none; }"); // Hide print button
+    newWindow.document.write("</style>");
+    newWindow.document.write("</head><body class='printable-content'>");
 
-  const columns = [
-    {
-      title: "Pet Name",
-      dataIndex: "petName",
-      key: "petName",
-    },
-    {
-      title: "Category",
-      dataIndex: "petType",
-      key: "petType",
-    },
-    {
-      title: "Weight",
-      dataIndex: "petWeight",
-      key: "petWeight",
-    },
-    {
-      title: "Height",
-      dataIndex: "petHeight",
-      key: "petHeight",
-    },
-    {
-      title: "Birthday",
-      dataIndex: "petBirthday",
-      key: "petBirthday",
-    },
-    {
-      title: "Image",
-      dataIndex: "image",
-      key: "image",
-      render: (text) => <Image width={50} src={text} />,
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record) => (
-        <Space size="middle">
-          <Button type="link" onClick={() => handleUpdate(record.petId)}>
-            Update
-          </Button>
-          <Button
-            type="link"
-            danger
-            onClick={() => handleDeleteMovie(record.petId)}
-          >
-            Delete
-          </Button>
-        </Space>
-      ),
-    },
-  ];
+    tasksToPrint.forEach((task) => {
+      newWindow.document.write(
+        `<div class='card-body'>${task.service} for ${task.pet} (${task.id}) at ${task.time} on ${task.date}</div>`
+      );
+      newWindow.document.write("<hr>"); // Add a separator between tasks
+    });
+
+    newWindow.document.close();
+    newWindow.focus(); // Necessary for IE >= 10
+    newWindow.print();
+  };
 
   return (
-    <div className="pet-management-container">
-      <Button
-        type="primary"
-        onClick={handleShowModal}
-        className="add-pet-button"
-      >
-        Add new pet
-      </Button>
-      <Table columns={columns} dataSource={dataSource} rowKey="petId" />
-
-      <Modal
-        title={isUpdate ? "Update pet" : "Add new pet"}
-        open={isOpen}
-        onOk={handleOk}
-        onCancel={handleHideModal}
-      >
-        <Form
-          labelCol={{
-            span: 24,
-          }}
-          form={form}
-          onFinish={handleSubmit}
+    <div className="staff-page">
+      <h1>Staff Page</h1>
+      {error && <div className="error-message">{error}</div>}
+      <div className="tab-section">
+        <div
+          className={`tab-title ${activeTab === "todo" ? "active" : ""}`}
+          onClick={() => setActiveTab("todo")}
         >
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[
-              { required: true, message: "Please input the pet name!" },
-              {
-                pattern: /^[a-zA-Z\s]{1,30}$/,
-                message:
-                  "Name must be between 1 and 30 characters and cannot contain special characters!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Height"
-            name="height"
-            rules={[
-              { required: true, message: "Please input the height!" },
-              { type: "number", message: "Height must be a number!" },
-              {
-                validator: (_, value) =>
-                  value >= 0
-                    ? Promise.resolve()
-                    : Promise.reject("Height must be a non-negative number!"),
-              },
-            ]}
-          >
-            <InputNumber style={{ width: "100%" }} min={0} />
-          </Form.Item>
-          <Form.Item
-            label="Weight"
-            name="weight"
-            rules={[
-              { required: true, message: "Please input the weight!" },
-              { type: "number", message: "Weight must be a number!" },
-              {
-                validator: (_, value) =>
-                  value >= 0
-                    ? Promise.resolve()
-                    : Promise.reject("Weight must be a non-negative number!"),
-              },
-            ]}
-          >
-            <InputNumber style={{ width: "100%" }} min={0} />
-          </Form.Item>
-          <Form.Item
-            label="Category"
-            name="category"
-            rules={[{ required: true, message: "Please select a category!" }]}
-          >
-            <Select
-              options={[
-                { value: "Cat", label: <span>Cat</span> },
-                { value: "Dog", label: <span>Dog</span> },
-                { value: "Other", label: <span>Other</span> },
-              ]}
-            />
-          </Form.Item>
-          <Form.Item label="Birthday">
-            <Space direction="vertical">
-              <DatePicker
-                value={birthday}
-                onChange={(date) => setBirthday(date)}
-              />
-            </Space>
-          </Form.Item>
-          <Form.Item label="Poster" name="poster_path">
-            <Upload
-              action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-              listType="picture-card"
-              fileList={fileList}
-              onChange={handleChange}
-            >
-              {fileList.length >= 1 ? null : uploadButton}
-            </Upload>
-          </Form.Item>
-          {error && <p className="error-message">{error}</p>}
-        </Form>
-      </Modal>
-
-      {previewImage && (
-        <Image
-          wrapperStyle={{
-            display: "none",
-          }}
-          preview={{
-            visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(""),
-          }}
-          src={previewImage}
-        />
-      )}
+          To Do ({tasks.todo.length})
+        </div>
+        <div
+          className={`tab-title ${activeTab === "inProgress" ? "active" : ""}`}
+          onClick={() => setActiveTab("inProgress")}
+        >
+          In Progress ({tasks.inProgress.length})
+        </div>
+        <div
+          className={`tab-title ${activeTab === "done" ? "active" : ""}`}
+          onClick={() => setActiveTab("done")}
+        >
+          Completed ({tasks.done.length})
+        </div>
+      </div>
+      <div className={`task-content ${activeTab !== "todo" ? "hidden" : ""}`}>
+        <TaskList tasks={tasks.todo} printTasks={printTasks} />
+      </div>
+      <div
+        className={`task-content ${activeTab !== "inProgress" ? "hidden" : ""}`}
+      >
+        <TaskList tasks={tasks.inProgress} printTasks={printTasks} />
+      </div>
+      <div className={`task-content ${activeTab !== "done" ? "hidden" : ""}`}>
+        <TaskList tasks={tasks.done} printTasks={printTasks} />
+      </div>
     </div>
   );
-}
-export default Petmanagement;
+};
+
+const TaskList = ({ tasks, printTasks }) => {
+  const [selectedTasks, setSelectedTasks] = useState([]);
+
+  const handleTaskSelect = (task) => {
+    setSelectedTasks((prevSelectedTasks) =>
+      prevSelectedTasks.includes(task)
+        ? prevSelectedTasks.filter((t) => t !== task)
+        : [...prevSelectedTasks, task]
+    );
+  };
+
+  return (
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Service</th>
+            <th>Pet</th>
+            <th>Owner</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Select</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map((task, index) => (
+            <tr key={task.id}>
+              <td>{index + 1}</td>
+              <td>{task.service}</td>
+              <td>{task.pet}</td>
+              <td>{task.owner}</td>
+              <td>{task.date}</td>
+              <td>{task.time}</td>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={selectedTasks.includes(task)}
+                  onChange={() => handleTaskSelect(task)}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <button
+        onClick={() => printTasks(selectedTasks)}
+        disabled={selectedTasks.length === 0}
+      >
+        Print Selected Tasks
+      </button>
+    </div>
+  );
+};
+
+export default StaffPage;

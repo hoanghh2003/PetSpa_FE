@@ -1,21 +1,65 @@
-import { useState } from 'react';
-import '../../assets/css/StaffPage.css';
+
+
+import { useState, useEffect } from "react";
+import axios from "axios";
+import "../../assets/css/StaffPage.css";
+
 
 const StaffPage = () => {
-  const [tasks] = useState({
-    todo: [
-      { id: 'T001', service: 'Bath and Groom', pet: 'Bella', owner: 'John Doe', date: '2024-07-01', time: '10:00 AM' },
-      { id: 'T002', service: 'Nail Trimming', pet: 'Max', owner: 'Jane Smith', date: '2024-07-01', time: '11:00 AM' },
-    ],
-    inProgress: [
-      { id: 'T003', service: 'Haircut', pet: 'Luna', owner: 'Mary Johnson', date: '2024-07-01', time: '09:30 AM' },
-    ],
-    done: [
-      { id: 'T004', service: 'Dental Cleaning', pet: 'Charlie', owner: 'David Brown', date: '2024-06-30', time: '03:00 PM' },
-    ],
-  });
+  const [tasks, setTasks] = useState({ todo: [], inProgress: [], done: [] });
+  const [activeTab, setActiveTab] = useState("todo");
+  const [error, setError] = useState("");
 
-  const [activeTab, setActiveTab] = useState('todo');
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+
+        const todoResponse = await axios.get(
+          `https://localhost:7150/api/Staff/${userId}/pending-bookings`,
+          { headers }
+        );
+        const inProgressResponse = await axios.get(
+          `https://localhost:7150/api/Staff/${userId}/current-booking`,
+          { headers }
+        );
+        const doneResponse = await axios.get(
+          `https://localhost:7150/api/Staff/${userId}/completed-bookings`,
+          { headers }
+        );
+
+        setTasks({
+          todo: mapApiResponse(todoResponse.data),
+          inProgress: mapApiResponse(inProgressResponse.data),
+          done: mapApiResponse(doneResponse.data),
+        });
+      } catch (error) {
+        if (error.response && error.response.status === 403) {
+          setError("You are not authorized to access this resource.");
+        } else {
+          console.error("Error fetching data:", error);
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const mapApiResponse = (data) => {
+    return data.map((item) => ({
+      id: item.bookingId,
+      service: item.serviceName,
+      pet: item.petName,
+      owner: item.customerName,
+      date: new Date(item.startDate).toLocaleDateString(),
+      time: new Date(item.startDate).toLocaleTimeString(),
+    }));
+  };
 
   const printTasks = (tasksToPrint) => {
     const newWindow = window.open("", "", "height=800,width=600");
@@ -47,7 +91,9 @@ const StaffPage = () => {
     newWindow.document.write("</head><body class='printable-content'>");
 
     tasksToPrint.forEach((task) => {
-      newWindow.document.write(`<div class='card-body'>${task.service} for ${task.pet} (${task.id}) at ${task.time} on ${task.date}</div>`);
+      newWindow.document.write(
+        `<div class='card-body'>${task.service} for ${task.pet} (${task.id}) at ${task.time} on ${task.date}</div>`
+      );
       newWindow.document.write("<hr>"); // Add a separator between tasks
     });
 
@@ -58,25 +104,37 @@ const StaffPage = () => {
 
   return (
     <div className="staff-page">
-      <h1 className="hehe">Staff Page</h1>
+<h1 className="hehe">Staff Page</h1>
+      {error && <div className="error-message">{error}</div>}
       <div className="tab-section">
-        <div className={`tab-title ${activeTab === 'todo' ? 'active' : ''}`} onClick={() => setActiveTab('todo')}>
-          Chưa làm ({tasks.todo.length})
+        <div
+          className={`tab-title ${activeTab === "todo" ? "active" : ""}`}
+          onClick={() => setActiveTab("todo")}
+        >
+          To Do ({tasks.todo.length})
         </div>
-        <div className={`tab-title ${activeTab === 'inProgress' ? 'active' : ''}`} onClick={() => setActiveTab('inProgress')}>
-          Đang làm ({tasks.inProgress.length})
+        <div
+          className={`tab-title ${activeTab === "inProgress" ? "active" : ""}`}
+          onClick={() => setActiveTab("inProgress")}
+        >
+          In Progress ({tasks.inProgress.length})
         </div>
-        <div className={`tab-title ${activeTab === 'done' ? 'active' : ''}`} onClick={() => setActiveTab('done')}>
-          Hoàn thành ({tasks.done.length})
+        <div
+          className={`tab-title ${activeTab === "done" ? "active" : ""}`}
+          onClick={() => setActiveTab("done")}
+        >
+          Completed ({tasks.done.length})
         </div>
       </div>
-      <div className={`task-content ${activeTab !== 'todo' ? 'hidden' : ''}`}>
+      <div className={`task-content ${activeTab !== "todo" ? "hidden" : ""}`}>
         <TaskList tasks={tasks.todo} printTasks={printTasks} />
       </div>
-      <div className={`task-content ${activeTab !== 'inProgress' ? 'hidden' : ''}`}>
+      <div
+        className={`task-content ${activeTab !== "inProgress" ? "hidden" : ""}`}
+      >
         <TaskList tasks={tasks.inProgress} printTasks={printTasks} />
       </div>
-      <div className={`task-content ${activeTab !== 'done' ? 'hidden' : ''}`}>
+      <div className={`task-content ${activeTab !== "done" ? "hidden" : ""}`}>
         <TaskList tasks={tasks.done} printTasks={printTasks} />
       </div>
     </div>
@@ -99,13 +157,13 @@ const TaskList = ({ tasks, printTasks }) => {
       <table>
         <thead>
           <tr>
-            <th>STT</th>
-            <th>Dịch vụ</th>
-            <th>Thú cưng</th>
-            <th>Chủ nhân</th>
-            <th>Ngày</th>
-            <th>Giờ</th>
-            <th>Chọn</th>
+            <th>#</th>
+            <th>Service</th>
+            <th>Pet</th>
+            <th>Owner</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Select</th>
           </tr>
         </thead>
         <tbody>
@@ -128,7 +186,10 @@ const TaskList = ({ tasks, printTasks }) => {
           ))}
         </tbody>
       </table>
-      <button className="print-button" onClick={() => printTasks(selectedTasks)} disabled={selectedTasks.length === 0}>
+      <button
+        onClick={() => printTasks(selectedTasks)}
+        disabled={selectedTasks.length === 0}
+      >
         Print Selected Tasks
       </button>
     </div>
