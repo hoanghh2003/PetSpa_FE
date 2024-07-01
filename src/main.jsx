@@ -23,6 +23,7 @@ import AddAccount from "./components/Account/AddAccount";
 import ManageAccount from "./components/Account/ManageAccount";
 import AdminPage from "./components/Account/AdminPage";
 import StaffPage from "./components/Account/StaffPage";
+import ManagerPage from "./components/Account/ManagerPage";
 //route
 const router = createBrowserRouter([
   {
@@ -117,6 +118,10 @@ const router = createBrowserRouter([
   {
     path: "/staff",
     element: <StaffPage />,
+  },
+  {
+    path: "/manager",
+    element: <ManagerPage />,
   },
 ]);
 
