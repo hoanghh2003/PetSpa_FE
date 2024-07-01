@@ -147,7 +147,19 @@ const LoginPage = () => {
           localStorage.setItem("user-info", JSON.stringify(result));
           setError("Login successfully");
           console.log(result);
-          navigate("/");
+
+          const role = result.data.user.role;
+          if (role === "Customer") {
+            navigate("/");
+          } else if (role === "Admin") {
+            navigate("/admin");
+          } else if (role === "Manager") {
+            navigate("/manager");
+          } else if (role === "Staff") {
+            navigate("/staff");
+          } else {
+            navigate("/"); // Default fallback
+          }
         }
       } catch (error) {
         setError("An error occurred. Please try again.");

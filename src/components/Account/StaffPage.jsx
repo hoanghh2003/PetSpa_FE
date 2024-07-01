@@ -13,8 +13,15 @@ const StaffPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const userId = localStorage.getItem("userId");
+        const userInfoString = localStorage.getItem("user-info");
+        // if (!userInfoString) {
+        //   navigate("/login");
+        //   return;
+        // }
+    
+        const userInfo = JSON.parse(userInfoString);
+        const token = userInfo.data.token;
+        const userId = userInfo.data.user.id;
 
         const headers = {
           Authorization: `Bearer ${token}`,
@@ -186,7 +193,7 @@ const TaskList = ({ tasks, printTasks }) => {
           ))}
         </tbody>
       </table>
-      <button
+      <button className="print-button"
         onClick={() => printTasks(selectedTasks)}
         disabled={selectedTasks.length === 0}
       >
