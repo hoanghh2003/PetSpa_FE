@@ -11,6 +11,7 @@ import {
   Row,
   Modal,
   Input,
+  Pagination,
 } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -36,6 +37,8 @@ const Transac = () => {
   const [dataSource, setDataSource] = useState([]);
   const [staffList, setStaffList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
 
   useEffect(() => {
     fetchStaff();
@@ -515,8 +518,7 @@ const Transac = () => {
                 ? { ...item, status: 2 }
                 : item
             ),
-          };
-        });
+          }});
         setDataSource(updatedDataSource);
 
         handleHideModal();
@@ -656,6 +658,17 @@ const Transac = () => {
     },
   };
 
+  const handlePageChange = (page, pageSize) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
+  };
+
+  const getCurrentPageData = () => {
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return dataSource.slice(startIndex, endIndex);
+  };
+
   return (
     <main id="content" role="main" className="main">
       <div className="content container-fluid">
@@ -684,7 +697,7 @@ const Transac = () => {
         </div>
 
         <div className="container">
-          {dataSource.map((transaction, transactionIndex) => (
+          {getCurrentPageData().map((transaction, transactionIndex) => (
             <div key={transactionIndex} className="card mb-3 mb-lg-5">
               <div className="card-header" style={styles.cardHeader}>
                 <h4 className="card-header-title" style={styles.cardTitle}>
@@ -864,6 +877,14 @@ const Transac = () => {
               </div>
             </div>
           ))}
+
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={dataSource.length}
+            onChange={handlePageChange}
+            className="d-print-none"
+          />
         </div>
 
         <Modal
