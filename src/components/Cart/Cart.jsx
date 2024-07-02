@@ -400,8 +400,7 @@ function Cart() {
             })),
           });
         } else if (item.comboDetails && item.period > 1) {
-          const numberOfMonths = parseInt(item.period, 10);
-          for (let i = 0; i < numberOfMonths; i++) {
+          for (let i = 0; i < item.period; i++) {
             const bookingDate = dayjs(item.date)
               .add(i, "months")
               .format("YYYY-MM-DDTHH:mm:ss");
@@ -420,8 +419,7 @@ function Cart() {
             });
           }
         } else if (item.period > 1) {
-          const numberOfMonths = parseInt(item.period, 10);
-          for (let i = 0; i < numberOfMonths; i++) {
+          for (let i = 0; i < item.period; i++) {
             const bookingDate = dayjs(item.date)
               .add(i, "months")
               .format("YYYY-MM-DDTHH:mm:ss");
@@ -460,6 +458,7 @@ function Cart() {
       }
     }
 
+    console.log(bookingPromises);
     try {
       const responses = await Promise.all(
         bookingPromises.map((requestData) =>
@@ -832,14 +831,8 @@ function Cart() {
                                   Available Offers
                                 </div>
                                 <ul className="list-unstyled mb-0">
-                                  <li>
-                                    {" "}
-                                    - 5% Silver Rank
-                                  </li>
-                                  <li>
-                                    {" "}
-                                    - 10% Gold Rank
-                                  </li>
+                                  <li> - 5% Silver Rank</li>
+                                  <li> - 10% Gold Rank</li>
                                 </ul>
                               </div>
                             </div>
