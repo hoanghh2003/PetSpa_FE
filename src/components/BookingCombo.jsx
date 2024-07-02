@@ -258,7 +258,6 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
         (service) => service.comboId === comboId
       );
 
-      console.log(period);
       const newItem = {
         date: date.format("YYYY-MM-DDTHH:mm:ss"),
         serviceName: selectedService.comboType,

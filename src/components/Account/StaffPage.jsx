@@ -1,20 +1,25 @@
-
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "../../assets/css/StaffPage.css";
-
+import { useNavigate } from "react-router-dom";
 
 const StaffPage = () => {
   const [tasks, setTasks] = useState({ todo: [], inProgress: [], done: [] });
   const [activeTab, setActiveTab] = useState("todo");
   const [error, setError] = useState("");
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const userId = localStorage.getItem("userId");
+        const userInfoString = localStorage.getItem("user-info");
+        if (!userInfoString) {
+          navigate("/login");
+          return;
+        }
+
+        const userInfo = JSON.parse(userInfoString);
+        const token = userInfo.data.token;
+        const userId = userInfo.data.user.id;
 
         const headers = {
           Authorization: `Bearer ${token}`,
@@ -104,7 +109,7 @@ const StaffPage = () => {
 
   return (
     <div className="staff-page">
-<h1 className="hehe">Staff Page</h1>
+      <h1 className="hehe">Staff Page</h1>
       {error && <div className="error-message">{error}</div>}
       <div className="tab-section">
         <div

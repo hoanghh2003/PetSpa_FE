@@ -102,12 +102,17 @@ const Transac = () => {
                   ? await fetchStaffName(detail.staffId)
                   : null;
                 const serviceName = await fetchServiceName(detail.serviceId);
+                let comboName = null;
+                if (detail.comboId) {
+                  comboName = await fetchComboName(detail.comboId);
+                }
 
                 return {
                   ...detail,
                   petName,
                   staffName,
                   serviceName,
+                  comboName,
                 };
               })
             );
@@ -152,6 +157,18 @@ const Transac = () => {
       return pet ? pet.petName : null;
     } catch (error) {
       console.error(`Error fetching pet name for petId ${petId}:`, error);
+      return null;
+    }
+  };
+  const fetchComboName = async (comboId) => {
+    try {
+      const response = await axios.get(
+        `https://localhost:7150/api/Combo/${comboId}`
+      );
+
+      return response.data.data.comboType;
+    } catch (error) {
+      console.error(`Error fetching combo name for comboId ${comboId}:`, error);
       return null;
     }
   };
@@ -234,8 +251,17 @@ const Transac = () => {
     newWindow.print();
   };
 
-  const handleShowModal = (index) => {
-    const selectedProduct = dataSource[index];
+  const handleShowModal = (bookingId) => {
+    const selectedTransaction = dataSource.find((transaction) =>
+      transaction.bookingDetails.some(
+        (bookingDetail) => bookingDetail.bookingId === bookingId
+      )
+    );
+    setNewDate(moment(selectedTransaction.scheduleDate, "YYYY-MM-DD HH:mm:ss"));
+    const selectedProduct = selectedTransaction.bookingDetails.find(
+      (bookingDetail) => bookingDetail.bookingId === bookingId
+    );
+
     setSelectedProduct(selectedProduct);
 
     // Check if the booking is in progress or completed
@@ -263,10 +289,10 @@ const Transac = () => {
 
     // Reset form and set new values
     form.resetFields();
-    setNewDate(moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"));
+    setNewDate(originalBookingTime); // Set the newDate with the original booking time
     form.setFieldsValue({
       staff: selectedProduct.staffId || null,
-      date: moment(selectedProduct.scheduleDate, "YYYY-MM-DD HH:mm:ss"),
+      date: originalBookingTime,
     });
 
     setIsOpen(true);
@@ -340,16 +366,25 @@ const Transac = () => {
           if (updateResponse.status === 200) {
             console.log("Booking time updated successfully.");
             message.success("Booking time updated successfully.");
-
+            const staffName = selectedStaffId
+              ? await fetchStaffName(selectedStaffId)
+              : null;
             // Update the booking time in dataSource
-            const updatedDataSource = dataSource.map((item) =>
-              item.bookingId === selectedProduct.bookingId
-                ? {
-                    ...item,
-                    scheduleDate: newDate.format("YYYY-MM-DD HH:mm:ss"),
-                  }
-                : item
-            );
+            const updatedDataSource = dataSource.map((transaction) => {
+              return {
+                ...transaction,
+                bookingDetails: transaction.bookingDetails.map((item) =>
+                  item.bookingId === selectedProduct.bookingId
+                    ? {
+                        ...item,
+                        scheduleDate: newDate.format("YYYY-MM-DD HH:mm:ss"),
+                        staffName: staffName,
+                      }
+                    : item
+                ),
+              };
+            });
+
             setDataSource(updatedDataSource);
 
             handleHideModal();
@@ -416,11 +451,16 @@ const Transac = () => {
         message.success("Feedback submitted successfully.");
 
         // Update the feedback in dataSource
-        const updatedDataSource = dataSource.map((item) =>
-          item.bookingId === selectedProduct.bookingId
-            ? { ...item, feedback: feedbackText }
-            : item
-        );
+        const updatedDataSource = dataSource.map((transaction) => {
+          return {
+            ...transaction,
+            bookingDetails: transaction.bookingDetails.map((item) =>
+              item.bookingId === selectedProduct.bookingId
+                ? { ...item, feedback: feedbackText }
+                : item
+            ),
+          };
+        });
         setDataSource(updatedDataSource);
 
         setIsFeedbackModalOpen(false);
@@ -467,11 +507,16 @@ const Transac = () => {
         );
 
         // Update the booking status in dataSource
-        const updatedDataSource = dataSource.map((item) =>
-          item.bookingId === selectedProduct.bookingId
-            ? { ...item, status: 2 }
-            : item
-        );
+        const updatedDataSource = dataSource.map((transaction) => {
+          return {
+            ...transaction,
+            bookingDetails: transaction.bookingDetails.map((item) =>
+              item.bookingId === selectedProduct.bookingId
+                ? { ...item, status: 2 }
+                : item
+            ),
+          };
+        });
         setDataSource(updatedDataSource);
 
         handleHideModal();
@@ -639,8 +684,8 @@ const Transac = () => {
         </div>
 
         <div className="container">
-          {dataSource.map((transaction, index) => (
-            <div key={index} className="card mb-3 mb-lg-5">
+          {dataSource.map((transaction, transactionIndex) => (
+            <div key={transactionIndex} className="card mb-3 mb-lg-5">
               <div className="card-header" style={styles.cardHeader}>
                 <h4 className="card-header-title" style={styles.cardTitle}>
                   Payment detail
@@ -669,16 +714,16 @@ const Transac = () => {
               </div>
 
               <div className="card-body">
-                {transaction.bookingDetails.map((product, index) => (
+                {transaction.bookingDetails.map((product, productIndex) => (
                   <div
-                    key={index}
-                    id={`product-${index}`}
+                    key={productIndex}
+                    id={`product-${productIndex}`}
                     className="media-1 mb-3"
                     style={styles.media}
                   >
                     <input
                       type="checkbox"
-                      value={`product-${index}`}
+                      value={`product-${productIndex}`}
                       onChange={handleSelectProduct}
                       className="mr-2 d-print-none"
                     />
@@ -700,10 +745,16 @@ const Transac = () => {
                             href="javascript:void(0)"
                             style={styles.productTitle}
                           >
-                            {product.comboId
-                              ? `Combo: ${product.comboType}`
-                              : `Service: ${product.serviceName}`}
+                            {product.serviceName}
                           </a>
+                          {product.comboName && (
+                            <div className="font-size-sm text-body">
+                              <span>Combo: </span>
+                              <span className="font-weight-bold">
+                                {product.comboName}
+                              </span>
+                            </div>
+                          )}
                           <div className="font-size-sm text-body">
                             <span>PetName: </span>
                             <span className="font-weight-bold">
@@ -771,7 +822,7 @@ const Transac = () => {
                             <Button
                               type="button"
                               size="small"
-                              onClick={() => handleShowModal(index)}
+                              onClick={() => handleShowModal(product.bookingId)}
                               className="btn btn-primary btn-pinned mt-3 d-print-none"
                               style={styles.buttonPrimary}
                             >
