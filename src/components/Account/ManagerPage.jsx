@@ -192,10 +192,12 @@ const ManagerPage = () => {
           serviceName: service.serviceName,
           serviceDescription: service.serviceDescription,
           duration: service.duration,
+
           price: service.price.toLocaleString("vi-VN", {
             style: "currency",
             currency: "VND",
           }),
+          status: service.status,
         }));
         setServices(formattedData);
       });
@@ -246,15 +248,20 @@ const ManagerPage = () => {
       } else if (activeTab === "service") {
         // Find the service by key
         const service = services.find((service) => service.key === key);
-        console.log(service);
+
         if (service) {
+          // Toggle the status
+          const newStatus = !service.status;
+          service.status = newStatus;
+          setServices([...services]);
           // Remove the service from the state
-          setServices(services.filter((service) => service.key !== key));
+
           // Call the delete API using the service id
           const result = await axios.delete(
             `https://localhost:7150/api/Service/${service.serviceId}`,
             { headers }
           );
+          console.log(result.data);
           if (result.status === 200) {
             message.success("Update status successful");
           }
@@ -275,7 +282,7 @@ const ManagerPage = () => {
   const handleModalOk = () => {
     form
       .validateFields()
-      .then((values) => {
+      .then(async (values) => {
         if (editingRecord) {
           if (activeTab === "staff") {
             setEmployees(
@@ -286,13 +293,47 @@ const ManagerPage = () => {
               )
             );
           } else if (activeTab === "service") {
-            setServices(
-              services.map((service) =>
-                service.key === editingRecord.key
-                  ? { ...values, key: service.key }
-                  : service
-              )
-            );
+            if (!editingRecord.status) {
+              message.error("Cannot edit a service that is not active.");
+              return;
+            }
+            try {
+              const serviceId = editingRecord.serviceId;
+              const updateData = {
+                serviceName: values.serviceName,
+                status: editingRecord.status, // Keep the current status
+                serviceDescription: values.serviceDescription,
+                serviceImage: values.serviceImage || "", // Default to empty string if not provided
+                duration: values.duration,
+                price: parseFloat(values.price), // Ensure the price is a number
+                comboId: values.comboId || null, // Allow comboId to be null
+              };
+
+              const result = await axios.put(
+                `https://localhost:7150/api/Service/${serviceId}`,
+                updateData
+              );
+
+              if (result.status === 200) {
+                setServices(
+                  services.map((service) =>
+                    service.key === editingRecord.key
+                      ? {
+                          ...updateData,
+                          key: service.key,
+                          serviceId: serviceId,
+                        }
+                      : service
+                  )
+                );
+                message.success("Service updated successfully");
+              } else {
+                message.error("Failed to update service");
+              }
+            } catch (error) {
+              console.error("Error updating service:", error);
+              message.error("Failed to update service");
+            }
           } else if (activeTab === "combo") {
             setCombos(
               combos.map((combo) =>
@@ -495,7 +536,9 @@ const ManagerPage = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button onClick={() => handleEdit(record)}>Edit</Button>
-          <Button onClick={() => handleDelete(record.key)}>Delete</Button>
+          <Button onClick={() => handleDelete(record.key)}>
+            {record.status === false ? "Word" : "Delete"}
+          </Button>
         </Space>
       ),
     },
@@ -638,43 +681,53 @@ const ManagerPage = () => {
 
   const checkacceptColumns = [
     {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
-      sorter: (a, b) => a.title.length - b.title.length,
-      sortOrder: sortedInfo.columnKey === "title" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      sorter: (a, b) => a.description.length - b.description.length,
+      title: "Customer Name",
+      dataIndex: "customerName",
+      key: "customerName",
+      sorter: (a, b) => a.customerName.length - b.customerName.length,
       sortOrder:
-        sortedInfo.columnKey === "description" ? sortedInfo.order : null,
+        sortedInfo.columnKey === "customerName" ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      filters: [
-        { text: "Waiting", value: "Waiting" },
-        { text: "Approved", value: "Approved" },
-        { text: "Rejected", value: "Rejected" },
-      ],
-      filteredValue: filteredInfo.status || null,
-      onFilter: (value, record) => record.status.includes(value),
-      sorter: (a, b) => a.status.length - b.status.length,
-      sortOrder: sortedInfo.columnKey === "status" ? sortedInfo.order : null,
+      title: "Service Name",
+      dataIndex: "serviceName",
+      key: "serviceName",
+      sorter: (a, b) => a.serviceName.length - b.serviceName.length,
+      sortOrder:
+        sortedInfo.columnKey === "serviceName" ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
-      title: "Checked By",
-      dataIndex: "checkedBy",
-      key: "checkedBy",
-      sorter: (a, b) => a.checkedBy.length - b.checkedBy.length,
-      sortOrder: sortedInfo.columnKey === "checkedBy" ? sortedInfo.order : null,
+      title: "Pet Name",
+      dataIndex: "petName",
+      key: "petName",
+      sorter: (a, b) => a.petName.length - b.petName.length,
+      sortOrder: sortedInfo.columnKey === "petName" ? sortedInfo.order : null,
+      ellipsis: true,
+    },
+    {
+      title: "Start Date",
+      dataIndex: "startDate",
+      key: "startDate",
+      sorter: (a, b) => new Date(a.startDate) - new Date(b.startDate),
+      sortOrder: sortedInfo.columnKey === "startDate" ? sortedInfo.order : null,
+      ellipsis: true,
+    },
+    {
+      title: "End Date",
+      dataIndex: "endDate",
+      key: "endDate",
+      sorter: (a, b) => new Date(a.endDate) - new Date(b.endDate),
+      sortOrder: sortedInfo.columnKey === "endDate" ? sortedInfo.order : null,
+      ellipsis: true,
+    },
+    {
+      title: "Staff Name",
+      dataIndex: "staffName",
+      key: "staffName",
+      sorter: (a, b) => a.staffName.length - b.staffName.length,
+      sortOrder: sortedInfo.columnKey === "staffName" ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
@@ -844,39 +897,162 @@ const ManagerPage = () => {
         onOk={handleModalOk}
         onCancel={handleModalCancel}
       >
-        <Form form={form} layout="vertical" name="serviceForm">
-          <Form.Item
-            name="serviceName"
-            label="Service Name"
-            rules={[
-              { required: true, message: "Please input the service name!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="serviceDescription"
-            label="Description"
-            rules={[
-              { required: true, message: "Please input the description!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="duration"
-            label="Duration"
-            rules={[{ required: true, message: "Please input the duration!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="price"
-            label="Price (VND)"
-            rules={[{ required: true, message: "Please input the price!" }]}
-          >
-            <Input />
-          </Form.Item>
+        <Form form={form} layout="vertical" name="recordForm">
+          {activeTab === "staff" ? (
+            <>
+              <Form.Item
+                name="position"
+                label="Position"
+                rules={[
+                  { required: true, message: "Please input the position!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="office"
+                label="Office"
+                rules={[
+                  { required: true, message: "Please input the office!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="age"
+                label="Age"
+                rules={[{ required: true, message: "Please input the age!" }]}
+              >
+                <Input type="number" />
+              </Form.Item>
+              <Form.Item
+                name="startDate"
+                label="Start Date"
+                rules={[
+                  { required: true, message: "Please input the start date!" },
+                ]}
+              >
+                <Input type="date" />
+              </Form.Item>
+              <Form.Item
+                name="salary"
+                label="Salary"
+                rules={[
+                  { required: true, message: "Please input the salary!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </>
+          ) : activeTab === "service" ? (
+            <>
+              <Form.Item
+                name="serviceName"
+                label="Service Name"
+                rules={[
+                  { required: true, message: "Please input the service name!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="serviceDescription"
+                label="Description"
+                rules={[
+                  { required: true, message: "Please input the description!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="duration"
+                label="Duration"
+                rules={[
+                  { required: true, message: "Please input the duration!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="price"
+                label="Price (VND)"
+                rules={[{ required: true, message: "Please input the price!" }]}
+              >
+                <Input />
+              </Form.Item>
+            </>
+          ) : activeTab === "combo" ? (
+            <>
+              <Form.Item
+                name="description"
+                label="Description"
+                rules={[
+                  { required: true, message: "Please input the description!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="price"
+                label="Price"
+                rules={[{ required: true, message: "Please input the price!" }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="servicesIncluded"
+                label="Services Included"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input the services included!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </>
+          ) : activeTab === "task" ? (
+            <>
+              <Form.Item
+                name="title"
+                label="Title"
+                rules={[{ required: true, message: "Please input the title!" }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="description"
+                label="Description"
+                rules={[
+                  { required: true, message: "Please input the description!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="status"
+                label="Status"
+                rules={[
+                  { required: true, message: "Please input the status!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="assignedTo"
+                label="Assigned To"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input the assigned person!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </>
+          ) : null}
         </Form>
       </Modal>
     </div>
