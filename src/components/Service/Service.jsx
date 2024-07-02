@@ -66,7 +66,7 @@ function Service() {
         const response = await axios.get("https://localhost:7150/api/Booking");
         if (response.data.status) {
           const filteredBookings = response.data.data.filter(
-            booking => booking.feedback != null
+            (booking) => booking.feedback != null
           );
           setBookings(filteredBookings);
           console.log(filteredBookings);
@@ -195,8 +195,12 @@ function Service() {
     try {
       const response = await axios.get("https://localhost:7150/api/Service");
       const result = response.data;
-      setServices(result.data.data);
-      localStorage.setItem("service", JSON.stringify(result));
+      // Filter out services with status false
+      const filteredServices = result.data.data.filter(
+        (service) => service.status !== false
+      );
+      setServices(filteredServices);
+      localStorage.setItem("service", JSON.stringify(filteredServices));
     } catch (error) {
       console.error("Error fetching services:", error);
     }
