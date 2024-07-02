@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Space, Table, Input, Modal, Form } from 'antd';
 import '../../assets/css/managerPage.css';
 
@@ -16,11 +16,6 @@ const ManagerPage = () => {
     { key: '10', name: 'Jonas Alexander', position: 'Developer', office: 'San Francisco', age: 30, startDate: '2010/07/14', salary: '$86,500' },
   ];
 
-  const initialServices = [
-    { key: '1', name: 'Service A', description: 'Description of Service A', price: '$100', availability: 'Available' },
-    { key: '2', name: 'Service B', description: 'Description of Service B', price: '$200', availability: 'Unavailable' },
-    { key: '3', name: 'Service C', description: 'Description of Service C', price: '$300', availability: 'Available' },
-  ];
 
   const initialCombos = [
     { key: '1', name: 'Combo 1', description: 'Description of Combo 1', price: '$150', servicesIncluded: 'Service A, Service B' },
@@ -43,7 +38,7 @@ const ManagerPage = () => {
   ];
 
   const [employees, setEmployees] = useState(initialEmployees);
-  const [services, setServices] = useState(initialServices);
+  const [services, setServices] = useState([]);
   const [combos, setCombos] = useState(initialCombos);
   const [tasks, setTasks] = useState(initialTasks);
   const [payments, setPayments] = useState(initialPayments);
@@ -57,14 +52,27 @@ const ManagerPage = () => {
 
   const [form] = Form.useForm();
 
+  useEffect(() => {
+    fetch('https://localhost:7150/api/Service')
+      .then(response => response.json())
+      .then(data => {
+        console.log('API response:', data);
+        const formattedData = data.data.data.map((service, index) => ({
+          key: index + 1,
+          serviceName: service.serviceName,
+          serviceDescription: service.serviceDescription,
+          duration: service.duration,
+          price: (service.price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }),
+        }));
+        setServices(formattedData);
+      });
+  }, []);
+
   const handleChange = (pagination, filters, sorter) => {
     setFilteredInfo(filters);
     setSortedInfo(sorter);
   };
 
-  const clearFilters = () => {
-    setFilteredInfo({});
-  };
 
   const clearAll = () => {
     setFilteredInfo({});
@@ -221,46 +229,59 @@ const ManagerPage = () => {
 
   const serviceColumns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      sorter: (a, b) => a.name.length - b.name.length,
-      sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
+      title: 'No.',
+      dataIndex: 'key',
+      key: 'key',
+      width: '5%',
+      align: 'center',
+      sorter: (a, b) => a.key - b.key,
+      sortOrder: sortedInfo.columnKey === 'key' ? sortedInfo.order : null,
+    },
+    {
+      title: 'Service Name',
+      dataIndex: 'serviceName',
+      key: 'serviceName',
+      width: '20%',
+      align: 'center',
+      sorter: (a, b) => a.serviceName.length - b.serviceName.length,
+      sortOrder: sortedInfo.columnKey === 'serviceName' ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
       title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-      sorter: (a, b) => a.description.length - b.description.length,
-      sortOrder: sortedInfo.columnKey === 'description' ? sortedInfo.order : null,
+      dataIndex: 'serviceDescription',
+      key: 'serviceDescription',
+      width: '30%',
+      align: 'center',
+      sorter: (a, b) => a.serviceDescription.length - b.serviceDescription.length,
+      sortOrder: sortedInfo.columnKey === 'serviceDescription' ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
-      title: 'Price',
+      title: 'Duration',
+      dataIndex: 'duration',
+      key: 'duration',
+      width: '15%',
+      align: 'center',
+      sorter: (a, b) => a.duration.length - b.duration.length,
+      sortOrder: sortedInfo.columnKey === 'duration' ? sortedInfo.order : null,
+      ellipsis: true,
+    },
+    {
+      title: 'Price (VND)',
       dataIndex: 'price',
       key: 'price',
-      sorter: (a, b) => parseFloat(a.price.replace(/[\$,]/g, '')) - parseFloat(b.price.replace(/[\$,]/g, '')),
+      width: '15%',
+      align: 'center',
+      sorter: (a, b) => parseFloat(a.price.replace(/[\₫,]/g, '')) - parseFloat(b.price.replace(/[\₫,]/g, '')),
       sortOrder: sortedInfo.columnKey === 'price' ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: 'Availability',
-      dataIndex: 'availability',
-      key: 'availability',
-      filters: [
-        { text: 'Available', value: 'Available' },
-        { text: 'Unavailable', value: 'Unavailable' },
-      ],
-      filteredValue: filteredInfo.availability || null,
-      onFilter: (value, record) => record.availability.includes(value),
-      sorter: (a, b) => a.availability.length - b.availability.length,
-      sortOrder: sortedInfo.columnKey === 'availability' ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
       title: 'Action',
       key: 'action',
+      width: '15%',
+      align: 'center',
       render: (text, record) => (
         <Space size="middle">
           <Button onClick={() => handleEdit(record)}>Edit</Button>
@@ -462,7 +483,7 @@ const ManagerPage = () => {
   const filteredData = activeTab === 'staff'
     ? employees.filter(employee => employee.name.toLowerCase().includes(searchText.toLowerCase()))
     : activeTab === 'service'
-    ? services.filter(service => service.name.toLowerCase().includes(searchText.toLowerCase()))
+    ? services.filter(service => service.serviceName.toLowerCase().includes(searchText.toLowerCase()))
     : activeTab === 'combo'
     ? combos.filter(combo => combo.name.toLowerCase().includes(searchText.toLowerCase()))
     : activeTab === 'task'
