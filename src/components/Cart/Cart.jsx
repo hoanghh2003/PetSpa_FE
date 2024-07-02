@@ -114,9 +114,9 @@ function Cart() {
       const rank = response.data.data.cusRank;
       setRank(rank);
 
-      if (rank === "silver") {
+      if (rank == "Silver") {
         setDiscount(0.05);
-      } else if (rank === "gold") {
+      } else if (rank == "Gold") {
         setDiscount(0.1);
       }
     }
@@ -544,9 +544,8 @@ function Cart() {
     const fetchStaffAndBookings = async () => {
       await fetchStaff();
       await fetchBookings();
-      await fetchCustomerRankAndDiscount();
     };
-
+    fetchCustomerRankAndDiscount();
     fetchStaffAndBookings();
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -970,10 +969,6 @@ function Cart() {
 
                         <div className="col-xl-4">
                           <div className="border rounded p-4 mb-3 pb-3">
-                            <div>Your rank: </div>
-
-                            <hr className="my-4" />
-
                             <div className="d-flex justify-content-between mb-2">
                               <span>Subtotal</span>
                               <span className="text-end">
@@ -992,9 +987,9 @@ function Cart() {
                             <div className="d-flex justify-content-between mb-2">
                               <span>
                                 Discount{" "}
-                                {rank === "silver"
+                                {rank === "Silver"
                                   ? "(5%)"
-                                  : rank === "gold"
+                                  : rank === "Gold"
                                   ? "(10%)"
                                   : ""}
                               </span>
