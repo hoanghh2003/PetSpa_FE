@@ -529,136 +529,35 @@ const ManagerPage = () => {
         onOk={handleModalOk}
         onCancel={handleModalCancel}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          name="recordForm"
-        >
+        <Form form={form} layout="vertical" name="serviceForm">
           <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true, message: 'Please input the name!' }]}
+            name="serviceName"
+            label="Service Name"
+            rules={[{ required: true, message: 'Please input the service name!' }]}
           >
             <Input />
           </Form.Item>
-          {activeTab === 'staff' ? (
-            <>
-              <Form.Item
-                name="position"
-                label="Position"
-                rules={[{ required: true, message: 'Please input the position!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="office"
-                label="Office"
-                rules={[{ required: true, message: 'Please input the office!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="age"
-                label="Age"
-                rules={[{ required: true, message: 'Please input the age!' }]}
-              >
-                <Input type="number" />
-              </Form.Item>
-              <Form.Item
-                name="startDate"
-                label="Start Date"
-                rules={[{ required: true, message: 'Please input the start date!' }]}
-              >
-                <Input type="date" />
-              </Form.Item>
-              <Form.Item
-                name="salary"
-                label="Salary"
-                rules={[{ required: true, message: 'Please input the salary!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </>
-          ) : activeTab === 'service' ? (
-            <>
-              <Form.Item
-                name="description"
-                label="Description"
-                rules={[{ required: true, message: 'Please input the description!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="price"
-                label="Price"
-                rules={[{ required: true, message: 'Please input the price!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="availability"
-                label="Availability"
-                rules={[{ required: true, message: 'Please input the availability!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </>
-          ) : activeTab === 'combo' ? (
-            <>
-              <Form.Item
-                name="description"
-                label="Description"
-                rules={[{ required: true, message: 'Please input the description!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="price"
-                label="Price"
-                rules={[{ required: true, message: 'Please input the price!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="servicesIncluded"
-                label="Services Included"
-                rules={[{ required: true, message: 'Please input the services included!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </>
-          ) : activeTab === 'task' ? (
-            <>
-              <Form.Item
-                name="title"
-                label="Title"
-                rules={[{ required: true, message: 'Please input the title!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="description"
-                label="Description"
-                rules={[{ required: true, message: 'Please input the description!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="status"
-                label="Status"
-                rules={[{ required: true, message: 'Please input the status!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="assignedTo"
-                label="Assigned To"
-                rules={[{ required: true, message: 'Please input the assigned person!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </>
-          ) : null}
+          <Form.Item
+            name="serviceDescription"
+            label="Description"
+            rules={[{ required: true, message: 'Please input the description!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="duration"
+            label="Duration"
+            rules={[{ required: true, message: 'Please input the duration!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="price"
+            label="Price (VND)"
+            rules={[{ required: true, message: 'Please input the price!' }]}
+          >
+            <Input />
+          </Form.Item>
         </Form>
       </Modal>
     </div>
