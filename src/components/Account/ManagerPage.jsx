@@ -8,24 +8,20 @@ import {
   Form,
   message,
   Select,
+  Checkbox,
 } from "antd";
 import "../../assets/css/managerPage.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const ManagerPage = () => {
-
   const initialCombos = [];
-
   const initialTasks = [];
-
   const initialPayments = [];
-
   const initialCheckaccepts = [];
 
-  const [activeTab, setActiveTab] = useState(null); // Khởi tạo với giá trị null để không hiển thị bảng dữ liệu lúc ban đầu
-
   const [services, setServices] = useState([]);
+  const [servicess, setServicess] = useState([]);
   const [combos, setCombos] = useState(initialCombos);
   const [tasks, setTasks] = useState(initialTasks);
   const [payments, setPayments] = useState(initialPayments);
@@ -35,6 +31,7 @@ const ManagerPage = () => {
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
+  const [activeTab, setActiveTab] = useState(null); // Chuyển giá trị mặc định thành null
 
   const [form] = Form.useForm();
 
@@ -59,6 +56,37 @@ const ManagerPage = () => {
         setServices(formattedData);
       });
   }, []);
+
+  useEffect(() => {
+    fetch("https://localhost:7150/api/Service")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("API response:", data);
+        const formattedData = data.data.data.map((service, index) => ({
+          key: index + 1,
+          serviceId: service.serviceId,
+          serviceName: service.serviceName,
+          serviceDescription: service.serviceDescription,
+          duration: service.duration,
+
+          price: service.price.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          }),
+          status: service.status,
+        }));
+        const serviceOptions = formattedData.map((service) => ({
+          label: service.serviceName,
+          value: service.serviceId,
+        }));
+        setServicess(serviceOptions);
+      });
+  }, []);
+
+  const onFinish = (values) => {
+    console.log("Form values:", values);
+  };
+  
   const [staffList, setStaffList] = useState();
   useEffect(() => {
     fetch("https://localhost:7150/api/Booking/bookings/not-accepted")
@@ -110,6 +138,7 @@ const ManagerPage = () => {
       message.error("Failed to fetch staff bookings summary");
     }
   };
+
   const handleStaffSelect = async (value, record) => {
     const selectedStaff = staffList.find((staff) => staff.staffId === value);
     if (selectedStaff) {
@@ -143,6 +172,7 @@ const ManagerPage = () => {
         message.error("Failed to fetch staff data");
       });
   }, []);
+
   const handleChange = (pagination, filters, sorter) => {
     setFilteredInfo(filters);
     setSortedInfo(sorter);
@@ -168,6 +198,7 @@ const ManagerPage = () => {
     setIsModalVisible(true);
     form.setFieldsValue(record);
   };
+  
   const navigate = useNavigate();
 
   const handleDelete = async (key) => {
@@ -183,18 +214,14 @@ const ManagerPage = () => {
       Authorization: `Bearer ${token}`,
     };
     try {
-if (activeTab === "service") {
-        // Find the service by key
+      if (activeTab === "service") {
         const service = services.find((service) => service.key === key);
 
         if (service) {
-          // Toggle the status
           const newStatus = !service.status;
           service.status = newStatus;
           setServices([...services]);
-          // Remove the service from the state
 
-          // Call the delete API using the service id
           const result = await axios.delete(
             `https://localhost:7150/api/Service/${service.serviceId}`,
             { headers }
@@ -231,12 +258,12 @@ if (activeTab === "service") {
               const serviceId = editingRecord.serviceId;
               const updateData = {
                 serviceName: values.serviceName,
-                status: editingRecord.status, // Keep the current status
+                status: editingRecord.status,
                 serviceDescription: values.serviceDescription,
-                serviceImage: values.serviceImage || "", // Default to empty string if not provided
+                serviceImage: values.serviceImage || "",
                 duration: values.duration,
-                price: parseFloat(values.price), // Ensure the price is a number
-                comboId: values.comboId || null, // Allow comboId to be null
+                price: parseFloat(values.price),
+                comboId: values.comboId || null,
               };
 
               const result = await axios.put(
@@ -288,17 +315,49 @@ if (activeTab === "service") {
           if (activeTab === "service") {
             setServices([...services, newRecord]);
           } else if (activeTab === "combo") {
-            setCombos([...combos, newRecord]);
-          } else if (activeTab === "task") {
-            setTasks([...tasks, newRecord]);
+              try {
+                // Tạo combo trước
+                const comboResponse = await axios.post(
+                  'https://localhost:7150/api/Combo',
+                  {
+                    comboType: "values.comboType",
+                    price: parseFloat(values.price),
+                    status: true,
+                    duration: values.duration,
+                  }
+                );
+    
+                const comboId = comboResponse.data.data.comboId; 
+                console.log(comboId);// Giả sử comboId được trả về trong response
+                console.log(values.servicess);
+                // Thêm các dịch vụ vào combo
+                for (const serviceId of values.servicess) {
+                  await axios.post(
+                    `https://localhost:7150/api/Combo/${comboId}/add-services`,
+                    [serviceId]
+                  );
+                }
+    
+                // Thêm combo mới vào danh sách combo
+                setCombos([...combos, { ...newRecord, comboId }]);
+    
+                message.success("Combo created and services added successfully");
+              } catch (error) {
+                console.error("Error creating combo:", error);
+                message.error("Failed to create combo and add services");
+              }
+            } else if (activeTab === "task") {
+              setTasks([...tasks, newRecord]);
+            } else if (activeTab === "payment") {
+              setPayments([...payments, newRecord]);
+            }
           }
-        }
-        setIsModalVisible(false);
-        form.resetFields();
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-      });
+          setIsModalVisible(false);
+          form.resetFields();
+        })
+        .catch((info) => {
+          console.log("Validate Failed:", info);
+        });
   };
 
   const handleModalCancel = () => {
@@ -360,8 +419,6 @@ if (activeTab === "service") {
       )
     );
   };
-
-
 
   const serviceColumns = [
     {
@@ -427,7 +484,7 @@ if (activeTab === "service") {
         <Space size="middle">
           <Button onClick={() => handleEdit(record)}>Edit</Button>
           <Button onClick={() => handleDelete(record.key)}>
-            {record.status === false ? "Restore" : "Delete"}
+            {record.status === false ? "Word" : "Delete"}
           </Button>
         </Space>
       ),
@@ -444,12 +501,13 @@ if (activeTab === "service") {
       ellipsis: true,
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      sorter: (a, b) => a.description.length - b.description.length,
-      sortOrder:
-        sortedInfo.columnKey === "description" ? sortedInfo.order : null,
+      title: "Duration",
+      dataIndex: "duration",
+      key: "duration",
+      width: "15%",
+      align: "center",
+      sorter: (a, b) => a.duration.length - b.duration.length,
+      sortOrder: sortedInfo.columnKey === "duration" ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
@@ -724,51 +782,46 @@ if (activeTab === "service") {
         </ul>
       </div>
       <div className="content">
-   {activeTab && (
-      <>
-         <Space
-            style={{
-               marginBottom: 16,
-            }}
-         >
-            <Button onClick={clearAll}>Clear filters and sorters</Button>
-            <Input
-               placeholder="Search by name"
-               value={searchText}
-               onChange={handleSearch}
-            />
-            {activeTab !== "payment" &&
-               activeTab !== "checkaccept" &&
-               activeTab !== "task" && (
-                  <Button type="primary" onClick={handleAdd}>
-                     Add{" "}
-                     {activeTab === "service"
-                        ? "Service"
-                        : activeTab === "combo"
-                        ? "Combo"
-                        : "Task"}
-                  </Button>
-               )}
-         </Space>
-         <Table
-            columns={
-               activeTab === "service"
-                  ? serviceColumns
+        <Space
+          style={{
+            marginBottom: 16,
+          }}
+        >
+          <Button onClick={clearAll}>Clear filters and sorters</Button>
+          <Input
+            placeholder="Search by name"
+            value={searchText}
+            onChange={handleSearch}
+          />
+          {activeTab !== "payment" &&
+            activeTab !== "checkaccept" &&
+            activeTab !== "task" && (
+              <Button type="primary" onClick={handleAdd}>
+                Add{" "}
+                {activeTab === "service"
+                  ? "Service"
                   : activeTab === "combo"
-                  ? comboColumns
-                  : activeTab === "task"
-                  ? taskColumns
-                  : activeTab === "payment"
-                  ? paymentColumns
-                  : checkacceptColumns
-            }
-            dataSource={filteredData}
-            onChange={handleChange}
-         />
-      </>
-   )}
-</div>
-
+                  ? "Combo"
+                  : "Task"}
+              </Button>
+            )}
+        </Space>
+        <Table
+          columns={
+            activeTab === "service"
+              ? serviceColumns
+              : activeTab === "combo"
+              ? comboColumns
+              : activeTab === "task"
+              ? taskColumns
+              : activeTab === "payment"
+              ? paymentColumns
+              : checkacceptColumns
+          }
+          dataSource={filteredData}
+          onChange={handleChange}
+        />
+      </div>
       <Modal
         title={
           editingRecord
@@ -795,117 +848,131 @@ if (activeTab === "service") {
         onOk={handleModalOk}
         onCancel={handleModalCancel}
       >
-        <Form form={form} layout="vertical" name="recordForm">
-          {activeTab === "service" ? (
-            <>
-              <Form.Item
-                name="serviceName"
-                label="Service Name"
-                rules={[
-                  { required: true, message: "Please input the service name!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="serviceDescription"
-                label="Description"
-                rules={[
-                  { required: true, message: "Please input the description!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="duration"
-                label="Duration"
-                rules={[
-                  { required: true, message: "Please input the duration!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="price"
-                label="Price (VND)"
-                rules={[{ required: true, message: "Please input the price!" }]}
-              >
-                <Input />
-              </Form.Item>
-            </>
-          ) : activeTab === "combo" ? (
-            <>
-              <Form.Item
-                name="description"
-                label="Description"
-                rules={[
-                  { required: true, message: "Please input the description!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="price"
-                label="Price"
-                rules={[{ required: true, message: "Please input the price!" }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="servicesIncluded"
-                label="Services Included"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input the services included!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </>
-          ) : activeTab === "task" ? (
-            <>
-              <Form.Item
-                name="title"
-                label="Title"
-                rules={[{ required: true, message: "Please input the title!" }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="description"
-                label="Description"
-                rules={[
-                  { required: true, message: "Please input the description!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="status"
-                label="Status"
-                rules={[
-                  { required: true, message: "Please input the status!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="assignedTo"
-                label="Assigned To"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input the assigned person!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </>
-          ) : null}
-        </Form>
+        <Form form={form} layout="vertical" name="recordForm" onFinish={onFinish}>
+      {activeTab === "service" ? (
+        <>
+          <Form.Item
+            name="serviceName"
+            label="Service Name"
+            rules={[
+              { required: true, message: "Please input the service name!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="serviceDescription"
+            label="Description"
+            rules={[
+              { required: true, message: "Please input the description!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="duration"
+            label="Duration"
+            rules={[
+              { required: true, message: "Please input the duration!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="price"
+            label="Price (VND)"
+            rules={[
+              { required: true, message: "Please input the price!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+        </>
+      ) : activeTab === "combo" ? (
+        <>
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[
+              { required: true, message: "Please input the name!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="duration"
+            label="Duration"
+            rules={[
+              { required: true, message: "Please input the duration!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="price"
+            label="Price"
+            rules={[
+              { required: true, message: "Please input the price!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="servicess"
+            label="Services Included"
+            rules={[
+              {
+                required: true,
+                message: "Please select the services included!",
+              },
+            ]}
+          >
+            <Checkbox.Group options={servicess} />
+          </Form.Item>
+        </>
+      ) : activeTab === "task" ? (
+        <>
+          <Form.Item
+            name="title"
+            label="Title"
+            rules={[{ required: true, message: "Please input the title!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[
+              { required: true, message: "Please input the description!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="status"
+            label="Status"
+            rules={[
+              { required: true, message: "Please input the status!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="assignedTo"
+            label="Assigned To"
+            rules={[
+              {
+                required: true,
+                message: "Please input the assigned person!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+        </>
+      ) : null}
+
+    </Form>
       </Modal>
       {/* <Modal
         title="Select Staff"

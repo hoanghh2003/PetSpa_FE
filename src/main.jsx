@@ -21,10 +21,11 @@ import BlogDetails from "./components/Blog/Blog_Details";
 import AdminPage from "./components/Account/AdminPage";
 import StaffPage from "./components/Account/StaffPage";
 import ManagerPage from "./components/Account/ManagerPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 //route
 const router = createBrowserRouter([
   {
-    element: <MainLayout/>,
+    element: <MainLayout />,
     children: [
       {
         path: "/",
@@ -48,7 +49,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/management-pet",
-        element: <Petmanagement />,
+        element: (
+          <ProtectedRoute allowedRoles={["Customer"]}>
+            <Petmanagement />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/HOMEPage",
@@ -96,15 +101,27 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <AdminPage />,
+        element: (
+          <ProtectedRoute allowedRoles={["Admin"]}>
+            <AdminPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/staff",
-        element: <StaffPage />,
+        element: (
+          <ProtectedRoute allowedRoles={["Staff"]}>
+            <StaffPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/manager",
-        element: <ManagerPage />,
+        element: (
+          <ProtectedRoute allowedRoles={["Manager"]}>
+            <ManagerPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
