@@ -149,15 +149,26 @@ function Petmanagement() {
         localStorage.setItem("pets", JSON.stringify(result));
 
         const pets = result.data.pets.filter((x) => x.status !== false);
-        setDataSource(pets);
-        setOriginalDataSource(pets);
+        console.log(pets[0].petBirthday);
+        const processedPets = pets.map((pet) => {
+          return {
+            ...pet,
+            petBirthday: pet.petBirthday.split(" ")[0], // Extract the date part only
+          };
+        });
+        console.log(processedPets);
+
+        setDataSource(processedPets);
+        setOriginalDataSource(processedPets);
       } catch (error) {
         if (error.response && error.response.status === 401) {
           localStorage.removeItem("user-info");
           message.error("Please, Login in again");
+          console.log(error);
           await new Promise((resolve) => setTimeout(resolve, 2000));
           navigate("/login");
         } else {
+          console.log(error);
           message.error("Có lỗi xảy ra. Vui lòng thử lại.");
         }
       }
@@ -316,7 +327,8 @@ function Petmanagement() {
       title: "Birthday",
       dataIndex: "petBirthday",
       key: "petBirthday",
-      sorter: (a, b) => moment(a.petBirthday).unix() - moment(b.petBirthday).unix(),
+      sorter: (a, b) =>
+        moment(a.petBirthday).unix() - moment(b.petBirthday).unix(),
     },
     {
       title: "Image",

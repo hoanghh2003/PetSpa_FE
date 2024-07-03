@@ -88,7 +88,6 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
         newPriceCombo = priceCurrent; // Default to the initial price if value doesn't match
     }
 
-    console.log("New Price Combo:", newPriceCombo); // Debugging log
     setPriceCombo(newPriceCombo);
     setPeriod(value);
   };
@@ -211,7 +210,7 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
     const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
     const token = userInfo?.data?.token;
-    console.log(token);
+
     const isServiceAlreadyInCart = cart.some((service) =>
       cart.some(
         (item) =>
@@ -247,7 +246,6 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
       });
 
       if (response.status === 401) {
-        console.log("Please log in again.");
         setError("Please log in again.");
         setLoading(false); // Stop loading
         return;
@@ -281,7 +279,6 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
     } catch (error) {
       if (error.response) {
         if (error.response.status === 401) {
-          console.log("Please log in again.");
           message.error(error.response.data);
           localStorage.removeItem("user-info");
           setTimeout(() => {

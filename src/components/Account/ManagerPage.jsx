@@ -39,7 +39,6 @@ const ManagerPage = () => {
     fetch("https://localhost:7150/api/Service")
       .then((response) => response.json())
       .then((data) => {
-        console.log("API response:", data);
         const formattedData = data.data.data.map((service, index) => ({
           key: index + 1,
           serviceId: service.serviceId,
@@ -54,6 +53,9 @@ const ManagerPage = () => {
           status: service.status,
         }));
         setServices(formattedData);
+        services.forEach((element) => {
+          console.log(element);
+        });
       });
   }, []);
 
@@ -215,6 +217,7 @@ const ManagerPage = () => {
     };
     try {
       if (activeTab === "service") {
+        // Find the service by key
         const service = services.find((service) => service.key === key);
 
         if (service) {
