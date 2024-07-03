@@ -208,7 +208,6 @@ function Service() {
 
   useEffect(() => {
     fetchServices();
-    // fetchStaff();
   }, [dataSource]);
   return (
     <div>
@@ -251,8 +250,7 @@ function Service() {
                   </ul>
                   <h1 className="page_title">Our Services</h1>
                   <p className="page_description mb-0">
-                    Blandit cursus risus at ultrices. Enim sit amet venenatis
-                    urna cursus eget nunc scelerisque
+                  At Pet Pia, we understand that your pets are not just animals but cherished members of your family. Our Pets' Spa Management services are designed to provide your furry friends with the ultimate pampering and care they deserve.
                   </p>
                 </div>
               </div>
@@ -417,131 +415,6 @@ function Service() {
                   </div>
                 ))}
               </Slider>
-            </div>
-          </section>
-          <section className="team_section section_space_lg">
-            <div className="container">
-              <div className="section_title text-center">
-                <h2 className="title_text mb-0">
-                  <span className="sub_title">Staff Team</span>
-                  Welcome To Our Family
-                </h2>
-              </div>
-              <div className="row justify-content-center">
-                <div className="col col-lg-3 col-md-6 col-sm-6">
-                  <div className="team_item text-center">
-                    <div className="item_image">
-                      <img
-                        src="src/assets/images/team/team_img_1.jpg"
-                        alt="Team Image"
-                      />
-                    </div>
-                    <div className="item_content">
-                      <h3 className="item_title">Ha Huy Hoang</h3>
-                      <span className="item_designation">
-                        President &amp; CEO
-                      </span>
-                      <ul className="social_links unorder_list">
-                        <li>
-                          <a
-                            href="https://www.facebook.com/2010.HaHuyHoanglacuaai.2003"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faFacebook} />{" "}
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="https://www.instagram.com/hardy._.03"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faInstagram} />{" "}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="col col-lg-3 col-md-6 col-sm-6">
-                  <div className="team_item text-center">
-                    <div className="item_image">
-                      <img
-                        src="src/assets/images/team/team_img_1.jpg"
-                        alt="Team Image"
-                      />
-                    </div>
-                    <div className="item_content">
-                      <h3 className="item_title">Le Xuan Phuong Nam</h3>
-                      <span className="item_designation">
-                        President &amp; CEO
-                      </span>
-                      <ul className="social_links unorder_list">
-                        <li>
-                          <a
-                            href="https://www.facebook.com/namtheshy2mai"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faFacebook} />{" "}
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="https://www.instagram.com/namle2330"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faInstagram} />{" "}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="col col-lg-3 col-md-6 col-sm-6">
-                  <div className="team_item text-center">
-                    <div className="item_image">
-                      <img
-                        src="src/assets/images/team/team_img_1.jpg"
-                        alt="Team Image"
-                      />
-                    </div>
-                    <div className="item_content">
-                      <h3 className="item_title">Nguyen Ba Minh Duc</h3>
-                      <span className="item_designation">
-                        President &amp; CEO
-                      </span>
-                      <ul className="social_links unorder_list">
-                        <li>
-                          <a
-                            href="https://www.facebook.com/profile.php?id=100024098480982"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faFacebook} />{" "}
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="#!"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faInstagram} />{" "}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* <div className="text-center">
-                <Link className="btn btn_primary" to="/team">
-                  <FontAwesomeIcon icon={faPaw} /> Our Team
-                </Link>
-              </div> */}
             </div>
           </section>
         </main>

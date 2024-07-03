@@ -139,12 +139,7 @@ function Account() {
       setLoading(false);
     }
   };
-  const handleDeactivateAccount = () => {
-    if (accountActivationChecked) {
-      // Logic for deactivating the account goes here
-      setAccountDeactivated(true);
-    }
-  };
+
   return (
     <div>
       <meta charSet="utf-8" />
@@ -224,12 +219,6 @@ function Account() {
         rel="stylesheet"
         href="src/assets/vendor/libs/sweetalert2/sweetalert2.css"
       />
-      {/* Page CSS */}
-      {/* Helpers */}
-      {/*! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section */}
-      {/*? Template customizer: To hide customizer set displayCustomizer value false in config.js.  */}
-      {/*? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  */}
-      {/* ?PROD Only: Google Tag Manager (noscript) (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) */}
       <noscript>
         <iframe
           src="https://www.googletagmanager.com/ns.html?id=GTM-5DDHKGP"
@@ -265,25 +254,12 @@ function Account() {
               >
                 <ul className="navbar-nav flex-row align-items-center ms-auto">
                   <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                    {/* <a
-                      className="nav-link dropdown-toggle hide-arrow"
-                      href="javascript:void(0);"
-                      data-bs-toggle="dropdown"
-                    >
-                      <div className="avatar avatar-online">
-                        <img
-                          src="src/assets/images/avatars/1.png"
-                          alt="User avatar"
-                          className="h-auto rounded-circle"
-                        />
-                      </div>
-                    </a> */}
                       <li>
                           <div className="d-flex">
                             <div className="flex-shrink-0 me-3">
                               <div className="avatar avatar-online">
                                 <img
-                                  src="src/assets/images/avatars/1.png"
+                                  src="src/assets/images/avatars/avt.png"
                                   alt="User avatar"
                                   className="h-auto rounded-circle"
                                 />
@@ -444,51 +420,6 @@ function Account() {
                       </div>
                       {/* /Account */}
                     </div>
-                    <Card className="delete-account-card">
-      <h5 className="card-header">Delete Account</h5>
-      <div className="card-body">
-        <div className="alert-container mb-3 col-12 mb-0">
-          <Alert
-            message="Are you sure you want to delete your account?"
-            description="Once you delete your account, there is no going back. Please be certain."
-            type="warning"
-            showIcon
-          />
-        </div>
-        <Form
-          id="formAccountDeactivation"
-          onFinish={handleDeactivateAccount}
-        >
-          <Form.Item>
-            <Checkbox
-              className="confirmation-checkbox"
-              checked={accountActivationChecked}
-              onChange={(e) => setAccountActivationChecked(e.target.checked)}
-            >
-              I confirm my account deactivation
-            </Checkbox>
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              danger
-              htmlType="submit"
-              className="deactivate-account-btn"
-              disabled={!accountActivationChecked}
-            >
-              Deactivate Account
-            </Button>
-          </Form.Item>
-        </Form>
-        {accountDeactivated && (
-          <Alert
-            message="Account deactivated successfully!"
-            type="success"
-            showIcon
-          />
-        )}
-      </div>
-    </Card>
                   </div>
                 </div>
               </div>

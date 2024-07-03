@@ -34,10 +34,21 @@ import ComboCard from "../ComboCard/ComboCard.jsx";
 
 function HomePage() {
   const [comboList, setComboList] = useState([]);
+  const [staffList, setStaffList] = useState([]);
+
   const fetchCombo = async () => {
     try {
       const response = await axios.get("https://localhost:7150/api/Combo");
       setComboList(response.data);
+    } catch (error) {
+      message.error("Failed to fetch combos");
+    }
+  };
+
+  const fetchStaff = async () => {
+    try {
+      const response = await axios.get("https://localhost:7150/api/Staff");
+      setStaffList(response.data.data);
     } catch (error) {
       message.error("Failed to fetch staff members");
     }
@@ -45,6 +56,7 @@ function HomePage() {
 
   useEffect(() => {
     fetchCombo();
+    fetchStaff();
   }, []);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -290,114 +302,44 @@ function HomePage() {
                 </h2>
               </div>
               <div className="row justify-content-center">
-                <div className="col col-lg-3 col-md-6 col-sm-6">
-                  <div className="team_item text-center">
-                    <div className="item_image">
-                      <img
-                        src="src/assets/images/team/team_img_1.jpg"
-                        alt="Team Image"
-                      />
-                    </div>
-                    <div className="item_content">
-                      <h3 className="item_title">Ha Huy Hoang</h3>
-                      <span className="item_designation">
-                        President &amp; CEO
-                      </span>
-                      <ul className="social_links unorder_list">
-                        <li>
-                          <a
-                            href="https://www.facebook.com/2010.HaHuyHoanglacuaai.2003"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faFacebook} />{" "}
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="https://www.instagram.com/hardy._.03"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faInstagram} />{" "}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="col col-lg-3 col-md-6 col-sm-6">
-                  <div className="team_item text-center">
-                    <div className="item_image">
-                      <img
-                        src="src/assets/images/team/team_img_1.jpg"
-                        alt="Team Image"
-                      />
-                    </div>
-                    <div className="item_content">
-                      <h3 className="item_title">Le Xuan Phuong Nam</h3>
-                      <span className="item_designation">
-                        President &amp; CEO
-                      </span>
-                      <ul className="social_links unorder_list">
-                        <li>
-                          <a
-                            href="https://www.facebook.com/namtheshy2mai"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faFacebook} />{" "}
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="https://www.instagram.com/namle2330"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faInstagram} />{" "}
-                          </a>
-                        </li>
-                      </ul>
+                {staffList.map((staff, index) => (
+                  <div className="col col-lg-3 col-md-6 col-sm-6" key={index}>
+                    <div className="team_item text-center">
+                      <div className="item_image">
+                        <img
+                          src="src/assets/images/team/team_img_1.jpg"
+                          alt="Team Image"
+                        />
+                      </div>
+                      <div className="item_content">
+                        <h3 className="item_title_2">{staff.fullName}</h3>
+                        <span className="item_designation">
+                          {staff.user.phoneNumber}
+                        </span>
+                        <ul className="social_links unorder_list">
+                          <li>
+                            <a
+                              href="https://www.facebook.com"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <FontAwesomeIcon icon={faFacebook} />{" "}
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="https://www.instagram.com"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <FontAwesomeIcon icon={faInstagram} />{" "}
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="col col-lg-3 col-md-6 col-sm-6">
-                  <div className="team_item text-center">
-                    <div className="item_image">
-                      <img
-                        src="src/assets/images/team/team_img_1.jpg"
-                        alt="Team Image"
-                      />
-                    </div>
-                    <div className="item_content">
-                      <h3 className="item_title">Nguyen Ba Minh Duc</h3>
-                      <span className="item_designation">
-                        President &amp; CEO
-                      </span>
-                      <ul className="social_links unorder_list">
-                        <li>
-                          <a
-                            href="https://www.facebook.com/profile.php?id=100024098480982"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faFacebook} />{" "}
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="#!"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <FontAwesomeIcon icon={faInstagram} />{" "}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
               {/* <div className="text-center">
                 <Link className="btn btn_primary" to="/team">

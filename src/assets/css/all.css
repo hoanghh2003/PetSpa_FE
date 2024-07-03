@@ -30582,3 +30582,7 @@ blockquote cite {
 .arrow-button:last-child {
   right: 720px;
 }
+
+.item_title_2 {
+  font-family: 'Times New Roman', Times, serif;
+}

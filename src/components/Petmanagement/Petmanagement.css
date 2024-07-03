@@ -1,35 +1,125 @@
+/* Container */
 .pet-management-container {
-    padding: 20px;
-    background-color: #f9f9f9;
-  }
-  
-  .add-pet-button {
-    margin-bottom: 20px;
-  }
-  
-  .ant-modal-title {
-    font-size: 1.5em;
-    font-weight: bold;
-  }
-  
-  .ant-form-item {
-    margin-bottom: 15px;
-  }
-  
-  .error-message {
-    color: red;
-    margin-top: 10px;
-  }
-  
-  .ant-table-thead > tr > th {
-    background-color: #fafafa;
-    font-weight: bold;
-  }
-  
-  .ant-table-tbody > tr > td {
-    padding: 10px;
-  }
-  
-  .ant-btn-link {
-    padding: 0;
-  }
+  padding: 40px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Add Pet Button */
+.add-pet-button {
+  margin-bottom: 20px;
+  background-color: #4a90e2;
+  border-color: #4a90e2;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+}
+
+.add-pet-button:hover {
+  background-color: #357ab7;
+  border-color: #357ab7;
+}
+
+/* Table */
+.ant-table {
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ant-table-thead > tr > th {
+  background-color: #fafafa;
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.ant-table-tbody > tr > td {
+  font-size: 14px;
+  color: #666;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background-color: #e6f7ff;
+}
+
+/* Action Buttons */
+.ant-btn-link {
+  color: #4a90e2;
+  font-size: 14px;
+}
+
+.ant-btn-link:hover {
+  color: #357ab7;
+}
+
+/* Modal */
+.ant-modal-content {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.ant-modal-header {
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  background-color: #fafafa;
+}
+
+.ant-modal-title {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.ant-modal-body {
+  padding: 24px;
+}
+
+.ant-form-item {
+  margin-bottom: 16px;
+}
+
+/* Input Fields */
+.ant-input,
+.ant-input-number,
+.ant-select-selector,
+.ant-picker {
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.ant-input:hover,
+.ant-input-number:hover,
+.ant-select-selector:hover,
+.ant-picker:hover {
+  border-color: #4a90e2;
+}
+
+/* Error Message */
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+/* Upload Button */
+.ant-upload-select-picture-card {
+  width: 100%;
+  height: auto;
+}
+
+.ant-upload-list-picture-card .ant-upload-list-item {
+  height: auto;
+  width: 100%;
+}
+
+.ant-upload-list-picture-card .ant-upload-list-item-thumbnail img {
+  width: 100%;
+  height: auto;
+}
+
+/* Image Preview */
+.ant-image img {
+  border-radius: 5px;
+}

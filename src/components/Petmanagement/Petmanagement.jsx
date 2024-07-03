@@ -11,21 +11,25 @@ import {
   InputNumber,
   Space,
   DatePicker,
+  Popconfirm,
+  Row,
+  Col,
 } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import uploadFile from "@/utils/upload";
-import "../../components/Petmanagement/Petmanagement.css"; // Create a separate CSS file for custom styles
+import "./Petmanagement.css"; // Ensure correct path to the CSS file
 
 function Petmanagement() {
   const navigate = useNavigate();
   const regex30KyTu = /^.{1,30}$/; // Ensures the name is between 1 and 30 characters
   const [form] = useForm();
   const [dataSource, setDataSource] = useState([]);
+  const [originalDataSource, setOriginalDataSource] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [birthday, setBirthday] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
@@ -34,6 +38,7 @@ function Petmanagement() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
   const handleDeleteMovie = async (id) => {
     const userInfoString = localStorage.getItem("user-info");
@@ -59,6 +64,7 @@ function Petmanagement() {
         if (response.status === 200) {
           const listAfterDelete = dataSource.filter((pet) => pet.petId !== id);
           setDataSource(listAfterDelete);
+          setOriginalDataSource(listAfterDelete);
           message.success("Delete successfully");
         } else {
           console.error(
@@ -92,6 +98,23 @@ function Petmanagement() {
   };
 
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+  };
+
+  const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
   const uploadButton = (
     <Button icon={<PlusOutlined />} type="dashed">
       Upload
@@ -125,7 +148,9 @@ function Petmanagement() {
         const result = response.data;
         localStorage.setItem("pets", JSON.stringify(result));
 
-        setDataSource(result.data.pets.filter((x) => x.status !== false));
+        const pets = result.data.pets.filter((x) => x.status !== false);
+        setDataSource(pets);
+        setOriginalDataSource(pets);
       } catch (error) {
         if (error.response && error.response.status === 401) {
           localStorage.removeItem("user-info");
@@ -205,16 +230,18 @@ function Petmanagement() {
           message.success(`Pet ${isUpdate ? "updated" : "added"} successfully`);
           setError("");
           if (isUpdate) {
-            setDataSource((prevDataSource) =>
-              prevDataSource.map((pet) =>
-                pet.petId === petId ? { ...pet, ...petData } : pet
-              )
+            const updatedData = dataSource.map((pet) =>
+              pet.petId === petId ? { ...pet, ...petData } : pet
             );
+            setDataSource(updatedData);
+            setOriginalDataSource(updatedData);
           } else {
-            setDataSource((prevDataSource) => [
-              ...prevDataSource,
+            const newData = [
+              ...dataSource,
               { ...petData, petId: response.data.petId },
-            ]);
+            ];
+            setDataSource(newData);
+            setOriginalDataSource(newData);
           }
         } else {
           setError(
@@ -245,31 +272,51 @@ function Petmanagement() {
     fetchMovies();
   }, []);
 
+  const handleSearch = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchText(value);
+
+    if (value) {
+      const filteredData = originalDataSource.filter((item) =>
+        item.petName.toLowerCase().includes(value)
+      );
+      setDataSource(filteredData);
+    } else {
+      setDataSource(originalDataSource);
+    }
+  };
+
   const columns = [
     {
       title: "Pet Name",
       dataIndex: "petName",
       key: "petName",
+      sorter: (a, b) => a.petName.localeCompare(b.petName),
+      render: (text) => <a>{text}</a>,
     },
     {
       title: "Category",
       dataIndex: "petType",
       key: "petType",
+      sorter: (a, b) => a.petType.localeCompare(b.petType),
     },
     {
       title: "Weight",
       dataIndex: "petWeight",
       key: "petWeight",
+      sorter: (a, b) => a.petWeight - b.petWeight,
     },
     {
       title: "Height",
       dataIndex: "petHeight",
       key: "petHeight",
+      sorter: (a, b) => a.petHeight - b.petHeight,
     },
     {
       title: "Birthday",
       dataIndex: "petBirthday",
       key: "petBirthday",
+      sorter: (a, b) => moment(a.petBirthday).unix() - moment(b.petBirthday).unix(),
     },
     {
       title: "Image",
@@ -285,13 +332,16 @@ function Petmanagement() {
           <Button type="link" onClick={() => handleUpdate(record.petId)}>
             Update
           </Button>
-          <Button
-            type="link"
-            danger
-            onClick={() => handleDeleteMovie(record.petId)}
+          <Popconfirm
+            title="Are you sure to delete this pet?"
+            onConfirm={() => handleDeleteMovie(record.petId)}
+            okText="Yes"
+            cancelText="No"
           >
-            Delete
-          </Button>
+            <Button type="link" danger>
+              Delete
+            </Button>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -299,13 +349,26 @@ function Petmanagement() {
 
   return (
     <div className="pet-management-container">
-      <Button
-        type="primary"
-        onClick={handleShowModal}
-        className="add-pet-button"
-      >
-        Add new pet
-      </Button>
+      <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
+        <Col span={12}>
+          <Input
+            prefix={<SearchOutlined />}
+            placeholder="Search by pet name"
+            value={searchText}
+            onChange={handleSearch}
+            allowClear
+          />
+        </Col>
+        <Col span={12} style={{ textAlign: "right" }}>
+          <Button
+            type="primary"
+            onClick={handleShowModal}
+            className="add-pet-button"
+          >
+            Add new pet
+          </Button>
+        </Col>
+      </Row>
       <Table columns={columns} dataSource={dataSource} rowKey="petId" />
 
       <Modal
@@ -327,7 +390,7 @@ function Petmanagement() {
             rules={[
               { required: true, message: "Please input the pet name!" },
               {
-                pattern: /^[a-zA-Z\s]{1,30}$/,
+                pattern: /^[a-zA-ZÀ-ÿ\s]{1,30}$/,
                 message:
                   "Name must be between 1 and 30 characters and cannot contain special characters!",
               },
@@ -386,6 +449,7 @@ function Petmanagement() {
                 value={birthday}
                 onChange={(date) => setBirthday(date)}
                 disabledDate={disabledDate}
+                format="YYYY-MM-DD"
               />
             </Space>
           </Form.Item>
@@ -394,6 +458,7 @@ function Petmanagement() {
               action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
               listType="picture-card"
               fileList={fileList}
+              onPreview={handlePreview}
               onChange={handleChange}
             >
               {fileList.length >= 1 ? null : uploadButton}
