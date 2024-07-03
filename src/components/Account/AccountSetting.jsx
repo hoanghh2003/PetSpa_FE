@@ -180,7 +180,7 @@ function AccountSetting() {
                             <div className="flex-shrink-0 me-3">
                               <div className="avatar avatar-online">
                                 <img
-                                  src="src/assets/images/avatars/1.png"
+                                  src="src/assets/images/avatars/avt.png"
                                   alt="User avatar"
                                   className="h-auto rounded-circle"
                                 />

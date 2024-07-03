@@ -6,6 +6,7 @@ import {
   faCartShopping,
   faArrowRightToBracket,
   faArrowRightFromBracket,
+  faClockRotateLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -133,6 +134,15 @@ const Header = () => {
                             <h3 className="item_title ">
                               <FontAwesomeIcon icon={faCartShopping} />{" "}
                               <Link to="/Cart">Cart</Link>
+                            </h3>
+                          </div>
+                        </li>
+                        <li>
+                          <Link className="item_image" to="/account"></Link>
+                          <div className="item_content">
+                            <h3 className="item_title ">
+                              <FontAwesomeIcon icon={faClockRotateLeft} />{" "}
+                              <Link to="/transac">Orders</Link>
                             </h3>
                           </div>
                         </li>

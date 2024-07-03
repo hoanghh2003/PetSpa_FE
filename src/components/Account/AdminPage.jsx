@@ -357,20 +357,6 @@ const AdminPage = () => {
                 onChange={handleInputChange}
                 required
               />
-              <FormField
-                label="Full Name"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleInputChange}
-                required
-              />
-              <FormField
-                label="Gender"
-                name="gender"
-                value={formData.gender}
-                onChange={handleInputChange}
-                required
-              />
               <Box mt={2} display="flex" justifyContent="space-between">
                 <Button type="submit" variant="contained" color="primary">
                   {isEditing ? "Update" : "Add"}
