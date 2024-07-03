@@ -14,7 +14,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const ManagerPage = () => {
-
   const initialCombos = [];
 
   const initialTasks = [];
@@ -42,7 +41,6 @@ const ManagerPage = () => {
     fetch("https://localhost:7150/api/Service")
       .then((response) => response.json())
       .then((data) => {
-        console.log("API response:", data);
         const formattedData = data.data.data.map((service, index) => ({
           key: index + 1,
           serviceId: service.serviceId,
@@ -57,6 +55,9 @@ const ManagerPage = () => {
           status: service.status,
         }));
         setServices(formattedData);
+        services.forEach((element) => {
+          console.log(element);
+        });
       });
   }, []);
   const [staffList, setStaffList] = useState();
@@ -183,7 +184,7 @@ const ManagerPage = () => {
       Authorization: `Bearer ${token}`,
     };
     try {
-if (activeTab === "service") {
+      if (activeTab === "service") {
         // Find the service by key
         const service = services.find((service) => service.key === key);
 
@@ -360,8 +361,6 @@ if (activeTab === "service") {
       )
     );
   };
-
-
 
   const serviceColumns = [
     {
@@ -724,35 +723,35 @@ if (activeTab === "service") {
         </ul>
       </div>
       <div className="content">
-   {activeTab && (
-      <>
-         <Space
-            style={{
-               marginBottom: 16,
-            }}
-         >
-            <Button onClick={clearAll}>Clear filters and sorters</Button>
-            <Input
-               placeholder="Search by name"
-               value={searchText}
-               onChange={handleSearch}
-            />
-            {activeTab !== "payment" &&
-               activeTab !== "checkaccept" &&
-               activeTab !== "task" && (
+        {activeTab && (
+          <>
+            <Space
+              style={{
+                marginBottom: 16,
+              }}
+            >
+              <Button onClick={clearAll}>Clear filters and sorters</Button>
+              <Input
+                placeholder="Search by name"
+                value={searchText}
+                onChange={handleSearch}
+              />
+              {activeTab !== "payment" &&
+                activeTab !== "checkaccept" &&
+                activeTab !== "task" && (
                   <Button type="primary" onClick={handleAdd}>
-                     Add{" "}
-                     {activeTab === "service"
-                        ? "Service"
-                        : activeTab === "combo"
-                        ? "Combo"
-                        : "Task"}
+                    Add{" "}
+                    {activeTab === "service"
+                      ? "Service"
+                      : activeTab === "combo"
+                      ? "Combo"
+                      : "Task"}
                   </Button>
-               )}
-         </Space>
-         <Table
-            columns={
-               activeTab === "service"
+                )}
+            </Space>
+            <Table
+              columns={
+                activeTab === "service"
                   ? serviceColumns
                   : activeTab === "combo"
                   ? comboColumns
@@ -761,13 +760,13 @@ if (activeTab === "service") {
                   : activeTab === "payment"
                   ? paymentColumns
                   : checkacceptColumns
-            }
-            dataSource={filteredData}
-            onChange={handleChange}
-         />
-      </>
-   )}
-</div>
+              }
+              dataSource={filteredData}
+              onChange={handleChange}
+            />
+          </>
+        )}
+      </div>
 
       <Modal
         title={

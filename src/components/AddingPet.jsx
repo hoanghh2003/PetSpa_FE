@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Form, Input, Modal, Select, Upload, message } from "antd";
+import { Form, Input, InputNumber, Modal, Select, Upload, message } from "antd";
 import axios from "axios";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
@@ -7,6 +7,7 @@ import { useForm } from "antd/es/form/Form";
 import { DatePicker, Space } from "antd";
 import { useNavigate } from "react-router-dom";
 import uploadFile from "@/utils/upload";
+import { Option } from "antd/es/mentions";
 
 function AddingPet({ isOpen, handleHideModal, setDataSource }) {
   const navigate = useNavigate();
@@ -101,45 +102,72 @@ function AddingPet({ isOpen, handleHideModal, setDataSource }) {
       onCancel={handleHideModal}
       onOk={form.submit}
     >
-      <Form
-        labelCol={{
-          span: 24,
-        }}
-        form={form}
-        onFinish={handleSubmit}
-      >
+      <Form labelCol={{ span: 24 }} form={form} onFinish={handleSubmit}>
         <Form.Item
           label="Name"
           name="name"
           rules={[{ required: true, message: "Please input the pet name!" }]}
         >
-          <Input />
+          <Input style={{ width: "100%" }} />
         </Form.Item>
-        <Form.Item label="Height" name="height">
-          <Input />
+        <Form.Item
+          label="Height"
+          name="height"
+          rules={[
+            { required: true, message: "Please input the pet height!" },
+            {
+              type: "number",
+              min: 0,
+              message: "Height must be a non-negative number!",
+            },
+            {
+              validator: (_, value) =>
+                value < 0
+                  ? Promise.reject("Height must be a non-negative number!")
+                  : Promise.resolve(),
+            },
+          ]}
+        >
+          <InputNumber style={{ width: "100%" }} />
         </Form.Item>
-        <Form.Item label="Weight" name="weight">
-          <Input />
+        <Form.Item
+          label="Weight"
+          name="weight"
+          rules={[
+            { required: true, message: "Please input the pet weight!" },
+            {
+              type: "number",
+              min: 0,
+              message: "Weight must be a non-negative number!",
+            },
+            {
+              validator: (_, value) =>
+                value < 0
+                  ? Promise.reject("Weight must be a non-negative number!")
+                  : Promise.resolve(),
+            },
+          ]}
+        >
+          <InputNumber style={{ width: "100%" }} />
         </Form.Item>
         <Form.Item
           label="Category"
           name="category"
           rules={[{ required: true, message: "Please select a category!" }]}
         >
-          <Select
-            options={[
-              { value: "Cat", label: <span>Cat</span> },
-              { value: "Dog", label: <span>Dog</span> },
-              { value: "Other", label: <span>Other</span> },
-            ]}
-          />
+          <Select style={{ width: "100%" }}>
+            <Option value="Cat">Cat</Option>
+            <Option value="Dog">Dog</Option>
+            <Option value="Other">Other</Option>
+          </Select>
         </Form.Item>
         <Form.Item label="Birthday">
-          <Space direction="vertical">
+          <Space direction="vertical" style={{ width: "100%" }}>
             <DatePicker
               showTime
               value={birthday}
               onChange={(date) => setBirthday(date)}
+              style={{ width: "100%" }}
             />
           </Space>
         </Form.Item>

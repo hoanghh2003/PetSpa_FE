@@ -39,7 +39,7 @@ const LoginPage = () => {
         }
 
         const user = result.user;
-        console.log(result);
+
         if (!user || !user.email) {
           throw new Error("Failed to get user information from Google");
         }
@@ -121,8 +121,7 @@ const LoginPage = () => {
       }
 
       let item = { username: email, password: password };
-      console.log(email);
-      console.log(password);
+
       try {
         let response = await fetch("https://localhost:7150/api/Auth/Login", {
           method: "POST",
@@ -146,7 +145,6 @@ const LoginPage = () => {
           let result = await response.json();
           localStorage.setItem("user-info", JSON.stringify(result));
           setError("Login successfully");
-          console.log(result);
 
           const role = result.data.user.role;
           if (role === "Customer") {

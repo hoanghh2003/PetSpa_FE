@@ -89,7 +89,10 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
   };
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(price);
   };
 
   const handlePetModalOpen = () => {
@@ -239,8 +242,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
     );
 
     if (isAlreadyInCart) {
-      message.warning("This pet has already used this service.");
-      return;
+      message.warning("This pet has already used this service in cart.");
     }
 
     setLoading(true); // Start loading
