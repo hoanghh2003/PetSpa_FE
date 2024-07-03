@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Button, Space, Table, Input, Modal, Form, message } from "antd";
+import {
+  Button,
+  Space,
+  Table,
+  Input,
+  Modal,
+  Form,
+  message,
+  Select,
+} from "antd";
 import "../../assets/css/managerPage.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -149,22 +158,7 @@ const ManagerPage = () => {
     },
   ];
 
-  const initialCheckaccepts = [
-    {
-      key: "1",
-      title: "Checkaccept 1",
-      description: "Description of Checkaccept 1",
-      status: "Waiting",
-      checkedBy: "",
-    },
-    {
-      key: "2",
-      title: "Checkaccept 2",
-      description: "Description of Checkaccept 2",
-      status: "Waiting",
-      checkedBy: "",
-    },
-  ];
+  const initialCheckaccepts = [];
 
   const [employees, setEmployees] = useState(initialEmployees);
   const [services, setServices] = useState([]);
@@ -202,7 +196,90 @@ const ManagerPage = () => {
         setServices(formattedData);
       });
   }, []);
+  const [staffList, setStaffList] = useState();
+  useEffect(() => {
+    fetch("https://localhost:7150/api/Booking/bookings/not-accepted")
+      .then((response) => response.json())
+      .then((data) => {
+        const formattedData = data.data.map((booking, index) => ({
+          key: index + 1,
+          bookingId: booking.bookingId,
+          customerName: booking.customerName,
+          serviceName: booking.serviceName,
+          petName: booking.petName,
+          startDate: booking.startDate,
+          endDate: booking.endDate,
+          staffName: booking.staffName === "Unknown" ? null : booking.staffName,
+          staffId: booking.staffId,
+          checkAccept: booking.checkAccept,
+        }));
+        setCheckaccepts(formattedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching checkaccept data:", error);
+        message.error("Failed to fetch checkaccept data");
+      });
+  }, []);
 
+  const fetchStaffBookingsSummary = async (date) => {
+    try {
+      const response = await axios.get(
+        `https://localhost:7150/api/Staff/bookings-summary?date=${date}`
+      );
+      if (response.status === 200) {
+        const summaryData = response.data.data;
+        const staffBookingsMap = summaryData.reduce((map, staff) => {
+          map[staff.staffId] = staff.totalBooking;
+          return map;
+        }, {});
+
+        const formattedStaffList = staffList.map((staff) => ({
+          staffId: staff.staffId,
+          fullName: `${staff.fullName} (${
+            staffBookingsMap[staff.staffId] || 0
+          } bookings)`,
+        }));
+
+        setStaffList(formattedStaffList);
+      }
+    } catch (error) {
+      console.error("Error fetching staff bookings summary:", error);
+      message.error("Failed to fetch staff bookings summary");
+    }
+  };
+  const handleStaffSelect = async (value, record) => {
+    const selectedStaff = staffList.find((staff) => staff.staffId === value);
+    if (selectedStaff) {
+      const updatedCheckaccepts = checkaccepts.map((checkaccept) =>
+        checkaccept.key === record.key
+          ? {
+              ...checkaccept,
+              staffId: selectedStaff.staffId,
+              staffName: selectedStaff.fullName.split(" (")[0],
+            }
+          : checkaccept
+      );
+      setCheckaccepts(updatedCheckaccepts);
+      message.success("Staff assigned successfully");
+    }
+  };
+
+  useEffect(() => {
+    fetch("https://localhost:7150/api/Staff")
+      .then((response) => response.json())
+      .then((data) => {
+        const formattedStaffList = data.data.map((staff) => ({
+          staffId: staff.staffId,
+          fullName: staff.fullName,
+        }));
+
+        setStaffList(formattedStaffList);
+      })
+      .catch((error) => {
+        console.error("Error fetching staff data:", error);
+        message.error("Failed to fetch staff data");
+      });
+  }, []);
   const handleChange = (pagination, filters, sorter) => {
     setFilteredInfo(filters);
     setSortedInfo(sorter);
@@ -380,14 +457,49 @@ const ManagerPage = () => {
     form.resetFields();
   };
 
-  const handleAccept = (key) => {
-    setCheckaccepts(
-      checkaccepts.map((checkaccept) =>
-        checkaccept.key === key
-          ? { ...checkaccept, status: "Approved", checkedBy: "Current User" }
-          : checkaccept
-      )
-    );
+  const handleAccept = async (key) => {
+    const booking = checkaccepts.find((checkaccept) => checkaccept.key === key);
+    if (
+      !booking ||
+      booking.staffId === "00000000-0000-0000-0000-000000000000"
+    ) {
+      message.error(
+        "Please select a staff member before accepting the booking."
+      );
+      return;
+    }
+
+    try {
+      console.log(booking.bookingId + booking.staffId);
+      const response = await axios.put(
+        "https://localhost:7150/api/Booking/accept-booking",
+        {
+          bookingId: booking.bookingId,
+          staffId: booking.staffId,
+        }
+      );
+
+      if (response.status === 200) {
+        setCheckaccepts(
+          checkaccepts.map((checkaccept) =>
+            checkaccept.key === key
+              ? {
+                  ...checkaccept,
+                  status: "Approved",
+                  checkedBy: "Current User",
+                  checkAccept: true,
+                }
+              : checkaccept
+          )
+        );
+        message.success("Booking accepted successfully");
+      } else {
+        message.error("Failed to accept booking");
+      }
+    } catch (error) {
+      console.error("Error accepting booking:", error);
+      message.error("Failed to accept booking");
+    }
   };
 
   const handleDeny = (key) => {
@@ -726,9 +838,28 @@ const ManagerPage = () => {
       title: "Staff Name",
       dataIndex: "staffName",
       key: "staffName",
-      sorter: (a, b) => a.staffName.length - b.staffName.length,
+      sorter: (a, b) => a.staffName?.length - b.staffName?.length,
       sortOrder: sortedInfo.columnKey === "staffName" ? sortedInfo.order : null,
       ellipsis: true,
+      render: (text, record) =>
+        record.staffName === null ? (
+          <Select
+            placeholder="Select Staff"
+            onFocus={() =>
+              fetchStaffBookingsSummary(record.startDate.split(" ")[0])
+            }
+            onChange={(value) => handleStaffSelect(value, record)}
+            style={{ width: "100%" }}
+          >
+            {staffList.map((staff) => (
+              <Select.Option key={staff.staffId} value={staff.staffId}>
+                {staff.fullName}
+              </Select.Option>
+            ))}
+          </Select>
+        ) : (
+          text
+        ),
     },
     {
       title: "Action",
@@ -737,13 +868,13 @@ const ManagerPage = () => {
         <Space size="middle">
           <Button
             onClick={() => handleAccept(record.key)}
-            disabled={record.status !== "Waiting"}
+            disabled={record.checkAccept}
           >
             Accept
           </Button>
           <Button
             onClick={() => handleDeny(record.key)}
-            disabled={record.status !== "Waiting"}
+            disabled={record.checkAccept}
           >
             Deny
           </Button>
@@ -774,7 +905,9 @@ const ManagerPage = () => {
           payment.payer.toLowerCase().includes(searchText.toLowerCase())
         )
       : checkaccepts.filter((checkaccept) =>
-          checkaccept.title.toLowerCase().includes(searchText.toLowerCase())
+          checkaccept.customerName
+            ?.toLowerCase()
+            .includes(searchText.toLowerCase())
         );
 
   return (
@@ -1055,6 +1188,25 @@ const ManagerPage = () => {
           ) : null}
         </Form>
       </Modal>
+      {/* <Modal
+        title="Select Staff"
+        visible={isModalVisible}
+        onOk={handleAssignStaff}
+        onCancel={handleModalCancel}
+        okText="Assign"
+      >
+        <Select
+          style={{ width: "100%" }}
+          placeholder="Select a staff member"
+          onChange={handleStaffSelect}
+        >
+          {staffList.map((staff) => (
+            <Select.Option key={staff.staffId} value={staff.staffId}>
+              {staff.fullName}
+            </Select.Option>
+          ))}
+        </Select>
+      </Modal> */}
     </div>
   );
 };
