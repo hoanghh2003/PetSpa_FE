@@ -110,15 +110,23 @@ function Service() {
 
   const handleSearch = async (searchTerm) => {
     if (!searchTerm) {
-      setError(
-        "Sorry, we could not find any results for your search term. Please check your spelling, use more general words, and try again."
-      );
+      // If search term is empty, fetch all services
+      try {
+        const response = await axios.get("https://localhost:7150/api/Service");
+        const result = response.data;
+        const filteredServices = result.data.data.filter(
+          (service) => service.status !== false
+        );
+        setServices(filteredServices);
+        setError(""); // Clear any previous errors
+      } catch (error) {
+        setError("An error occurred while fetching services");
+      }
       return;
     }
-
+  
     try {
       const response = await axios.get(
-        //https://localhost:7150/api/Service/search?searchTerm=grooming
         `https://localhost:7150/api/Service/search?searchTerm=${searchTerm}`
       );
       setServices(response.data.data);
@@ -131,6 +139,7 @@ function Service() {
       }
     }
   };
+  
 
   async function fetchMovies() {
     const userInfoString = localStorage.getItem("user-info");
@@ -324,19 +333,11 @@ function Service() {
                           </div>
                           <Link
                             className="btn_unfill"
-                            to={`/service/${service.serviceId}`}
+                            onClick={() => handleBookNow(service.serviceId)}
                           >
-                            <span>View More</span>{" "}
+                            <span>Schedule Your Appointment</span>{" "}
                             <FontAwesomeIcon icon={faArrowRight} />
                           </Link>
-                          <Button
-                            onClick={() => handleBookNow(service.serviceId)}
-                            className="group w-32 h-10 m-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-full shadow-lg hover:from-purple-600 hover:to-blue-600 transition duration-300 ease-in-out transform hover:scale-105"
-                          >
-                            <span className="block group-hover:text-black transition duration-300 ease-in-out">
-                              Book now
-                            </span>
-                          </Button>
                           {isOpen &&
                             selectedServiceId === service.serviceId && (
                               <BookingCard
