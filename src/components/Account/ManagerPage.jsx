@@ -14,153 +14,17 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const ManagerPage = () => {
-  const initialEmployees = [
-    {
-      key: "1",
-      name: "Airi Satou",
-      position: "Accountant",
-      office: "Tokyo",
-      age: 33,
-      startDate: "2008/11/28",
-      salary: "$162,700",
-    },
-    {
-      key: "2",
-      name: "Garrett Winters",
-      position: "Accountant",
-      office: "Tokyo",
-      age: 63,
-      startDate: "2011/07/25",
-      salary: "$170,750",
-    },
-    {
-      key: "3",
-      name: "Angelica Ramos",
-      position: "Chief Executive Officer (CEO)",
-      office: "London",
-      age: 47,
-      startDate: "2009/10/09",
-      salary: "$1,200,000",
-    },
-    {
-      key: "4",
-      name: "Paul Byrd",
-      position: "Chief Financial Officer (CFO)",
-      office: "New York",
-      age: 64,
-      startDate: "2010/06/09",
-      salary: "$725,000",
-    },
-    {
-      key: "5",
-      name: "Yuri Berry",
-      position: "Chief Marketing Officer (CMO)",
-      office: "New York",
-      age: 40,
-      startDate: "2009/06/25",
-      salary: "$675,000",
-    },
-    {
-      key: "6",
-      name: "Fiona Green",
-      position: "Chief Operating Officer (COO)",
-      office: "San Francisco",
-      age: 48,
-      startDate: "2010/03/11",
-      salary: "$850,000",
-    },
-    {
-      key: "7",
-      name: "Donna Snider",
-      position: "Customer Support",
-      office: "New York",
-      age: 27,
-      startDate: "2011/01/25",
-      salary: "$112,000",
-    },
-    {
-      key: "8",
-      name: "Serge Baldwin",
-      position: "Data Coordinator",
-      office: "Singapore",
-      age: 64,
-      startDate: "2012/04/09",
-      salary: "$138,575",
-    },
-    {
-      key: "9",
-      name: "Gavin Joyce",
-      position: "Developer",
-      office: "Edinburgh",
-      age: 42,
-      startDate: "2010/12/22",
-      salary: "$92,575",
-    },
-    {
-      key: "10",
-      name: "Jonas Alexander",
-      position: "Developer",
-      office: "San Francisco",
-      age: 30,
-      startDate: "2010/07/14",
-      salary: "$86,500",
-    },
-  ];
 
-  const initialCombos = [
-    {
-      key: "1",
-      name: "Combo 1",
-      description: "Description of Combo 1",
-      price: "$150",
-      servicesIncluded: "Service A, Service B",
-    },
-    {
-      key: "2",
-      name: "Combo 2",
-      description: "Description of Combo 2",
-      price: "$250",
-      servicesIncluded: "Service B, Service C",
-    },
-  ];
+  const initialCombos = [];
 
-  const initialTasks = [
-    {
-      key: "1",
-      title: "Task 1",
-      description: "Description of Task 1",
-      status: "Pending",
-      assignedTo: "Airi Satou",
-    },
-    {
-      key: "2",
-      title: "Task 2",
-      description: "Description of Task 2",
-      status: "Completed",
-      assignedTo: "Garrett Winters",
-    },
-  ];
+  const initialTasks = [];
 
-  const initialPayments = [
-    {
-      key: "1",
-      payer: "John Doe",
-      amount: "$1000",
-      date: "2023/01/01",
-      status: "Completed",
-    },
-    {
-      key: "2",
-      payer: "Jane Smith",
-      amount: "$500",
-      date: "2023/02/15",
-      status: "Pending",
-    },
-  ];
+  const initialPayments = [];
 
   const initialCheckaccepts = [];
 
-  const [employees, setEmployees] = useState(initialEmployees);
+  const [activeTab, setActiveTab] = useState(null); // Khởi tạo với giá trị null để không hiển thị bảng dữ liệu lúc ban đầu
+
   const [services, setServices] = useState([]);
   const [combos, setCombos] = useState(initialCombos);
   const [tasks, setTasks] = useState(initialTasks);
@@ -171,7 +35,6 @@ const ManagerPage = () => {
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
-  const [activeTab, setActiveTab] = useState("staff");
 
   const [form] = Form.useForm();
 
@@ -320,9 +183,7 @@ const ManagerPage = () => {
       Authorization: `Bearer ${token}`,
     };
     try {
-      if (activeTab === "staff") {
-        setEmployees(employees.filter((employee) => employee.key !== key));
-      } else if (activeTab === "service") {
+if (activeTab === "service") {
         // Find the service by key
         const service = services.find((service) => service.key === key);
 
@@ -361,15 +222,7 @@ const ManagerPage = () => {
       .validateFields()
       .then(async (values) => {
         if (editingRecord) {
-          if (activeTab === "staff") {
-            setEmployees(
-              employees.map((emp) =>
-                emp.key === editingRecord.key
-                  ? { ...values, key: emp.key }
-                  : emp
-              )
-            );
-          } else if (activeTab === "service") {
+          if (activeTab === "service") {
             if (!editingRecord.status) {
               message.error("Cannot edit a service that is not active.");
               return;
@@ -423,9 +276,7 @@ const ManagerPage = () => {
         } else {
           const newRecord = {
             ...values,
-            key: (activeTab === "staff"
-              ? employees.length + 1
-              : activeTab === "service"
+            key: (activeTab === "service"
               ? services.length + 1
               : activeTab === "combo"
               ? combos.length + 1
@@ -434,9 +285,7 @@ const ManagerPage = () => {
               : payments.length + 1
             ).toString(),
           };
-          if (activeTab === "staff") {
-            setEmployees([...employees, newRecord]);
-          } else if (activeTab === "service") {
+          if (activeTab === "service") {
             setServices([...services, newRecord]);
           } else if (activeTab === "combo") {
             setCombos([...combos, newRecord]);
@@ -512,78 +361,7 @@ const ManagerPage = () => {
     );
   };
 
-  const staffColumns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      filteredValue: filteredInfo.name || null,
-      onFilter: (value, record) => record.name.includes(value),
-      sorter: (a, b) => a.name.length - b.name.length,
-      sortOrder: sortedInfo.columnKey === "name" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Position",
-      dataIndex: "position",
-      key: "position",
-      sorter: (a, b) => a.position.length - b.position.length,
-      sortOrder: sortedInfo.columnKey === "position" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Office",
-      dataIndex: "office",
-      key: "office",
-      filters: [
-        { text: "Tokyo", value: "Tokyo" },
-        { text: "New York", value: "New York" },
-        { text: "London", value: "London" },
-        { text: "San Francisco", value: "San Francisco" },
-      ],
-      filteredValue: filteredInfo.office || null,
-      onFilter: (value, record) => record.office.includes(value),
-      sorter: (a, b) => a.office.length - b.office.length,
-      sortOrder: sortedInfo.columnKey === "office" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-      sorter: (a, b) => a.age - b.age,
-      sortOrder: sortedInfo.columnKey === "age" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Start Date",
-      dataIndex: "startDate",
-      key: "startDate",
-      sorter: (a, b) => new Date(a.startDate) - new Date(b.startDate),
-      sortOrder: sortedInfo.columnKey === "startDate" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Salary",
-      dataIndex: "salary",
-      key: "salary",
-      sorter: (a, b) =>
-        parseFloat(a.salary.replace(/[\$,]/g, "")) -
-        parseFloat(b.salary.replace(/[\$,]/g, "")),
-      sortOrder: sortedInfo.columnKey === "salary" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (text, record) => (
-        <Space size="middle">
-          <Button onClick={() => handleEdit(record)}>Edit</Button>
-          <Button onClick={() => handleDelete(record.key)}>Delete</Button>
-        </Space>
-      ),
-    },
-  ];
+
 
   const serviceColumns = [
     {
@@ -649,7 +427,7 @@ const ManagerPage = () => {
         <Space size="middle">
           <Button onClick={() => handleEdit(record)}>Edit</Button>
           <Button onClick={() => handleDelete(record.key)}>
-            {record.status === false ? "Word" : "Delete"}
+            {record.status === false ? "Restore" : "Delete"}
           </Button>
         </Space>
       ),
@@ -884,11 +662,7 @@ const ManagerPage = () => {
   ];
 
   const filteredData =
-    activeTab === "staff"
-      ? employees.filter((employee) =>
-          employee.name.toLowerCase().includes(searchText.toLowerCase())
-        )
-      : activeTab === "service"
+    activeTab === "service"
       ? services.filter((service) =>
           service.serviceName.toLowerCase().includes(searchText.toLowerCase())
         )
@@ -915,12 +689,6 @@ const ManagerPage = () => {
       <div className="sidebar-manager">
         <h3>MENU</h3>
         <ul>
-          <li
-            className={`menu-item ${activeTab === "staff" ? "active" : ""}`}
-            onClick={() => setActiveTab("staff")}
-          >
-            Staff Manager
-          </li>
           <li
             className={`menu-item ${activeTab === "service" ? "active" : ""}`}
             onClick={() => setActiveTab("service")}
@@ -956,57 +724,56 @@ const ManagerPage = () => {
         </ul>
       </div>
       <div className="content">
-        <Space
-          style={{
-            marginBottom: 16,
-          }}
-        >
-          <Button onClick={clearAll}>Clear filters and sorters</Button>
-          <Input
-            placeholder="Search by name"
-            value={searchText}
-            onChange={handleSearch}
-          />
-          {activeTab !== "payment" &&
-            activeTab !== "checkaccept" &&
-            activeTab !== "task" && (
-              <Button type="primary" onClick={handleAdd}>
-                Add{" "}
-                {activeTab === "staff"
-                  ? "Employee"
-                  : activeTab === "service"
-                  ? "Service"
+   {activeTab && (
+      <>
+         <Space
+            style={{
+               marginBottom: 16,
+            }}
+         >
+            <Button onClick={clearAll}>Clear filters and sorters</Button>
+            <Input
+               placeholder="Search by name"
+               value={searchText}
+               onChange={handleSearch}
+            />
+            {activeTab !== "payment" &&
+               activeTab !== "checkaccept" &&
+               activeTab !== "task" && (
+                  <Button type="primary" onClick={handleAdd}>
+                     Add{" "}
+                     {activeTab === "service"
+                        ? "Service"
+                        : activeTab === "combo"
+                        ? "Combo"
+                        : "Task"}
+                  </Button>
+               )}
+         </Space>
+         <Table
+            columns={
+               activeTab === "service"
+                  ? serviceColumns
                   : activeTab === "combo"
-                  ? "Combo"
-                  : "Task"}
-              </Button>
-            )}
-        </Space>
-        <Table
-          columns={
-            activeTab === "staff"
-              ? staffColumns
-              : activeTab === "service"
-              ? serviceColumns
-              : activeTab === "combo"
-              ? comboColumns
-              : activeTab === "task"
-              ? taskColumns
-              : activeTab === "payment"
-              ? paymentColumns
-              : checkacceptColumns
-          }
-          dataSource={filteredData}
-          onChange={handleChange}
-        />
-      </div>
+                  ? comboColumns
+                  : activeTab === "task"
+                  ? taskColumns
+                  : activeTab === "payment"
+                  ? paymentColumns
+                  : checkacceptColumns
+            }
+            dataSource={filteredData}
+            onChange={handleChange}
+         />
+      </>
+   )}
+</div>
+
       <Modal
         title={
           editingRecord
             ? `Edit ${
-                activeTab === "staff"
-                  ? "Employee"
-                  : activeTab === "service"
+                activeTab === "service"
                   ? "Service"
                   : activeTab === "combo"
                   ? "Combo"
@@ -1015,9 +782,7 @@ const ManagerPage = () => {
                   : "Payment"
               }`
             : `Add ${
-                activeTab === "staff"
-                  ? "Employee"
-                  : activeTab === "service"
+                activeTab === "service"
                   ? "Service"
                   : activeTab === "combo"
                   ? "Combo"
@@ -1031,53 +796,7 @@ const ManagerPage = () => {
         onCancel={handleModalCancel}
       >
         <Form form={form} layout="vertical" name="recordForm">
-          {activeTab === "staff" ? (
-            <>
-              <Form.Item
-                name="position"
-                label="Position"
-                rules={[
-                  { required: true, message: "Please input the position!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="office"
-                label="Office"
-                rules={[
-                  { required: true, message: "Please input the office!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="age"
-                label="Age"
-                rules={[{ required: true, message: "Please input the age!" }]}
-              >
-                <Input type="number" />
-              </Form.Item>
-              <Form.Item
-                name="startDate"
-                label="Start Date"
-                rules={[
-                  { required: true, message: "Please input the start date!" },
-                ]}
-              >
-                <Input type="date" />
-              </Form.Item>
-              <Form.Item
-                name="salary"
-                label="Salary"
-                rules={[
-                  { required: true, message: "Please input the salary!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </>
-          ) : activeTab === "service" ? (
+          {activeTab === "service" ? (
             <>
               <Form.Item
                 name="serviceName"
