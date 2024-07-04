@@ -8,30 +8,29 @@ import {
   Form,
   message,
   Select,
-  Checkbox,
+  Layout,
+  Menu,
+  Typography,
 } from "antd";
+import { PlusOutlined, FilterOutlined, SearchOutlined } from "@ant-design/icons";
 import "../../assets/css/managerPage.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const { Header, Content, Sider } = Layout;
+const { Title } = Typography;
+
 const ManagerPage = () => {
-  const initialCombos = [];
-  const initialTasks = [];
-  const initialPayments = [];
   const initialCheckaccepts = [];
 
   const [services, setServices] = useState([]);
-  const [servicess, setServicess] = useState([]);
-  const [combos, setCombos] = useState(initialCombos);
-  const [tasks, setTasks] = useState(initialTasks);
-  const [payments, setPayments] = useState(initialPayments);
   const [checkaccepts, setCheckaccepts] = useState(initialCheckaccepts);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
-  const [activeTab, setActiveTab] = useState(null); // Chuyển giá trị mặc định thành null
+  const [activeTab, setActiveTab] = useState("service");
 
   const [form] = Form.useForm();
 
@@ -45,7 +44,6 @@ const ManagerPage = () => {
           serviceName: service.serviceName,
           serviceDescription: service.serviceDescription,
           duration: service.duration,
-
           price: service.price.toLocaleString("vi-VN", {
             style: "currency",
             currency: "VND",
@@ -53,43 +51,14 @@ const ManagerPage = () => {
           status: service.status,
         }));
         setServices(formattedData);
-        services.forEach((element) => {
-          console.log(element);
-        });
-      });
-  }, []);
-
-  useEffect(() => {
-    fetch("https://localhost:7150/api/Service")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("API response:", data);
-        const formattedData = data.data.data.map((service, index) => ({
-          key: index + 1,
-          serviceId: service.serviceId,
-          serviceName: service.serviceName,
-          serviceDescription: service.serviceDescription,
-          duration: service.duration,
-
-          price: service.price.toLocaleString("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          }),
-          status: service.status,
-        }));
-        const serviceOptions = formattedData.map((service) => ({
-          label: service.serviceName,
-          value: service.serviceId,
-        }));
-        setServicess(serviceOptions);
       });
   }, []);
 
   const onFinish = (values) => {
     console.log("Form values:", values);
   };
-  
-  const [staffList, setStaffList] = useState();
+
+  const [staffList, setStaffList] = useState([]);
   useEffect(() => {
     fetch("https://localhost:7150/api/Booking/bookings/not-accepted")
       .then((response) => response.json())
@@ -200,7 +169,7 @@ const ManagerPage = () => {
     setIsModalVisible(true);
     form.setFieldsValue(record);
   };
-  
+
   const navigate = useNavigate();
 
   const handleDelete = async (key) => {
@@ -210,14 +179,8 @@ const ManagerPage = () => {
       return;
     }
 
-    const userInfo = JSON.parse(userInfoString);
-    const token = userInfo.data.token;
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
     try {
       if (activeTab === "service") {
-        // Find the service by key
         const service = services.find((service) => service.key === key);
 
         if (service) {
@@ -226,20 +189,14 @@ const ManagerPage = () => {
           setServices([...services]);
 
           const result = await axios.delete(
-            `https://localhost:7150/api/Service/${service.serviceId}`,
-            { headers }
+            `https://localhost:7150/api/Service/${service.serviceId}`
           );
-          console.log(result.data);
           if (result.status === 200) {
-            message.success("Update status successful");
+            message.success("Service status updated successfully");
           }
         } else {
           message.error("Service not found");
         }
-      } else if (activeTab === "combo") {
-        setCombos(combos.filter((combo) => combo.key !== key));
-      } else if (activeTab === "payment") {
-        setPayments(payments.filter((payment) => payment.key !== key));
       }
     } catch (error) {
       console.error("Error deleting service:", error);
@@ -294,73 +251,50 @@ const ManagerPage = () => {
               console.error("Error updating service:", error);
               message.error("Failed to update service");
             }
-          } else if (activeTab === "combo") {
-            setCombos(
-              combos.map((combo) =>
-                combo.key === editingRecord.key
-                  ? { ...values, key: combo.key }
-                  : combo
-              )
-            );
-          }
+          } 
         } else {
-          const newRecord = {
-            ...values,
-            key: (activeTab === "service"
-              ? services.length + 1
-              : activeTab === "combo"
-              ? combos.length + 1
-              : activeTab === "task"
-              ? tasks.length + 1
-              : payments.length + 1
-            ).toString(),
-          };
           if (activeTab === "service") {
-            setServices([...services, newRecord]);
-          } else if (activeTab === "combo") {
-              try {
-                // Tạo combo trước
-                const comboResponse = await axios.post(
-                  'https://localhost:7150/api/Combo',
-                  {
-                    comboType: "values.comboType",
-                    price: parseFloat(values.price),
-                    status: true,
-                    duration: values.duration,
-                  }
-                );
-    
-                const comboId = comboResponse.data.data.comboId; 
-                console.log(comboId);// Giả sử comboId được trả về trong response
-                console.log(values.servicess);
-                // Thêm các dịch vụ vào combo
-                for (const serviceId of values.servicess) {
-                  await axios.post(
-                    `https://localhost:7150/api/Combo/${comboId}/add-services`,
-                    [serviceId]
-                  );
-                }
-    
-                // Thêm combo mới vào danh sách combo
-                setCombos([...combos, { ...newRecord, comboId }]);
-    
-                message.success("Combo created and services added successfully");
-              } catch (error) {
-                console.error("Error creating combo:", error);
-                message.error("Failed to create combo and add services");
+            try {
+              const newService = {
+                serviceName: values.serviceName,
+                serviceDescription: values.serviceDescription,
+                duration: values.duration,
+                price: parseFloat(values.price),
+                status: true, // Assuming new services are active by default
+                comboId: values.comboId || null,
+              };
+
+              const result = await axios.post(
+                "https://localhost:7150/api/Service",
+                newService
+              );
+              if (result.status === 200) {
+                const addedService = {
+                  ...newService,
+                  key: services.length + 1,
+                  serviceId: result.data.data.serviceId,
+                  price: newService.price.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }),
+                };
+                setServices([...services, addedService]);
+                message.success("Service added successfully");
+              } else {
+                message.error("Failed to add service");
               }
-            } else if (activeTab === "task") {
-              setTasks([...tasks, newRecord]);
-            } else if (activeTab === "payment") {
-              setPayments([...payments, newRecord]);
+            } catch (error) {
+              console.error("Error adding service:", error);
+              message.error("Failed to add service");
             }
           }
-          setIsModalVisible(false);
-          form.resetFields();
-        })
-        .catch((info) => {
-          console.log("Validate Failed:", info);
-        });
+        }
+        setIsModalVisible(false);
+        form.resetFields();
+      })
+      .catch((info) => {
+        console.log("Validate Failed:", info);
+      });
   };
 
   const handleModalCancel = () => {
@@ -381,7 +315,6 @@ const ManagerPage = () => {
     }
 
     try {
-      console.log(booking.bookingId + booking.staffId);
       const response = await axios.put(
         "https://localhost:7150/api/Booking/accept-booking",
         {
@@ -485,148 +418,18 @@ const ManagerPage = () => {
       align: "center",
       render: (text, record) => (
         <Space size="middle">
-          <Button onClick={() => handleEdit(record)}>Edit</Button>
-          <Button onClick={() => handleDelete(record.key)}>
-            {record.status === false ? "Word" : "Delete"}
+          <Button type="link" onClick={() => handleEdit(record)}>
+            Edit
+          </Button>
+          <Button
+            type="link"
+            danger
+            onClick={() => handleDelete(record.key)}
+          >
+            {record.status === false ? "Activate" : "Delete"}
           </Button>
         </Space>
       ),
-    },
-  ];
-
-  const comboColumns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      sorter: (a, b) => a.name.length - b.name.length,
-      sortOrder: sortedInfo.columnKey === "name" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Duration",
-      dataIndex: "duration",
-      key: "duration",
-      width: "15%",
-      align: "center",
-      sorter: (a, b) => a.duration.length - b.duration.length,
-      sortOrder: sortedInfo.columnKey === "duration" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      sorter: (a, b) =>
-        parseFloat(a.price.replace(/[\$,]/g, "")) -
-        parseFloat(b.price.replace(/[\$,]/g, "")),
-      sortOrder: sortedInfo.columnKey === "price" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Services Included",
-      dataIndex: "servicesIncluded",
-      key: "servicesIncluded",
-      sorter: (a, b) => a.servicesIncluded.length - b.servicesIncluded.length,
-      sortOrder:
-        sortedInfo.columnKey === "servicesIncluded" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (text, record) => (
-        <Space size="middle">
-          <Button onClick={() => handleEdit(record)}>Edit</Button>
-          <Button onClick={() => handleDelete(record.key)}>Delete</Button>
-        </Space>
-      ),
-    },
-  ];
-
-  const taskColumns = [
-    {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
-      sorter: (a, b) => a.title.length - b.title.length,
-      sortOrder: sortedInfo.columnKey === "title" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      sorter: (a, b) => a.description.length - b.description.length,
-      sortOrder:
-        sortedInfo.columnKey === "description" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      filters: [
-        { text: "Pending", value: "Pending" },
-        { text: "Completed", value: "Completed" },
-      ],
-      filteredValue: filteredInfo.status || null,
-      onFilter: (value, record) => record.status.includes(value),
-      sorter: (a, b) => a.status.length - b.status.length,
-      sortOrder: sortedInfo.columnKey === "status" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Assigned To",
-      dataIndex: "assignedTo",
-      key: "assignedTo",
-      sorter: (a, b) => a.assignedTo.length - b.assignedTo.length,
-      sortOrder:
-        sortedInfo.columnKey === "assignedTo" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-  ];
-
-  const paymentColumns = [
-    {
-      title: "Payer",
-      dataIndex: "payer",
-      key: "payer",
-      sorter: (a, b) => a.payer.length - b.payer.length,
-      sortOrder: sortedInfo.columnKey === "payer" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-      sorter: (a, b) =>
-        parseFloat(a.amount.replace(/[\$,]/g, "")) -
-        parseFloat(b.amount.replace(/[\$,]/g, "")),
-      sortOrder: sortedInfo.columnKey === "amount" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-      sorter: (a, b) => new Date(a.date) - new Date(b.date),
-      sortOrder: sortedInfo.columnKey === "date" ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      filters: [
-        { text: "Pending", value: "Pending" },
-        { text: "Completed", value: "Completed" },
-      ],
-      filteredValue: filteredInfo.status || null,
-      onFilter: (value, record) => record.status.includes(value),
-      sorter: (a, b) => a.status.length - b.status.length,
-      sortOrder: sortedInfo.columnKey === "status" ? sortedInfo.order : null,
-      ellipsis: true,
     },
   ];
 
@@ -706,12 +509,14 @@ const ManagerPage = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button
+            type="primary"
             onClick={() => handleAccept(record.key)}
             disabled={record.checkAccept}
           >
             Accept
           </Button>
           <Button
+            type="danger"
             onClick={() => handleDeny(record.key)}
             disabled={record.checkAccept}
           >
@@ -727,18 +532,6 @@ const ManagerPage = () => {
       ? services.filter((service) =>
           service.serviceName.toLowerCase().includes(searchText.toLowerCase())
         )
-      : activeTab === "combo"
-      ? combos.filter((combo) =>
-          combo.name.toLowerCase().includes(searchText.toLowerCase())
-        )
-      : activeTab === "task"
-      ? tasks.filter((task) =>
-          task.title.toLowerCase().includes(searchText.toLowerCase())
-        )
-      : activeTab === "payment"
-      ? payments.filter((payment) =>
-          payment.payer.toLowerCase().includes(searchText.toLowerCase())
-        )
       : checkaccepts.filter((checkaccept) =>
           checkaccept.customerName
             ?.toLowerCase()
@@ -746,114 +539,91 @@ const ManagerPage = () => {
         );
 
   return (
-    <div className="manager-page">
-      <div className="sidebar-manager">
-        <h3>MENU</h3>
-        <ul>
-          <li
-            className={`menu-item ${activeTab === "service" ? "active" : ""}`}
-            onClick={() => setActiveTab("service")}
+    <Layout>
+      <Header className="header">
+        <Title level={3} style={{ color: "#fff", margin: 0 }}>
+          Manager Page
+        </Title>
+      </Header>
+      <Layout>
+        <Sider width={200} className="site-layout-background">
+          <Menu
+            mode="inline"
+            selectedKeys={[activeTab]}
+            style={{ height: "100%", borderRight: 0 }}
           >
-            Service Manager
-          </li>
-          <li
-            className={`menu-item ${activeTab === "combo" ? "active" : ""}`}
-            onClick={() => setActiveTab("combo")}
+            <Menu.Item
+              key="service"
+              onClick={() => setActiveTab("service")}
+            >
+              Service Manager
+            </Menu.Item>
+            <Menu.Item
+              key="checkaccept"
+              onClick={() => setActiveTab("checkaccept")}
+            >
+              Checkaccept Manager
+            </Menu.Item>
+          </Menu>
+        </Sider>
+        <Layout style={{ padding: "0 24px 24px" }}>
+          <Content
+            style={{
+              padding: 24,
+              margin: 0,
+              minHeight: 280,
+            }}
           >
-            Combo Manager
-          </li>
-          <li
-            className={`menu-item ${activeTab === "task" ? "active" : ""}`}
-            onClick={() => setActiveTab("task")}
-          >
-            Task Manager
-          </li>
-          <li
-            className={`menu-item ${activeTab === "payment" ? "active" : ""}`}
-            onClick={() => setActiveTab("payment")}
-          >
-            Payment Manager
-          </li>
-          <li
-            className={`menu-item ${
-              activeTab === "checkaccept" ? "active" : ""
-            }`}
-            onClick={() => setActiveTab("checkaccept")}
-          >
-            Checkaccept Manager
-          </li>
-        </ul>
-      </div>
-      <div className="content">
-        <Space
-          style={{
-            marginBottom: 16,
-          }}
-        >
-          <Button onClick={clearAll}>Clear filters and sorters</Button>
-          <Input
-            placeholder="Search by name"
-            value={searchText}
-            onChange={handleSearch}
-          />
-          {activeTab !== "payment" &&
-            activeTab !== "checkaccept" &&
-            activeTab !== "task" && (
-              <Button type="primary" onClick={handleAdd}>
-                Add{" "}
-                {activeTab === "service"
-                  ? "Service"
-                  : activeTab === "combo"
-                  ? "Combo"
-                  : "Task"}
-              </Button>
-            )}
-        </Space>
-        <Table
-          columns={
-            activeTab === "service"
-              ? serviceColumns
-              : activeTab === "combo"
-              ? comboColumns
-              : activeTab === "task"
-              ? taskColumns
-              : activeTab === "payment"
-              ? paymentColumns
-              : checkacceptColumns
-          }
-          dataSource={filteredData}
-          onChange={handleChange}
-        />
-      </div>
+            <Space
+              style={{
+                marginBottom: 16,
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <Space>
+                <Button icon={<FilterOutlined />} onClick={clearAll}>
+                  Clear filters and sorters
+                </Button>
+                <Input
+                  placeholder="Search by name"
+                  value={searchText}
+                  onChange={handleSearch}
+                  prefix={<SearchOutlined />}
+                />
+              </Space>
+              {activeTab !== "checkaccept" && (
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={handleAdd}
+                >
+                  Add Service
+                </Button>
+              )}
+            </Space>
+            <Table
+              columns={activeTab === "service" ? serviceColumns : checkacceptColumns}
+              dataSource={filteredData}
+              onChange={handleChange}
+              pagination={{ pageSize: 10 }}
+              rowKey={(record) => record.key}
+            />
+          </Content>
+        </Layout>
+      </Layout>
       <Modal
         title={
           editingRecord
-            ? `Edit ${
-                activeTab === "service"
-                  ? "Service"
-                  : activeTab === "combo"
-                  ? "Combo"
-                  : activeTab === "task"
-                  ? "Task"
-                  : "Payment"
-              }`
-            : `Add ${
-                activeTab === "service"
-                  ? "Service"
-                  : activeTab === "combo"
-                  ? "Combo"
-                  : activeTab === "task"
-                  ? "Task"
-                  : "Payment"
-              }`
+            ? `Edit Service`
+            : `Add Service`
         }
         visible={isModalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
+        okText={editingRecord ? "Update" : "Add"}
       >
         <Form form={form} layout="vertical" name="recordForm" onFinish={onFinish}>
-      {activeTab === "service" ? (
-        <>
           <Form.Item
             name="serviceName"
             label="Service Name"
@@ -890,113 +660,9 @@ const ManagerPage = () => {
           >
             <Input />
           </Form.Item>
-        </>
-      ) : activeTab === "combo" ? (
-        <>
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[
-              { required: true, message: "Please input the name!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="duration"
-            label="Duration"
-            rules={[
-              { required: true, message: "Please input the duration!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="price"
-            label="Price"
-            rules={[
-              { required: true, message: "Please input the price!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="servicess"
-            label="Services Included"
-            rules={[
-              {
-                required: true,
-                message: "Please select the services included!",
-              },
-            ]}
-          >
-            <Checkbox.Group options={servicess} />
-          </Form.Item>
-        </>
-      ) : activeTab === "task" ? (
-        <>
-          <Form.Item
-            name="title"
-            label="Title"
-            rules={[{ required: true, message: "Please input the title!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[
-              { required: true, message: "Please input the description!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="status"
-            label="Status"
-            rules={[
-              { required: true, message: "Please input the status!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="assignedTo"
-            label="Assigned To"
-            rules={[
-              {
-                required: true,
-                message: "Please input the assigned person!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-        </>
-      ) : null}
-
-    </Form>
+        </Form>
       </Modal>
-      {/* <Modal
-        title="Select Staff"
-        visible={isModalVisible}
-        onOk={handleAssignStaff}
-        onCancel={handleModalCancel}
-        okText="Assign"
-      >
-        <Select
-          style={{ width: "100%" }}
-          placeholder="Select a staff member"
-          onChange={handleStaffSelect}
-        >
-          {staffList.map((staff) => (
-            <Select.Option key={staff.staffId} value={staff.staffId}>
-              {staff.fullName}
-            </Select.Option>
-          ))}
-        </Select>
-      </Modal> */}
-    </div>
+    </Layout>
   );
 };
 
