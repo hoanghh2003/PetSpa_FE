@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Form,
@@ -14,17 +15,28 @@ import {
   Popconfirm,
   Row,
   Col,
+  Dropdown,
+  Menu,
+  Card,
+  Tooltip,
 } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  MoreOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import uploadFile from "@/utils/upload";
 import "./Petmanagement.css"; // Ensure correct path to the CSS file
+import { PetsOutlined } from "@mui/icons-material";
+import { CatIcon, DogIcon } from "lucide-react";
 
-function Petmanagement() {
+const { Option } = Select;
+
+const Petmanagement = () => {
   const navigate = useNavigate();
   const regex30KyTu = /^.{1,30}$/; // Ensures the name is between 1 and 30 characters
   const [form] = useForm();
@@ -39,8 +51,12 @@ function Petmanagement() {
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [actionInProgress, setActionInProgress] = useState(false); // New state to track action
 
   const handleDeleteMovie = async (id) => {
+    if (actionInProgress) return; // Prevent action if another is in progress
+    setActionInProgress(true); // Set action in progress
+
     const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
 
@@ -75,6 +91,8 @@ function Petmanagement() {
         }
       } catch (error) {
         console.error("Error deleting pet:", error);
+      } finally {
+        setActionInProgress(false); // Reset action in progress
       }
     } else {
       navigate("/login");
@@ -82,6 +100,9 @@ function Petmanagement() {
   };
 
   const handleUpdate = async (id) => {
+    if (actionInProgress) return; // Prevent action if another is in progress
+    setActionInProgress(true); // Set action in progress
+
     setIsUpdate(true);
     setPetId(id);
     const pet = dataSource.find((x) => x.petId === id);
@@ -116,7 +137,7 @@ function Petmanagement() {
     });
 
   const uploadButton = (
-    <Button icon={<PlusOutlined />} type="dashed">
+    <Button icon={<PlusCircleOutlined />} type="dashed" style={{ borderRadius: "8px" }}>
       Upload
     </Button>
   );
@@ -180,6 +201,7 @@ function Petmanagement() {
   function handleShowModal() {
     setIsOpen(true);
   }
+
   const disabledDate = (current) => {
     return current && current > moment().endOf("day");
   };
@@ -189,6 +211,7 @@ function Petmanagement() {
     form.resetFields();
     setIsUpdate(false);
     setPetId(null);
+    setActionInProgress(false); // Reset action in progress
   }
 
   function handleOk() {
@@ -297,6 +320,22 @@ function Petmanagement() {
     }
   };
 
+  const menu = (id) => (
+    <Menu>
+      <Menu.Item onClick={() => handleUpdate(id)}>Update</Menu.Item>
+      <Menu.Item danger>
+        <Popconfirm
+          title="Are you sure to delete this pet?"
+          onConfirm={() => handleDeleteMovie(id)}
+          okText="Yes"
+          cancelText="No"
+        >
+          Delete
+        </Popconfirm>
+      </Menu.Item>
+    </Menu>
+  );
+
   const columns = [
     {
       title: "Pet Name",
@@ -310,6 +349,11 @@ function Petmanagement() {
       dataIndex: "petType",
       key: "petType",
       sorter: (a, b) => a.petType.localeCompare(b.petType),
+      render: (text) => {
+        if (text === "Dog") return <span><DogIcon/> Dog</span>;
+        if (text === "Cat") return <span><CatIcon/> Cat</span>;
+        return <span>{text}</span>;
+      }
     },
     {
       title: "Weight",
@@ -340,54 +384,47 @@ function Petmanagement() {
       title: "Action",
       key: "action",
       render: (_, record) => (
-        <Space size="middle">
-          <Button type="link" onClick={() => handleUpdate(record.petId)}>
-            Update
-          </Button>
-          <Popconfirm
-            title="Are you sure to delete this pet?"
-            onConfirm={() => handleDeleteMovie(record.petId)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button type="link" danger>
-              Delete
-            </Button>
-          </Popconfirm>
-        </Space>
+        <Dropdown overlay={menu(record.petId)} trigger={['click']}>
+          <Tooltip title="More actions">
+            <Button shape="circle" icon={<MoreOutlined />} />
+          </Tooltip>
+        </Dropdown>
       ),
     },
   ];
 
   return (
     <div className="pet-management-container">
-      <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
-        <Col span={12}>
-          <Input
-            prefix={<SearchOutlined />}
-            placeholder="Search by pet name"
-            value={searchText}
-            onChange={handleSearch}
-            allowClear
-          />
-        </Col>
-        <Col span={12} style={{ textAlign: "right" }}>
-          <Button
-            type="primary"
-            onClick={handleShowModal}
-            className="add-pet-button"
-          >
-            Add new pet
+      <Card
+        title="Pet Management"
+        extra={
+          <Button type="primary" onClick={handleShowModal} className="add-pet-button">
+            Add New Pet
           </Button>
-        </Col>
-      </Row>
-      <Table columns={columns} dataSource={dataSource} rowKey="petId" />
+        }
+        className="pet-management-card"
+      >
+        <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
+          <Col span={12}>
+            <Input
+              prefix={<SearchOutlined />}
+              placeholder="Search by pet name"
+              value={searchText}
+              onChange={handleSearch}
+              allowClear
+              style={{ borderRadius: "8px" }}
+            />
+          </Col>
+        </Row>
+        <Table columns={columns} dataSource={dataSource} rowKey="petId" />
+      </Card>
 
       <Modal
-        title={isUpdate ? "Update pet" : "Add new pet"}
+        title={isUpdate ? "Update Pet" : "Add New Pet"}
         open={isOpen}
         onOk={handleOk}
         onCancel={handleHideModal}
+        className="pet-management-modal"
       >
         <Form
           labelCol={{
@@ -408,7 +445,7 @@ function Petmanagement() {
               },
             ]}
           >
-            <Input />
+            <Input placeholder="Enter pet name" style={{ borderRadius: "8px" }} />
           </Form.Item>
           <Form.Item
             label="Height"
@@ -424,7 +461,7 @@ function Petmanagement() {
               },
             ]}
           >
-            <InputNumber style={{ width: "100%" }} min={0} />
+            <InputNumber style={{ width: "100%", borderRadius: "8px" }} min={0} placeholder="Enter pet height" />
           </Form.Item>
           <Form.Item
             label="Weight"
@@ -440,30 +477,32 @@ function Petmanagement() {
               },
             ]}
           >
-            <InputNumber style={{ width: "100%" }} min={0} />
+            <InputNumber style={{ width: "100%", borderRadius: "8px" }} min={0} placeholder="Enter pet weight" />
           </Form.Item>
           <Form.Item
             label="Category"
             name="category"
             rules={[{ required: true, message: "Please select a category!" }]}
           >
-            <Select
-              options={[
-                { value: "Cat", label: <span>Cat</span> },
-                { value: "Dog", label: <span>Dog</span> },
-                { value: "Other", label: <span>Other</span> },
-              ]}
-            />
+            <Select placeholder="Select category" style={{ borderRadius: "8px" }}>
+              <Option value="Cat">
+                <CatIcon/> Cat
+              </Option>
+              <Option value="Dog">
+                <DogIcon/> Dog
+              </Option>
+              <Option value="Other"><PetsOutlined />Other</Option>
+            </Select>
           </Form.Item>
           <Form.Item label="Birthday">
-            <Space direction="vertical">
-              <DatePicker
-                value={birthday}
-                onChange={(date) => setBirthday(date)}
-                disabledDate={disabledDate}
-                format="YYYY-MM-DD"
-              />
-            </Space>
+            <DatePicker
+              value={birthday}
+              onChange={(date) => setBirthday(date)}
+              disabledDate={disabledDate}
+              format="YYYY-MM-DD"
+              style={{ width: "100%", borderRadius: "8px" }}
+              placeholder="Select pet's birthday"
+            />
           </Form.Item>
           <Form.Item label="Poster" name="poster_path">
             <Upload
@@ -472,6 +511,7 @@ function Petmanagement() {
               fileList={fileList}
               onPreview={handlePreview}
               onChange={handleChange}
+              style={{ borderRadius: "8px" }}
             >
               {fileList.length >= 1 ? null : uploadButton}
             </Upload>
@@ -495,5 +535,6 @@ function Petmanagement() {
       )}
     </div>
   );
-}
+};
+
 export default Petmanagement;
