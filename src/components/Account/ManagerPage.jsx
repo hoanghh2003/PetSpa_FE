@@ -131,10 +131,15 @@ const ManagerPage = () => {
     fetch("https://localhost:7150/api/Staff")
       .then((response) => response.json())
       .then((data) => {
-        const formattedStaffList = data.data.map((staff) => ({
-          staffId: staff.staffId,
-          fullName: staff.fullName,
-        }));
+        const formattedStaffList = data.data.map((staff) => {
+          const names = staff.fullName.split(' ');
+          const lastName = names[names.length - 1];
+
+          return {
+            staffId: staff.staffId,
+            fullName: lastName,
+          };
+        });
 
         setStaffList(formattedStaffList);
       })
@@ -254,6 +259,7 @@ const ManagerPage = () => {
           } 
         } else {
           if (activeTab === "service") {
+            console.log(values);
             try {
               const newService = {
                 serviceName: values.serviceName,
@@ -515,13 +521,7 @@ const ManagerPage = () => {
           >
             Accept
           </Button>
-          <Button
-            type="danger"
-            onClick={() => handleDeny(record.key)}
-            disabled={record.checkAccept}
-          >
-            Deny
-          </Button>
+          
         </Space>
       ),
     },

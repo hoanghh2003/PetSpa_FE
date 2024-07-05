@@ -149,49 +149,27 @@ const Petmanagement = () => {
     if (userInfo != null) {
       try {
         const response = await axios.get(
-          `https://localhost:7150/api/Customer/${userInfo.data.user.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${userInfo.data.token}`,
-            },
-          }
+          `https://localhost:7150/api/Customer/${userInfo.data.user.id}`
+          
         );
-
-        if (response.status === 401) {
-          // Token hết hạn, thông báo và chờ 2 giây trước khi điều hướng
-          message.error("Token hết hạn. Vui lòng đăng nhập lại.");
-          localStorage.removeItem("user-info");
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          navigate("/login");
-          return;
-        }
 
         const result = response.data;
         localStorage.setItem("pets", JSON.stringify(result));
 
         const pets = result.data.pets.filter((x) => x.status !== false);
-        console.log(pets[0].petBirthday);
+       
         const processedPets = pets.map((pet) => {
           return {
             ...pet,
             petBirthday: pet.petBirthday.split(" ")[0], // Extract the date part only
           };
         });
-        console.log(processedPets);
+      
 
         setDataSource(processedPets);
         setOriginalDataSource(processedPets);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          localStorage.removeItem("user-info");
-          message.error("Please, Login in again");
-          console.log(error);
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          navigate("/login");
-        } else {
-          console.log(error);
-          message.error("Có lỗi xảy ra. Vui lòng thử lại.");
-        }
+        console.log(error);
       }
     } else {
       navigate("/");
@@ -219,6 +197,10 @@ const Petmanagement = () => {
   }
 
   const handleSubmit = async (values) => {
+    form.resetFields();
+    setBirthday("");
+
+    
     if (values.poster_path && values.poster_path.file) {
       const url = await uploadFile(values.poster_path.file.originFileObj);
       if (url) {
@@ -378,7 +360,7 @@ const Petmanagement = () => {
       title: "Image",
       dataIndex: "image",
       key: "image",
-      render: (text) => <Image width={50} src={text} />,
+      render: (text) => <Image width={50} height={50} src={text} />,
     },
     {
       title: "Action",

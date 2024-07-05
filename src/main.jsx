@@ -48,7 +48,7 @@ const router = createBrowserRouter([
         element: <ResetPassword />,
       },
       {
-        path: "/management-pet",
+        path: "/Pet",
         element: (
           <ProtectedRoute allowedRoles={["Customer"]}>
             <Petmanagement />
@@ -65,19 +65,27 @@ const router = createBrowserRouter([
       },
       {
         path: "/Cart",
-        element: <Cart />,
+        element: (
+          <ProtectedRoute allowedRoles={["Customer"]}>
+            <Cart />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/Account",
-        element: <Account />,
+        element: (
+          <ProtectedRoute allowedRoles={["Customer"]}>
+            <Account />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/AccountSetting",
-        element: <AccountSetting />,
-      },
-      {
-        path: "/Pet",
-        element: <Petmanagement />,
+        element: (
+          <ProtectedRoute allowedRoles={["Customer"]}>
+            <AccountSetting />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/policy",
@@ -89,7 +97,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/transac",
-        element: <Transac />,
+        element: (
+          <ProtectedRoute allowedRoles={["Customer"]}>
+            <Transac />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/blog",

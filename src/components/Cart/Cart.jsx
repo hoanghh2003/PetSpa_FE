@@ -970,7 +970,7 @@ function Cart() {
 
                         <div className="col-xl-4">
                           <div className="border rounded p-4 mb-3 pb-3">
-                            <div>Your rank: </div>
+                            <div>Price Details: </div>
 
                             <hr className="my-4" />
 

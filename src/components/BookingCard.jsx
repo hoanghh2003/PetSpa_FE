@@ -16,6 +16,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import AddingPet from "./AddingPet";
+import moment from "moment";
 
 const { Option } = Select;
 
@@ -47,7 +48,9 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
   useEffect(() => {
     fetchPets();
   }, [dataSource]);
-
+  const disablePastDates = (current) => {
+    return current && current < moment().startOf('day');
+  };
   const handlePrice = (value) => {
     // Kiểm tra giá trị của priceCurrent
     if (
@@ -235,14 +238,23 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
     const userInfoString = localStorage.getItem("user-info");
     const userInfo = JSON.parse(userInfoString);
     const token = userInfo?.data?.token;
-
+    console.log(date);
     const isAlreadyInCart = cart.some(
       (item) =>
-        item.petId === selectedPetId && item.serviceId === selectedServiceId
+        item.petId === selectedPetId && item.serviceId === selectedServiceId && item.date === date.format("YYYY-MM-DDTHH:mm:ss")
     );
+    const isAlready = cart.some(
+      (item) =>
+        item.petId === selectedPetId && item.date === date.format("YYYY-MM-DDTHH:mm:ss")
+    );
+    if (isAlready) {
+      message.warning("This pet has already used this service in cart.");
+      return;
+    }
 
     if (isAlreadyInCart) {
       message.warning("This pet has already used this service in cart.");
+      return;
     }
 
     setLoading(true); // Start loading
@@ -293,7 +305,7 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
 
       if (paymentResponse.success) {
         setCart((prevCart) => [...prevCart, newItem]);
-        message.success("Service booked and payment successful");
+        message.success("Service booked successfully");
         // Save cart to localStorage
         localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
         setSelectedPetId(null);
@@ -362,16 +374,17 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
         />
         <Form layout="vertical" className="mt-5" form={form}>
           <div className="flex space-x-4">
-            <Form.Item label="Date" className="w-1/2">
-              <Space direction="vertical" className="w-full">
-                <DatePicker
-                  showTime
-                  value={date}
-                  onChange={(date) => setDate(date)}
-                  className="w-full"
-                />
-              </Space>
-            </Form.Item>
+          <Form.Item label="Date" className="w-1/2">
+      <Space direction="vertical" className="w-full">
+        <DatePicker
+          showTime
+          value={date}
+          onChange={(date) => setDate(date)}
+          className="w-full"
+          disabledDate={disablePastDates} // Add the disabledDate prop
+        />
+      </Space>
+    </Form.Item>
             <Form.Item label="Select Staff" className="w-1/2">
               <Select
                 showSearch

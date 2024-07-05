@@ -429,12 +429,6 @@ const AdminPage = () => {
           onChange={handleSearchPhone}
           style={{ width: 200, marginRight: 16 }}
         />
-        <Input
-          placeholder="Search by Role"
-          value={searchRole}
-          onChange={handleSearchRole}
-          style={{ width: 200, marginRight: 16 }}
-        />
         <Button onClick={() => { setFilteredInfo({}); setSortedInfo({}); setAccounts(originalAccounts); setSearchPhone(""); setSearchRole(""); }}>
           Clear filters and sorters
         </Button>

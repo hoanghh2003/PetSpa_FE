@@ -1,6 +1,7 @@
 import { useState } from "react";
 import BookingCombo from "../BookingCombo";
 import { CircleCheck } from "lucide-react";
+import ProtectedRoute from "../ProtectedRoute";
 
 const ComboCard = ({ combo }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,11 +56,13 @@ const ComboCard = ({ combo }) => {
         </div>
       </div>
       {isOpen && selectComboId === combo.comboId && (
-        <BookingCombo
-          isOpen={isOpen}
-          handleHideModal={handleHideModal}
-          comboId={selectComboId}
-        />
+        <ProtectedRoute allowedRoles={["Customer"]}>
+          <BookingCombo
+            isOpen={isOpen}
+            handleHideModal={handleHideModal}
+            comboId={selectComboId}
+          />
+        </ProtectedRoute>
       )}
     </div>
   );

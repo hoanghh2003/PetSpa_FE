@@ -418,14 +418,14 @@ const Transac = () => {
         } else {
           console.error("Error response:", error.response.data);
           message.error(
-            error.response.data?.errorMessage || "An error occurred."
+            error.response.data || "An error occurred."
           );
-          setError(error.response.data?.errorMessage || "An error occurred.");
+          //setError(error.response.data|| "An error occurred.");
         }
       } else {
         console.error("Error:", error);
         message.error("An unexpected error occurred.");
-        setError("An unexpected error occurred.");
+       // setError("An unexpected error occurred.");
       }
     }
     setIsLoading(false);
@@ -474,7 +474,7 @@ const Transac = () => {
     } catch (error) {
       console.error("Error submitting feedback:", error);
       message.error(
-        error.response?.data?.errorMessage || "Failed to submit feedback."
+        error.response?.data || "Failed to submit feedback."
       );
     }
   };
@@ -528,7 +528,7 @@ const Transac = () => {
     } catch (error) {
       console.error("Error submitting refund request:", error);
       message.error(
-        error.response?.data?.errorMessage || "Failed to submit refund request."
+        error.response?.data || "Failed to submit refund request."
       );
     }
   };

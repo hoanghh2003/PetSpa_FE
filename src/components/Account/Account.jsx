@@ -63,8 +63,8 @@ function Account() {
           setRole(Role);
           // Tách fullName thành firstName và lastName
           const nameParts = fullName.split(" ");
-          const firstName = nameParts[0];
-          const lastName = nameParts.slice(1).join(" ");
+          const lastName = nameParts.pop();
+          const firstName = nameParts.join(" ");
           form.setFieldsValue({
             firstName: firstName,
             lastName: lastName,

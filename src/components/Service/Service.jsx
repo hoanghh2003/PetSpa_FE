@@ -16,7 +16,6 @@ import "../../assets/js/jquery-ui.js";
 import "../../assets/js/vanilla-calendar.min.js";
 import "../../assets/js/countdown.js";
 import "../../assets/js/main.js";
-import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -35,8 +34,9 @@ import { useNavigate } from "react-router-dom";
 import Search from "antd/es/input/Search.js";
 // import { Option } from "antd/es/mentions/index.js";
 // import { useForm } from "antd/es/form/Form.js";
-import { Button, message } from "antd";
+import { message } from "antd";
 import BookingCard from "../BookingCard.jsx";
+import ProtectedRoute from "../ProtectedRoute.jsx";
 
 function Service() {
   const CustomNextArrow = ({ onClick }) => (
@@ -77,7 +77,7 @@ function Service() {
         console.error("Error fetching bookings:", error);
       }
     };
-
+    
     fetchBookings();
   }, []);
 
@@ -124,7 +124,7 @@ function Service() {
       }
       return;
     }
-  
+
     try {
       const response = await axios.get(
         `https://localhost:7150/api/Service/search?searchTerm=${searchTerm}`
@@ -139,7 +139,6 @@ function Service() {
       }
     }
   };
-  
 
   async function fetchMovies() {
     const userInfoString = localStorage.getItem("user-info");
@@ -259,7 +258,10 @@ function Service() {
                   </ul>
                   <h1 className="page_title">Our Services</h1>
                   <p className="page_description mb-0">
-                  At Pet Pia, we understand that your pets are not just animals but cherished members of your family. Our Pets' Spa Management services are designed to provide your furry friends with the ultimate pampering and care they deserve.
+                    At Pet Pia, we understand that your pets are not just
+                    animals but cherished members of your family. Our Pets' Spa
+                    Management services are designed to provide your furry
+                    friends with the ultimate pampering and care they deserve.
                   </p>
                 </div>
               </div>
@@ -340,11 +342,13 @@ function Service() {
                           </Link>
                           {isOpen &&
                             selectedServiceId === service.serviceId && (
-                              <BookingCard
-                                isOpen={isOpen}
-                                handleHideModal={handleHideModal}
-                                serviceId={service.serviceId}
-                              />
+                              <ProtectedRoute allowedRoles={["Customer"]}>
+                                <BookingCard
+                                  isOpen={isOpen}
+                                  handleHideModal={handleHideModal}
+                                  serviceId={service.serviceId}
+                                />
+                              </ProtectedRoute>
                             )}
                           <div className="decoration_image">
                             <img
