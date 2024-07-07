@@ -200,16 +200,16 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
   ];
 
   const handleChoice = async () => {
-    const savedCart = localStorage.getItem("cart");
+    const userInfo = JSON.parse(localStorage.getItem("user-info"));
+    const token = userInfo?.data?.token;
+    const userId = userInfo?.data?.user?.id;
+    const savedCart = localStorage.getItem(`cart-${userId}`);
     const cart = savedCart ? JSON.parse(savedCart) : [];
     if (selectedPetId == null || date == null) {
       setError("Please select a pet and a date.");
       return;
     }
     setError("");
-    const userInfoString = localStorage.getItem("user-info");
-    const userInfo = JSON.parse(userInfoString);
-    const token = userInfo?.data?.token;
 
     const isServiceAlreadyInCart = cart.some((service) =>
       cart.some(
@@ -269,7 +269,7 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
       setCart((prevCart) => [...prevCart, newItem]);
       message.success("Booking for pet successfully");
       // Lưu giỏ hàng vào localStorage
-      localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
+      localStorage.setItem(`cart-${userId}`, JSON.stringify([...cart, newItem]));
       setSelectedPetId(null);
       setDate(null);
       setSelectStaffId(null);
