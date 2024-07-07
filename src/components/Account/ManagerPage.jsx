@@ -12,10 +12,15 @@ import {
   Menu,
   Typography,
 } from "antd";
-import { PlusOutlined, FilterOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  FilterOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import "../../assets/css/managerPage.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 const { Header, Content, Sider } = Layout;
 const { Title } = Typography;
@@ -67,6 +72,7 @@ const ManagerPage = () => {
           key: index + 1,
           bookingId: booking.bookingId,
           customerName: booking.customerName,
+          serviceId: booking.serviceId,
           serviceName: booking.serviceName,
           petName: booking.petName,
           startDate: booking.startDate,
@@ -75,6 +81,7 @@ const ManagerPage = () => {
           staffId: booking.staffId,
           checkAccept: booking.checkAccept,
         }));
+        console.log(formattedData);
         setCheckaccepts(formattedData);
       })
       .catch((error) => {
@@ -132,7 +139,7 @@ const ManagerPage = () => {
       .then((response) => response.json())
       .then((data) => {
         const formattedStaffList = data.data.map((staff) => {
-          const names = staff.fullName.split(' ');
+          const names = staff.fullName.split(" ");
           const lastName = names[names.length - 1];
 
           return {
@@ -256,7 +263,7 @@ const ManagerPage = () => {
               console.error("Error updating service:", error);
               message.error("Failed to update service");
             }
-          } 
+          }
         } else {
           if (activeTab === "service") {
             console.log(values);
@@ -310,6 +317,7 @@ const ManagerPage = () => {
 
   const handleAccept = async (key) => {
     const booking = checkaccepts.find((checkaccept) => checkaccept.key === key);
+
     if (
       !booking ||
       booking.staffId === "00000000-0000-0000-0000-000000000000"
@@ -321,6 +329,19 @@ const ManagerPage = () => {
     }
 
     try {
+      const startDate = moment(booking.startDate);
+      const formattedStartDate = startDate.format("YYYY-MM-DDTHH:mm:ss");
+      let url = `https://localhost:7150/api/Booking/available?startTime=${formattedStartDate}&serviceCode=${booking.serviceId}`;
+
+      if (booking.staffId) {
+        url += `&staffId=${booking.staffId}`;
+      }
+      console.log(booking);
+      const responseCheckAccpet = await axios.get(url);
+      if (responseCheckAccpet.status === 404) {
+        message.error(responseCheckAccpet.data || "error ");
+      }
+
       const response = await axios.put(
         "https://localhost:7150/api/Booking/accept-booking",
         {
@@ -347,20 +368,30 @@ const ManagerPage = () => {
         message.error("Failed to accept booking");
       }
     } catch (error) {
-      console.error("Error accepting booking:", error);
-      message.error("Failed to accept booking");
+      message.error(error.response.data);
+      const updatedCheckaccepts = checkaccepts.map((checkaccept) =>
+        checkaccept.key === key
+          ? {
+              ...checkaccept,
+              staffId: "00000000-0000-0000-0000-000000000000",
+              staffName: null,
+            }
+          : checkaccept
+      );
+
+      setCheckaccepts(updatedCheckaccepts);
     }
   };
 
-  const handleDeny = (key) => {
-    setCheckaccepts(
-      checkaccepts.map((checkaccept) =>
-        checkaccept.key === key
-          ? { ...checkaccept, status: "Rejected", checkedBy: "Current User" }
-          : checkaccept
-      )
-    );
-  };
+  // const handleDeny = (key) => {
+  //   setCheckaccepts(
+  //     checkaccepts.map((checkaccept) =>
+  //       checkaccept.key === key
+  //         ? { ...checkaccept, status: "Rejected", checkedBy: "Current User" }
+  //         : checkaccept
+  //     )
+  //   );
+  // };
 
   const serviceColumns = [
     {
@@ -427,11 +458,7 @@ const ManagerPage = () => {
           <Button type="link" onClick={() => handleEdit(record)}>
             Edit
           </Button>
-          <Button
-            type="link"
-            danger
-            onClick={() => handleDelete(record.key)}
-          >
+          <Button type="link" danger onClick={() => handleDelete(record.key)}>
             {record.status === false ? "Activate" : "Delete"}
           </Button>
         </Space>
@@ -521,7 +548,6 @@ const ManagerPage = () => {
           >
             Accept
           </Button>
-          
         </Space>
       ),
     },
@@ -552,10 +578,7 @@ const ManagerPage = () => {
             selectedKeys={[activeTab]}
             style={{ height: "100%", borderRight: 0 }}
           >
-            <Menu.Item
-              key="service"
-              onClick={() => setActiveTab("service")}
-            >
+            <Menu.Item key="service" onClick={() => setActiveTab("service")}>
               Service Manager
             </Menu.Item>
             <Menu.Item
@@ -603,7 +626,9 @@ const ManagerPage = () => {
               )}
             </Space>
             <Table
-              columns={activeTab === "service" ? serviceColumns : checkacceptColumns}
+              columns={
+                activeTab === "service" ? serviceColumns : checkacceptColumns
+              }
               dataSource={filteredData}
               onChange={handleChange}
               pagination={{ pageSize: 10 }}
@@ -613,17 +638,18 @@ const ManagerPage = () => {
         </Layout>
       </Layout>
       <Modal
-        title={
-          editingRecord
-            ? `Edit Service`
-            : `Add Service`
-        }
+        title={editingRecord ? `Edit Service` : `Add Service`}
         visible={isModalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
         okText={editingRecord ? "Update" : "Add"}
       >
-        <Form form={form} layout="vertical" name="recordForm" onFinish={onFinish}>
+        <Form
+          form={form}
+          layout="vertical"
+          name="recordForm"
+          onFinish={onFinish}
+        >
           <Form.Item
             name="serviceName"
             label="Service Name"
@@ -645,18 +671,14 @@ const ManagerPage = () => {
           <Form.Item
             name="duration"
             label="Duration"
-            rules={[
-              { required: true, message: "Please input the duration!" },
-            ]}
+            rules={[{ required: true, message: "Please input the duration!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="price"
             label="Price (VND)"
-            rules={[
-              { required: true, message: "Please input the price!" },
-            ]}
+            rules={[{ required: true, message: "Please input the price!" }]}
           >
             <Input />
           </Form.Item>

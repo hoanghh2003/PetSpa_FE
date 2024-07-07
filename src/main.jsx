@@ -36,6 +36,10 @@ const router = createBrowserRouter([
         element: <LoginPage />,
       },
       {
+        path: "/zadmin",
+        element: <AdminPage />,
+      },
+      {
         path: "/register",
         element: <Register />,
       },
