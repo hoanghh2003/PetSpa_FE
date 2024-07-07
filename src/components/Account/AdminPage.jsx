@@ -58,7 +58,6 @@ const AdminPage = () => {
   const [formData, setFormData] = useState({
     userName: "",
     email: "",
-    password: "",
     phoneNumber: "",
     role: "",
     fullName: "",
@@ -154,17 +153,18 @@ const AdminPage = () => {
       return;
     }
 
+    const submitData = { ...formData, password: "Pet123@@" };
+
     if (isEditing) {
-      await axios.put(`https://localhost:7150/api/Account/update-user/${editId}`, formData);
+      await axios.put(`https://localhost:7150/api/Account/update-user/${editId}`, submitData);
       setIsEditing(false);
       setEditId(null);
     } else {
-      await axios.post("https://localhost:7150/api/Account/register", formData);
+      await axios.post("https://localhost:7150/api/Account/register", submitData);
     }
     setFormData({
       userName: "",
       email: "",
-      password: "",
       phoneNumber: "",
       role: "",
       fullName: "",
@@ -180,7 +180,6 @@ const AdminPage = () => {
     setFormData({
       userName: account.userName,
       email: account.email,
-      password: "",
       phoneNumber: account.phoneNumber,
       role: account.roles.join(", "),
       fullName: account.fullName,
@@ -190,7 +189,6 @@ const AdminPage = () => {
   };
 
   const handleDelete = async (id) => {
-    console.log(id);
     await axios.delete(`https://localhost:7150/api/Account/delete-account/${id}`);
     fetchAccounts();
   };
@@ -201,7 +199,6 @@ const AdminPage = () => {
     setFormData({
       userName: "",
       email: "",
-      password: "",
       phoneNumber: "",
       role: "",
       fullName: "",
@@ -334,14 +331,6 @@ const AdminPage = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 required
-              />
-              <FormField
-                label="Password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                required={!isEditing}
               />
               <FormField
                 label="Phone Number"
