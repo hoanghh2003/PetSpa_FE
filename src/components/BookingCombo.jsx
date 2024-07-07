@@ -154,6 +154,7 @@ const BookingCombo = ({ isOpen, handleHideModal, comboId }) => {
       message.error("Failed to fetch staff members");
     }
   };
+  
 
   const columns = [
     {

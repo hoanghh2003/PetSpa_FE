@@ -801,12 +801,14 @@ const Transac = () => {
                               {getStatusLabel(product.status)}
                             </span>
                           </div>
-                          <div className="font-size-sm text-body">
+                          {product.status !== 2 &&(
+                            <div className="font-size-sm text-body">
                             <span>Acceptance: </span>
                             <span className="font-weight-bold">
                               {getCheckAcceptLabel(product.checkAccept)}
                             </span>
                           </div>
+                          )}                        
                           {product.status === 1 && !product.feedback && (
                             <Button
                               type="button"

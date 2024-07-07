@@ -68,7 +68,8 @@ const ManagerPage = () => {
     fetch("https://localhost:7150/api/Booking/bookings/not-accepted")
       .then((response) => response.json())
       .then((data) => {
-        const formattedData = data.data.map((booking, index) => ({
+        const filteredData = data.data.filter(booking => booking.status !== 2);
+        const formattedData = filteredData.map((booking, index) => ({
           key: index + 1,
           bookingId: booking.bookingId,
           customerName: booking.customerName,
@@ -314,6 +315,7 @@ const ManagerPage = () => {
     setIsModalVisible(false);
     form.resetFields();
   };
+ 
 
   const handleAccept = async (key) => {
     const booking = checkaccepts.find((checkaccept) => checkaccept.key === key);
@@ -336,7 +338,6 @@ const ManagerPage = () => {
       if (booking.staffId) {
         url += `&staffId=${booking.staffId}`;
       }
-      console.log(booking);
       const responseCheckAccpet = await axios.get(url);
       if (responseCheckAccpet.status === 404) {
         message.error(responseCheckAccpet.data || "error ");
@@ -351,17 +352,11 @@ const ManagerPage = () => {
       );
 
       if (response.status === 200) {
-        setCheckaccepts(
-          checkaccepts.map((checkaccept) =>
-            checkaccept.key === key
-              ? {
-                  ...checkaccept,
-                  status: "Approved",
-                  checkedBy: "Current User",
-                  checkAccept: true,
-                }
-              : checkaccept
-          )
+        message.success(
+          "Accept successfully"
+        );
+        setCheckaccepts((prevCheckaccepts) =>
+          prevCheckaccepts.filter((checkaccept) => checkaccept.key !== key)
         );
         message.success("Booking accepted successfully");
       } else {
@@ -382,16 +377,37 @@ const ManagerPage = () => {
       setCheckaccepts(updatedCheckaccepts);
     }
   };
+  const handleDeny = async (key) => {
+    const booking = checkaccepts.find((checkaccept) => checkaccept.key === key);
+    try {
+      const response = await axios.post(
+        `https://localhost:7150/api/Booking/cancel-booking`,
+        {
+          bookingId: booking.bookingId
+        }
+      );
 
-  // const handleDeny = (key) => {
-  //   setCheckaccepts(
-  //     checkaccepts.map((checkaccept) =>
-  //       checkaccept.key === key
-  //         ? { ...checkaccept, status: "Rejected", checkedBy: "Current User" }
-  //         : checkaccept
-  //     )
-  //   );
-  // };
+      if (response.status === 200) {
+        message.success(
+          "Deny successfully"
+        );
+        setCheckaccepts((prevCheckaccepts) =>
+          prevCheckaccepts.filter((checkaccept) => checkaccept.key !== key)
+        );
+        // Update the booking status in dataSource
+      
+      } else {
+        throw new Error("Failed to submit refund request.");
+      }
+    } catch (error) {
+      console.error("Error submitting refund request:", error);
+      message.error(
+        error.response?.data || "Failed to submit refund request."
+      );
+    }
+  };
+
+ 
 
   const serviceColumns = [
     {
@@ -547,6 +563,21 @@ const ManagerPage = () => {
             disabled={record.checkAccept}
           >
             Accept
+          </Button>
+        </Space>
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) => (
+        <Space size="middle">
+          <Button
+            type="primary"
+            onClick={() => handleDeny(record.key)}
+            disabled={record.checkAccept}
+          >
+            Deny
           </Button>
         </Space>
       ),
