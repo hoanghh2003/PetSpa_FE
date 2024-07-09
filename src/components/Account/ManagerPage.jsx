@@ -331,18 +331,6 @@ const ManagerPage = () => {
     }
 
     try {
-      const startDate = moment(booking.startDate);
-      const formattedStartDate = startDate.format("YYYY-MM-DDTHH:mm:ss");
-      let url = `https://localhost:7150/api/Booking/available?startTime=${formattedStartDate}&serviceCode=${booking.serviceId}`;
-
-      if (booking.staffId) {
-        url += `&staffId=${booking.staffId}`;
-      }
-      const responseCheckAccpet = await axios.get(url);
-      if (responseCheckAccpet.status === 404) {
-        message.error(responseCheckAccpet.data || "error ");
-      }
-
       const response = await axios.put(
         "https://localhost:7150/api/Booking/accept-booking",
         {
