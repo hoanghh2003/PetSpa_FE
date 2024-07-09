@@ -250,6 +250,15 @@ const BookingCard = ({ isOpen, handleHideModal, serviceId }) => {
         item.petId === selectedPetId &&
         item.date === date.format("YYYY-MM-DDTHH:mm:ss")
     );
+    const isAlreadyStaff = cart.some(
+      (item) =>
+        item.staffId === selectStaffId &&
+        item.date === date.format("YYYY-MM-DDTHH:mm:ss")
+    );
+    if (isAlreadyStaff) {
+      message.warning("This staff has already used this service in cart.");
+      return;
+    }
     if (isAlready) {
       message.warning("This pet has already used this service in cart.");
       return;
